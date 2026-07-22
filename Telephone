@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Telephone</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+</head>
+<body class="bg-black text-white">
+  <div class="max-w-md mx-auto bg-zinc-950 min-h-screen">
+    <div class="p-6">
+      <h1 class="text-4xl font-black text-center mb-8">📞 TELEPHONE</h1>
+      
+      <div class="space-y-6">
+        <input id="recipient" class="w-full p-4 bg-zinc-900 rounded-2xl" placeholder="Recipient 0x...">
+        <div class="flex gap-4">
+          <input id="amount" type="number" class="flex-1 p-4 bg-zinc-900 rounded-2xl" placeholder="Amount">
+          <select id="token" class="p-4 bg-zinc-900 rounded-2xl"><option>USDC</option></select>
+        </div>
+
+        <button onclick="recordVoice()" class="w-full py-6 bg-red-600 rounded-3xl text-xl font-bold">🎤 Record Voice Message</button>
+        <audio id="preview" class="w-full mt-4" controls></audio>
+
+        <button onclick="sendCall()" class="w-full py-6 bg-green-500 rounded-3xl text-2xl font-black">SEND CALL</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let audioBlob = null;
+
+    async function recordVoice() {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const recorder = new MediaRecorder(stream);
+      const chunks = [];
+      recorder.ondataavailable = e => chunks.push(e.data);
+      recorder.onstop = () => {
+        audioBlob = new Blob(chunks, { type: 'audio/webm' });
+        document.getElementById('preview').src = URL.createObjectURL(audioBlob);
+      };
+      recorder.start();
+      setTimeout(() => recorder.stop(), 8000); // 8 sec max for demo
+    }
+
+    async function sendCall() {
+      if (!audioBlob) return alert("Record a message first");
+      
+      // === Thirdweb Storage Upload ===
+      // In real app:
+      // const { upload } = useStorageUpload();
+      // const ipfsUrl = await upload({ data: audioBlob });
+      
+      const fakeIpfs = "ipfs://" + Math.random().toString(36).slice(2);
+      alert(`Voice uploaded to ${fakeIpfs}\nCall sent on Base!`);
+      confetti({ particleCount: 200 });
+    }
+  </script>
+</body>
+</html>
