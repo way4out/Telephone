@@ -1,0 +1,53 @@
+'use client';
+import { ThirdwebProvider, ConnectButton, useActiveAccount, useStorageUpload } from "thirdweb/react";
+import { base } from "thirdweb/chains";
+import { useState } from "react";
+import { getContract, transfer } from "thirdweb";
+import { useSendTransaction } from "thirdweb/react";
+
+export default function Telephone() {
+  const account = useActiveAccount();
+  const { mutate: sendTx } = useSendTransaction();
+  const { upload } = useStorageUpload();
+
+  const [recipient, setRecipient] = useState("");
+  const [amount, setAmount] = useState("");
+  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
+  const [isRecording, setIsRecording] = useState(false);
+
+  const startRecording = async () => { /* MediaRecorder logic same as above */ };
+
+  const sendCall = async () => {
+    if (!audioBlob || !recipient || !amount) return alert("Missing fields");
+
+    // Upload voice to IPFS
+    const ipfsUrl = await upload({ data: audioBlob, });
+    console.log("Voice IPFS:", ipfsUrl);
+
+    // Send USDC (or any token)
+    const usdcContract = getContract({
+      client: /* from provider */,
+      chain: base,
+      address: "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913", // USDC on Base
+    });
+
+    const tx = transfer({
+      contract: usdcContract,
+      to: recipient,
+      amount: BigInt(Math.floor(Number(amount) * 1_000_000)), // 6 decimals
+    });
+
+    sendTx({ transaction: tx });
+    alert("Call sent with voice attached!");
+  };
+
+  return (
+    <ThirdwebProvider activeChain={base} clientId="YOUR_CLIENT_ID">
+      <div className="min-h-screen bg-black text-white p-6">
+        <ConnectButton />
+        {/* Rest of beautiful UI from previous HTML */}
+        {/* Add your record/send buttons calling the functions above */}
+      </div>
+    </ThirdwebProvider>
+  );
+}
