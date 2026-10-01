@@ -16,7 +16,21 @@ const stripe=stripeKey?new Stripe(stripeKey):null;
 function id(){return crypto.randomUUID();}
 function requireStripe(res){if(!stripe){return res.status(503).json({ok:false,error:"payments_not_configured"});}}
 
-app.get("/health",(_,res)=>res.json({ok:true,service:"oeql-quantum-telecom-api",payments:Boolean(stripe),esim:Boolean(process.env.ESIM_PROVIDER_BASE_URL),version:"1.0.0"}));
+app.get("/health",(_,res)=>res.json({ok:true,service:"oeql-quantum-telecom-api",payments:Boolean(stripe),esim:Boolean(process.env.ESIM_PROVIDER_BASE_URL),carrier_mode:process.env.CARRIER_MODE||"development",version:"1.1.0"}));
+app.get("/v1/carrier/status",(_,res)=>res.json({
+  carrier:process.env.CARRIER_NAME||"OEQL Quantum Telecom",
+  mode:process.env.CARRIER_MODE||"development",
+  network:"7G+ experimental",
+  public_cellular_authorization:false,
+  esim_rsp_ready:Boolean(process.env.ESIM_PROVIDER_BASE_URL&&process.env.ESIM_PROVIDER_API_KEY),
+  note:"This control plane does not itself grant spectrum, carrier, numbering, or GSMA authorization."
+}));
+app.post("/v1/carrier/enroll",async(req,res)=>{
+  const {eid}=req.body||{};
+  if(!eid) return res.status(400).json({ok:false,error:"eid_required"});
+  const enrollment={id:id(),eid,status:"eligible_pending_rasp",carrier:process.env.CARRIER_NAME||"OEQL Quantum Telecom",created_at:new Date().toISOString()};
+  res.json({ok:true,enrollment,next:"authorized_esim_rsp_required"});
+});
 
 app.post("/v1/checkout/session",async(req,res)=>{
   if(requireStripe(res)) return;
