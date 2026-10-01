@@ -14,9 +14,16 @@ const publicApp=process.env.PUBLIC_APP_URL||"https://oeql-quantum-telecom-phone.
 const stripe=stripeKey?new Stripe(stripeKey):null;
 
 function id(){return crypto.randomUUID();}
+const LIVE_MEDIA_CATALOG={
+ tv:[{name:"NASA TV",region:"Global",kind:"official"},{name:"DW English",region:"Global",kind:"official"},{name:"Al Jazeera English",region:"Global",kind:"official"},{name:"France 24",region:"Global",kind:"official"},{name:"NHK WORLD-JAPAN",region:"Global",kind:"official"}],
+ radio:[{name:"BBC World Service",region:"Global",kind:"official"},{name:"VOA",region:"Global",kind:"official"},{name:"RFI",region:"Global",kind:"official"},{name:"Global Player",region:"Supported territories",kind:"official"}],
+ data:[{name:"NOAA",region:"Global",kind:"public"},{name:"NASA Earthdata",region:"Global",kind:"public"},{name:"USGS",region:"Global",kind:"public"}]
+};
+
 function requireStripe(res){if(!stripe){return res.status(503).json({ok:false,error:"payments_not_configured"});}}
 
 app.get("/health",(_,res)=>res.json({ok:true,service:"oeql-quantum-telecom-api",payments:Boolean(stripe),esim:Boolean(process.env.ESIM_PROVIDER_BASE_URL),carrier_mode:process.env.CARRIER_MODE||"development",version:"1.1.0"}));
+app.get("/v1/media/catalog",(req,res)=>res.json({ok:true,scope:"global-live-media",policy:"public-authorized-or-licensed-feeds-only",catalog:LIVE_MEDIA_CATALOG,relay:"direct relay requires explicit feed authorization"}));
 app.get("/v1/carrier/status",(_,res)=>res.json({
   carrier:process.env.CARRIER_NAME||"OEQL Quantum Telecom",
   mode:process.env.CARRIER_MODE||"development",
