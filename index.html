@@ -58,5 +58,6 @@ $("#activate").onclick=()=>confirmBox("Authorize membership receipt","This creat
 $("#esim").onclick=()=>{state.esimPrepared=true;save();$("#sim").textContent="PREPARED";alert("eSIM workflow prepared. A carrier-issued SM-DP+ activation code/profile is still required; browsers cannot silently install a cellular profile.")};
 $("#clear").onclick=()=>{state.receipts=[];save();renderReceipts()};
 (async()=>{if(navigator.connection){$("#through").textContent=(navigator.connection.downlink||"—")+" Mbps";$("#access").textContent=navigator.connection.effectiveType||"Browser"} const t0=performance.now(); try{await fetch(location.href,{cache:"no-store",method:"HEAD"});$("#lat").textContent=Math.round(performance.now()-t0)+" ms"}catch{} })();
+if("serviceWorker" in navigator) navigator.serviceWorker.register("./sw.js").catch(()=>{});
 </script>
 </body></html>
