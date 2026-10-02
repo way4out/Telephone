@@ -19,6 +19,31 @@ app.post("/v1/webhooks/stripe",express.raw({type:"application/json"}),async(req,
 });
 app.use(express.json({limit:"32kb"}));
 
+// Production request hardening: trace every request and make client retries idempotent.
+// Idempotency state is process-local until durable storage is configured.
+const idempotencyStore=new Map();
+app.use((req,res,next)=>{
+  const traceId=req.headers["x-request-id"]||crypto.randomUUID();
+  req.traceId=traceId;
+  res.set("X-Request-ID",traceId);
+  const cf=req.headers["cf-ray"];
+  if(cf) res.set("X-CF-Ray",String(cf));
+  const key=req.method==="POST" ? String(req.headers["idempotency-key"]||"").trim().slice(0,200) : "";
+  if(!key)return next();
+  const scope=req.method+":"+req.path+":"+key;
+  const prior=idempotencyStore.get(scope);
+  if(prior){res.status(prior.status).set(prior.headers).send(prior.body);return;}
+  const originalJson=res.json.bind(res), originalSend=res.send.bind(res);
+  const save=(status,body,headers={})=>{
+    if(idempotencyStore.size>5000) idempotencyStore.delete(idempotencyStore.keys().next().value);
+    idempotencyStore.set(scope,{status,body,headers});
+  };
+  res.json=(body)=>{save(res.statusCode,JSON.stringify(body),{"Content-Type":"application/json"});return originalJson(body);};
+  res.send=(body)=>{save(res.statusCode,body,{"Content-Type":res.get("Content-Type")||"text/plain"});return originalSend(body);};
+  next();
+});
+
+
 const PORT=process.env.PORT||10000;
 const stripeKey=process.env.STRIPE_SECRET_KEY;
 const priceId=process.env.STRIPE_PRICE_ID||"price_1UM2djRPRXTyZSXkK8ceygV3";
@@ -87,7 +112,8 @@ app.get("/api/telecom-config",(req,res)=>{res.set({"Cache-Control":"no-store","A
 
 app.get("/v1/sim/catalog",(req,res)=>{res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*","X-Content-Type-Options":"nosniff"});res.json({ok:true,brand:"StellarNet Telecom",activation_usd:4,monthly_usd:4,physical_sim:{format:"3FF/2FF/4FF punch-out",ship_ready_design:true,carrier_profile:"provider-issued",sku:"STN-PHY-001",inventory_source:process.env.CARRIER_FULFILLMENT_BASE_URL?"authorized_fulfillment_provider":"in-house_design_only",fulfillment_status:process.env.CARRIER_FULFILLMENT_BASE_URL&&process.env.CARRIER_FULFILLMENT_API_KEY?"provider_configured":"provider_required",shipping_label_fields:["recipient_name","shipping_address","country","order_id","sim_serial","tracking_number"],manufacturing:{artwork:"/physical-sim-design.svg",electrical_profile:"authorized_carrier_profile_required",iccid:"assigned_at_authorized_personalization",imsi:"assigned_by_authorized_operator",ki:"never exposed_to_application"}}});});
 app.get("/v1/sim/fulfillment-readiness",(req,res)=>{const configured=Boolean(process.env.CARRIER_FULFILLMENT_BASE_URL&&process.env.CARRIER_FULFILLMENT_API_KEY);res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*"});res.json({ok:true,in_house_design:true,ship_pipeline_ready:configured,inventory_proof:configured?"provider_api_configured":"not_available",physical_sim_provider:configured?"configured":"required",carrier_activation:process.env.CARRIER_MODE==="production_authorized"?"authorized":"required",note:"The application can prepare orders and shipping data; it cannot manufacture or activate carrier credentials without authorized SIM personalization and carrier infrastructure."});});
-app.get("/health",(_,res)=>res.json({ok:true,service:"stellarnet-telecom-api",payments:Boolean(stripe),journey:Boolean(journeyKey),atomic:Boolean(atomicKey),carrier_mode:process.env.CARRIER_MODE||"development",version:"2.2.0",health_check:"/health"}));
+app.get("/health",(_,res)=>res.status(200).json({ok:true,service:"stellarnet-telecom-api",payments:Boolean(stripe),journey:Boolean(journeyKey),atomic:Boolean(atomicKey),carrier_mode:process.env.CARRIER_MODE||"development",version:"2.3.0",health_check:"/health"}));
+app.get("/ready",(_,res)=>res.status(200).json({ok:true,ready:true,service:"stellarnet-telecom-api",control_plane:true,base_rpc_configured:Boolean(process.env.BASE_RPC_URL),stripe_configured:Boolean(stripe)}));
 // Deterministic receipt rail: creates a signed receipt payload after a verified checkout/tx reference.
 // It never claims an on-chain settlement until the transaction hash is supplied and can be verified by a wallet/indexer.
 async function baseRpc(method,params=[]){
@@ -471,4 +497,6 @@ function quantumScan(){
 app.get("/v1/quantum/scan",(req,res)=>{res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*","X-Content-Type-Options":"nosniff"});res.json({ok:true,scan:quantumScan()});});
 app.get("/v1/quantum/capabilities",(req,res)=>{res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*"});res.json({ok:true,software:["resonance simulation","vector execution model","2D/3D/4D/5D+ state modeling","deterministic scan manifests","PQC research integration point","IMT-2030 compatibility interface","instrument-validation state machine"],hardware_requirements:["RF/optical instrumentation","clock/oscillator references","ADC/DAC","FPGA/DSP","calibrated sensors","shielding where required","lawful test authorization"],state_machine:["UNCONFIGURED","SIMULATED","INSTRUMENT_CONNECTED","CALIBRATED","LAB_VALIDATED","AUTHORIZED_FIELD_TEST","PROVIDER_INTEGRATED"],physical_quantum_execution:false,quantum_radio:false,note:"Software exposes the control and validation plane; physical quantum execution requires real laboratory hardware, measurements, calibration and authorization."});});
 
-app.listen(PORT,()=>console.log(`StellarNet Telecom API listening on ${PORT}`));
+const server=app.listen(PORT,()=>console.log(`StellarNet Telecom API listening on ${PORT}`));
+process.on("SIGTERM",()=>{console.log("SIGTERM received; draining HTTP server");server.close(()=>process.exit(0));setTimeout(()=>process.exit(1),25000);});
+process.on("SIGINT",()=>server.close(()=>process.exit(0)));
