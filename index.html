@@ -65,6 +65,7 @@ a{text-decoration:none;color:inherit}button,select{font:inherit}.wrap{max-width:
 <div class="kpi"><b id="apiKpi">Checking</b><span>Live control-plane API</span></div>
 </section>
 
+<section id="integration" class="section card"><div class="head"><div><h2>Telecom Control & Bankr Integration</h2><p>Normalized public state for embedded apps. Provider/carrier dependencies are labeled instead of simulated.</p></div><span class="pill">BANKR READY</span></div><div class="kpis" id="architectureScan"></div><div class="rows"><div class="row"><span>Status endpoint</span><b>/api/telecom-status</b></div><div class="row"><span>Embedded iframe</span><b class="ok">Render header configuration required</b></div><div class="row"><span>Token contracts</span><b id="tokenState">Checking…</b></div><div class="row"><span>Bankr auto-sync</span><b class="warn">External integration required</b></div></div></section>
 <section id="global" class="section card"><h2>Global Coverage & Language</h2><p>Verified provider data only.</p><select id="globalCountry"><option>US</option><option>CA</option><option>MX</option><option>GB</option><option>DE</option><option>FR</option><option>ES</option><option>IT</option><option>BR</option><option>IN</option><option>JP</option><option>KR</option><option>CN</option><option>AU</option><option>AE</option></select><select id="globalLanguage" aria-label="Language">
 <option value="en">English</option><option value="es">Español</option><option value="fr">Français</option><option value="de">Deutsch</option><option value="pt">Português</option><option value="it">Italiano</option><option value="ja">日本語</option><option value="ko">한국어</option><option value="zh">中文</option><option value="ar">العربية</option><option value="hi">हिन्दी</option><option value="nl">Nederlands</option><option value="pl">Polski</option><option value="tr">Türkçe</option><option value="sv">Svenska</option><option value="no">Norsk</option><option value="da">Dansk</option><option value="fi">Suomi</option><option value="el">Ελληνικά</option><option value="he">עברית</option><option value="th">ไทย</option><option value="vi">Tiếng Việt</option><option value="id">Bahasa Indonesia</option><option value="ms">Bahasa Melayu</option><option value="uk">Українська</option><option value="cs">Čeština</option><option value="ro">Română</option><option value="hu">Magyar</option>
 </select><div id="globalResults">Checking verified network data…</div></section><section id="buy" class="section">
@@ -252,6 +253,9 @@ async function liveTick(){
 }
 setInterval(liveTick,1000);
 liveTick();
+</script>
+<script>
+(async()=>{try{const r=await fetch(API+"/api/telecom-status?country="+encodeURIComponent(document.getElementById("globalCountry")?.value||"US"),{cache:"no-store"});const j=await r.json();const layers=j.config?.architecture_layers||[];const box=document.getElementById("architectureScan");if(box)box.innerHTML=layers.map((x,i)=>"<div class='kpi'><b>"+(i+1)+"</b><span>"+x.replaceAll("_"," ")+"</span></div>").join("");const n=j.architecture?.sovereign_token_registry?.tokens?.length||0;const ts=document.getElementById("tokenState");if(ts)ts.textContent=n?n+" configured token contract(s)":"No token contracts configured";}catch(e){const ts=document.getElementById("tokenState");if(ts)ts.textContent="Status endpoint unavailable";}})();
 </script>
 </body>
 </html>
