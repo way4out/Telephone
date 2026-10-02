@@ -76,4 +76,63 @@ app.post("/v1/esim/provision",async(req,res)=>{
   }catch(e){res.status(400).json({ok:false,error:"provisioning_failed"});}
 });
 
+
+// --- StellarNet subscriber/device control plane ---
+// These endpoints manage StellarNet application state only. They never fabricate
+// carrier credentials, IMSIs, ICCIDs, eSIM profiles, spectrum authorization, or
+// GSMA certificates. Production SIM issuance remains delegated to an authorized RSP/MVNO.
+const subscribers=new Map();
+const simOrders=new Map();
+
+function hashId(v){return crypto.createHash("sha256").update(String(v)).digest("hex");}
+
+app.post("/v1/subscriber/register",async(req,res)=>{
+  const {checkout_session_id,email,eid,device_id,sim_type="esim"}=req.body||{};
+  if(!checkout_session_id||!email)return res.status(400).json({ok:false,error:"checkout_session_id_and_email_required"});
+  if(!stripe)return res.status(503).json({ok:false,error:"payments_not_configured"});
+  try{
+    const session=await stripe.checkout.sessions.retrieve(checkout_session_id,{expand:["subscription","customer"]});
+    if(session.payment_status!=="paid"||!session.subscription)return res.status(402).json({ok:false,error:"subscription_not_paid"});
+    const subscriber_id=hashId(session.customer||email).slice(0,24);
+    const record={subscriber_id,email,device_id:device_id||null,eid:eid||null,sim_type,subscription_id:session.subscription.id,status:"paid_pending_carrier",created_at:new Date().toISOString()};
+    subscribers.set(subscriber_id,record);
+    res.json({ok:true,subscriber:record,next_step:process.env.ESIM_PROVIDER_BASE_URL?"carrier_provisioning":"authorized_carrier_credentials_required"});
+  }catch(e){res.status(400).json({ok:false,error:"subscriber_registration_failed"});}
+});
+
+app.post("/v1/sim/order",async(req,res)=>{
+  const {checkout_session_id,email,shipping_address,sim_type="physical"}=req.body||{};
+  if(!checkout_session_id||!email||!shipping_address)return res.status(400).json({ok:false,error:"checkout_session_id_email_shipping_address_required"});
+  if(!stripe)return res.status(503).json({ok:false,error:"payments_not_configured"});
+  try{
+    const session=await stripe.checkout.sessions.retrieve(checkout_session_id,{expand:["subscription"]});
+    if(session.payment_status!=="paid")return res.status(402).json({ok:false,error:"payment_not_completed"});
+    const order_id=id();
+    const order={order_id,email,sim_type,shipping_address,status:"paid_pending_authorized_fulfillment",subscription_id:session.subscription?.id||null,created_at:new Date().toISOString()};
+    simOrders.set(order_id,order);
+    res.status(202).json({ok:true,order,carrier_fulfillment_ready:Boolean(process.env.CARRIER_FULFILLMENT_BASE_URL)});
+  }catch(e){res.status(400).json({ok:false,error:"sim_order_failed"});}
+});
+
+app.get("/v1/telecom/readiness",(_,res)=>res.json({
+  ok:true,
+  control_plane:true,
+  payments:Boolean(stripe),
+  eSIM_RSP:Boolean(process.env.ESIM_PROVIDER_BASE_URL&&process.env.ESIM_PROVIDER_API_KEY),
+  physical_SIM_fulfillment:Boolean(process.env.CARRIER_FULFILLMENT_BASE_URL&&process.env.CARRIER_FULFILLMENT_API_KEY),
+  production_carrier_authorized:process.env.CARRIER_MODE==="production_authorized",
+  quantum_radio:false,
+  note:"Real operator credentials and SIM profiles must come from an authorized carrier/RSP; this service does not generate them."
+}));
+
+app.get("/v1/telecom/capabilities",(_,res)=>res.json({
+  brand:process.env.PUBLIC_BRAND_NAME||"StellarNet Telecom",
+  plans:[{name:"StellarNet $4",monthly_usd:4}],
+  interfaces:["web","PWA","mobile-responsive","API"],
+  provisioning:["eSIM","physical SIM"],
+  state:["checkout","subscriber registration","device registration","order tracking","carrier provisioning adapter"],
+  security:["Stripe-hosted payment collection","environment-secret provider credentials","no SIM credentials generated locally"],
+  experimental:["quantum/control-plane architecture","7G+ research UI"]
+}));
+
 app.listen(PORT,()=>console.log(`StellarNet Telecom API listening on ${PORT}`));
