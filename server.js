@@ -63,6 +63,28 @@ app.post("/v1/customer-portal",async(req,res)=>{
   }catch(e){res.status(400).json({ok:false,error:"customer_portal_unavailable"});}
 });
 
+app.post("/v1/journey/esim/provision",async(req,res)=>{
+  const {planId,reference}=req.body||{};
+  if(!journeyKey)return res.status(503).json({ok:false,error:"journey_api_key_not_configured"});
+  if(!planId)return res.status(400).json({ok:false,error:"planId_required"});
+  try{
+    const r=await fetch(journeyBase+"/esims",{method:"POST",headers:{"content-type":"application/json","authorization":`Bearer ${journeyKey}`},body:JSON.stringify({planId,quantity:1,reference:reference||id()})});
+    const data=await r.json().catch(()=>({}));
+    if(!r.ok)return res.status(r.status===402?402:502).json({ok:false,error:"journey_provisioning_failed",provider_status:r.status,provider:data.error||null});
+    res.status(201).json({ok:true,provider:"Journey eSIMs",order:data});
+  }catch(e){res.status(502).json({ok:false,error:"journey_connection_failed"});}
+});
+
+app.get("/v1/journey/catalog",async(_,res)=>{
+  if(!journeyKey)return res.status(503).json({ok:false,error:"journey_api_key_not_configured"});
+  try{
+    const r=await fetch(journeyBase+"/catalog",{headers:{authorization:`Bearer ${journeyKey}`}});
+    const data=await r.json().catch(()=>({}));
+    if(!r.ok)return res.status(502).json({ok:false,error:"journey_catalog_failed",provider_status:r.status});
+    res.json({ok:true,catalog:data});
+  }catch(e){res.status(502).json({ok:false,error:"journey_connection_failed"});}
+});
+
 app.post("/v1/esim/provision",async(req,res)=>{
   const {checkout_session_id,eid,device_id}=req.body||{};
   if(!checkout_session_id||!eid)return res.status(400).json({ok:false,error:"checkout_session_id_and_eid_required"});
