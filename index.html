@@ -244,7 +244,8 @@ async function liveTick(){
   set("esimState",p.eSIM_RSP?"Configured":"Provider required",p.eSIM_RSP?"ok":"warn");
   set("simState",p.physical_SIM_fulfillment?"Ready":"Partner required",p.physical_SIM_fulfillment?"ok":"warn");
   set("carrierState",p.production_carrier_authorized?"Authorized":"Authorization required",p.production_carrier_authorized?"ok":"warn");
-  if(typeof globalData==="function")globalData();
+  const g=j.global||{}, t=globalI18n?.[document.getElementById("globalLanguage")?.value||"en"]||globalI18n?.en;
+  if(g.coverage&&t)document.getElementById("globalResults").innerHTML="<b>"+t.coverage+":</b> "+(g.coverage.available?t.available:t.required)+"<br><b>"+t.speed+":</b> "+(g.speed?.measured?(g.speed.data.down_mbps+" Mbps down / "+g.speed.data.up_mbps+" Mbps up"):t.measured)+"<br><b>"+t.numbers+":</b> "+(g.numbering?.available?t.available:t.numbering)+"<br><b>"+t.carrier+":</b> "+(g.carrier?.production_authorized?t.available:t.auth)+"<br><b>"+t.voice+":</b> "+(g.carrier?.voice_sms?t.enabled:t.required)+"<br><b>"+t.roaming+":</b> "+(g.carrier?.roaming?t.enabled:t.required);
  }catch(e){
   const el=document.getElementById("liveClock");if(el)el.textContent="● LIVE CHECK · connection retrying…";
  }
