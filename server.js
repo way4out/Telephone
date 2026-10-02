@@ -4,7 +4,7 @@ import Stripe from "stripe";
 import crypto from "node:crypto";
 
 const app=express();
-app.use(cors({origin:(process.env.CORS_ORIGIN||"").split(",").filter(Boolean),credentials:false}));
+app.use(cors({origin:(process.env.CORS_ORIGIN||"https://oeql-quantum-telecom-phone.onrender.com").split(",").filter(Boolean),credentials:false}));
 app.post("/v1/webhooks/stripe",express.raw({type:"application/json"}),async(req,res)=>{
   const stripeKey=process.env.STRIPE_SECRET_KEY;
   if(!stripeKey||!process.env.STRIPE_WEBHOOK_SECRET) return res.status(503).send("webhook_not_configured");
@@ -34,9 +34,9 @@ const LIVE_MEDIA_CATALOG={
 };
 function requireStripe(res){if(!stripe)return res.status(503).json({ok:false,error:"payments_not_configured"});}
 
-app.get("/health",(_,res)=>res.json({ok:true,service:"stellarnet-telecom-api",payments:Boolean(stripe),esim:Boolean(process.env.ESIM_PROVIDER_BASE_URL),carrier_mode:process.env.CARRIER_MODE||"development",version:"2.0.0"}));
+app.get("/health",(_,res)=>res.json({ok:true,service:"stellarnet-telecom-api",payments:Boolean(stripe),journey:Boolean(journeyKey),atomic:Boolean(atomicKey),carrier_mode:process.env.CARRIER_MODE||"development",version:"2.1.0"}));
 app.get("/v1/media/catalog",(_,res)=>res.json({ok:true,scope:"global-live-media",policy:"public-authorized-or-licensed-feeds-only",catalog:LIVE_MEDIA_CATALOG}));
-app.get("/v1/carrier/status",(_,res)=>res.json({carrier:process.env.CARRIER_NAME||"StellarNet Telecom",mode:process.env.CARRIER_MODE||"development",network:"7G+ experimental",public_cellular_authorization:false,esim_rsp_ready:Boolean(process.env.ESIM_PROVIDER_BASE_URL&&process.env.ESIM_PROVIDER_API_KEY),note:"This control plane does not itself grant spectrum, carrier, numbering, or GSMA authorization."}));
+app.get("/v1/carrier/status",(_,res)=>res.json({carrier:process.env.CARRIER_NAME||"StellarNet Telecom",mode:process.env.CARRIER_MODE||"development",network:"7G+ experimental",public_cellular_authorization:process.env.CARRIER_MODE==="production_authorized",esim_rsp_ready:Boolean(atomicKey||journeyKey),journey_ready:Boolean(journeyKey),atomic_ready:Boolean(atomicKey),physical_fulfillment_ready:Boolean(process.env.CARRIER_FULFILLMENT_BASE_URL&&process.env.CARRIER_FULFILLMENT_API_KEY),note:"The software control plane does not itself grant spectrum, carrier, numbering, or GSMA authorization."}));
 
 app.post("/v1/checkout/session",async(req,res)=>{
   if(requireStripe(res))return;
@@ -145,10 +145,11 @@ app.get("/v1/telecom/readiness",(_,res)=>res.json({
   ok:true,
   control_plane:true,
   payments:Boolean(stripe),
-  eSIM_RSP:Boolean(atomicKey),
+  eSIM_RSP:Boolean(atomicKey||journeyKey),
   physical_SIM_fulfillment:Boolean(process.env.CARRIER_FULFILLMENT_BASE_URL&&process.env.CARRIER_FULFILLMENT_API_KEY),
   production_carrier_authorized:process.env.CARRIER_MODE==="production_authorized",
   atomic_adapter:Boolean(atomicKey),
+  journey_adapter:Boolean(journeyKey),
   atomic_plan:atomicPlan,
   quantum_radio:false,
   note:"Real operator credentials and SIM profiles must come from an authorized carrier/RSP; this service does not generate them."
@@ -161,7 +162,7 @@ app.get("/v1/telecom/capabilities",(_,res)=>res.json({
   provisioning:["eSIM","physical SIM"],
   state:["checkout","subscriber registration","device registration","order tracking","carrier provisioning adapter"],
   security:["Stripe-hosted payment collection","environment-secret provider credentials","no SIM credentials generated locally"],
-  experimental:["quantum/control-plane architecture","7G+ research UI"]
+  experimental:["quantum/control-plane architecture","7G+ research UI","PWA install and mobile control surface"]
 }));
 
 app.listen(PORT,()=>console.log(`StellarNet Telecom API listening on ${PORT}`));
