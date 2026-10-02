@@ -290,10 +290,27 @@ async function bankrPay(tokenAddress,tokenSymbol){
  try{
   const r=await fetch(API+"/v1/bankr/pay",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({tokenAddress,tokenSymbol,amountUsd:4})});
   const j=await r.json().catch(()=>({}));
-  if(r.ok){show(msg,"Bankr payment job "+j.jobId+" submitted for "+tokenSymbol+". Confirm the resulting transaction in Bankr before treating it as paid.");}
-  else if(j.error==="bankr_api_key_not_configured"){show(msg,"Bankr API rail is not connected server-side. Open Bankr to approve the on-chain payment manually.");window.open("https://bankr.bot","_blank","noopener");}
-  else show(msg,j.error||"Bankr payment unavailable.");
- }catch(e){show(msg,"Bankr connection unavailable. Open Bankr to continue.");}
+  if(!r.ok){
+   if(j.error==="bankr_api_key_not_configured"){show(msg,"Bankr server rail is not connected. Open Bankr and approve the Base payment there.");window.open("https://bankr.bot","_blank","noopener");}
+   else show(msg,j.error||"Bankr payment unavailable.");
+   return;
+  }
+  show(msg,"Payment submitted. Verifying Base settlement…");
+  for(let n=0;n<75;n++){
+   await new Promise(r=>setTimeout(r,2000));
+   const q=await fetch(API+"/v1/bankr/payment/"+encodeURIComponent(j.jobId)+"?tokenAddress="+encodeURIComponent(tokenAddress),{cache:"no-store"});
+   const s=await q.json().catch(()=>({}));
+   if(s.onchain?.confirmed){
+    const ref=j.jobId;
+    show(msg,"✓ Paid and confirmed on Base. Receipt ready.");
+    const panel=document.getElementById("bankrState");
+    panel.innerHTML="<strong>✓ Payment confirmed</strong><br><span>Tx: "+s.txHash+"</span><br><img alt='Scannable receipt QR' style='max-width:220px;margin-top:12px;border-radius:12px' src='"+API+"/v1/receipt/"+encodeURIComponent(ref)+"/qr'><br><a class='btn primary' target='_blank' rel='noopener' href='"+publicApp+"/receipt/"+encodeURIComponent(ref)+"'>Open receipt</a>";
+    return;
+   }
+   if(s.status==="failed"||s.status==="cancelled"){show(msg,"Bankr payment did not complete: "+s.status);return;}
+  }
+  show(msg,"Payment is still processing. Keep this page open; settlement is not marked paid until Base confirms the transfer.");
+ }catch(e){show(msg,"Payment verification connection unavailable. No payment is marked settled.");}
 }
 document.addEventListener("click",e=>{const b=e.target.closest(".tokenQuickPay");if(b)bankrPay(b.dataset.token,b.dataset.symbol);});
 renderWalletAssets();
