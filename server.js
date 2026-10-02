@@ -118,6 +118,74 @@ async function verifyBasePayment(txHash,tokenAddress){
   }
   return {confirmed:recipientMatched,txHash,blockHash:receipt.blockHash,blockNumber:receipt.blockNumber,recipient:process.env.TOKEN_MERCHANT_ADDRESS||null,tokenAddress,verification:recipientMatched?"base_receipt_and_transfer_log_verified":"receipt_confirmed_but_recipient_or_token_unverified"};
 }
+
+// --- Full Base onchain payment verification ---
+// Verifies chain ID, successful receipt, ERC-20 Transfer event, merchant recipient,
+// token contract, and exact token amount when a quoted amountUnits is supplied.
+// No payment is considered settled from a client-side claim alone.
+const ERC20_TRANSFER_TOPIC="0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55aebef3b1ef";
+function topicAddress(topic){return "0x"+String(topic||"").slice(-40).toLowerCase();}
+async function erc20Decimals(tokenAddress){
+  const data="0x313ce567";
+  const raw=await baseRpc("eth_call",[{to:tokenAddress,data},"latest"]);
+  return Number(BigInt(raw||"0x0"));
+}
+async function verifyExactBaseTransfer({txHash,tokenAddress,merchantAddress,amountUnits}){
+  if(!/^0x[a-fA-F0-9]{64}$/.test(String(txHash||"")))return {confirmed:false,error:"tx_hash_required"};
+  if(!/^0x[a-fA-F0-9]{40}$/.test(String(tokenAddress||"")))return {confirmed:false,error:"token_address_required"};
+  if(!/^0x[a-fA-F0-9]{40}$/.test(String(merchantAddress||"")))return {confirmed:false,error:"merchant_address_required"};
+  const chainId=await baseRpc("eth_chainId",[]);
+  if(String(chainId).toLowerCase()!=="0x2105")return {confirmed:false,error:"wrong_chain",chain_id:chainId};
+  const receipt=await baseRpc("eth_getTransactionReceipt",[txHash]);
+  if(!receipt)return {confirmed:false,error:"transaction_pending",chain_id:chainId};
+  if(receipt.status!=="0x1")return {confirmed:false,error:"transaction_failed",chain_id:chainId,block_number:receipt.blockNumber};
+  const token=tokenAddress.toLowerCase(), merchant=merchantAddress.toLowerCase();
+  const transfers=[];
+  for(const log of (receipt.logs||[])){
+    if(String(log.address||"").toLowerCase()!==token)continue;
+    const topics=log.topics||[];
+    if(String(topics[0]||"").toLowerCase()!==ERC20_TRANSFER_TOPIC||topics.length<3)continue;
+    const to=topicAddress(topics[2]);
+    const value=BigInt(log.data||"0x0");
+    transfers.push({from:topicAddress(topics[1]),to,value:value.toString(),log_index:log.logIndex});
+  }
+  const matching=transfers.filter(x=>x.to===merchant);
+  const exact=amountUnits!=null?matching.find(x=>BigInt(x.value)===BigInt(String(amountUnits))):null;
+  const decimals=await erc20Decimals(token).catch(()=>null);
+  return {
+    confirmed:Boolean(exact|| (amountUnits==null&&matching.length>0)),
+    chain_id:chainId,
+    tx_hash:txHash,
+    block_hash:receipt.blockHash,
+    block_number:receipt.blockNumber,
+    token_address:tokenAddress,
+    merchant_address:merchantAddress,
+    token_decimals:decimals,
+    requested_amount_units:amountUnits==null?null:String(amountUnits),
+    matching_transfers:matching,
+    verification:(exact|| (amountUnits==null&&matching.length>0))?"base_erc20_transfer_verified":"receipt_confirmed_but_exact_payment_not_verified"
+  };
+}
+app.post("/v1/onchain/verify-payment",async(req,res)=>{
+  const {txHash,tokenAddress,amountUnits}=req.body||{};
+  const merchantAddress=process.env.TOKEN_MERCHANT_ADDRESS||"";
+  if(!merchantAddress)return res.status(503).json({ok:false,error:"merchant_address_not_configured"});
+  try{
+    const result=await verifyExactBaseTransfer({txHash,tokenAddress,merchantAddress,amountUnits});
+    res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*","X-Content-Type-Options":"nosniff"});
+    res.status(result.confirmed?200:402).json({ok:result.confirmed,settled:result.confirmed,network:"Base Mainnet",payment:result,receipt_url:result.confirmed?publicApp+"/receipt/"+encodeURIComponent(txHash):null});
+  }catch(e){res.status(502).json({ok:false,error:"onchain_verification_failed"});}
+});
+app.get("/v1/onchain/status/:txHash",async(req,res)=>{
+  try{
+    const txHash=req.params.txHash;
+    const receipt=await baseRpc("eth_getTransactionReceipt",[txHash]);
+    const block=await baseRpc("eth_getBlockByNumber",["latest",false]);
+    res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*"});
+    res.json({ok:true,network:"Base Mainnet",chain_id:8453,tx_hash:txHash,pending:!receipt,success:receipt?.status==="0x1",block_number:receipt?.blockNumber||null,latest_block:block?.number||null,confirmations:receipt?.blockNumber&&block?.number?Math.max(0,Number(BigInt(block.number)-BigInt(receipt.blockNumber))):0});
+  }catch(e){res.status(502).json({ok:false,error:"onchain_status_failed"});}
+});
+
 app.get("/v1/bankr/payment/:jobId",async(req,res)=>{
   if(!process.env.BANKR_API_KEY)return res.status(503).json({ok:false,error:"bankr_api_key_not_configured"});
   try{
