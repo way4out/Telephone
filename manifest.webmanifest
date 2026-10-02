@@ -6,7 +6,7 @@
   "display":"standalone",
   "background_color":"#05070b",
   "theme_color":"#05070b",
-  "description":"StellarNet Telecom universal customer control surface with one-tap eSIM, physical SIM, account, status and Bankr/Base flows.",
+  "description":"StellarNet Telecom universal customer control surface with one-tap eSIM, physical SIM, account and Bankr/Base flows.",
   "orientation":"portrait-primary",
   "categories":["business","communication","utilities"],
   "lang":"en",
@@ -16,7 +16,6 @@
   ],
   "shortcuts":[
     {"name":"Start eSIM","short_name":"eSIM","description":"Start eSIM service","url":"/#buy","icons":[{"src":"/icon.svg","sizes":"any","type":"image/svg+xml"}]},
-    {"name":"Physical SIM","short_name":"SIM","description":"Order a physical SIM","url":"/#buy","icons":[{"src":"/icon.svg","sizes":"any","type":"image/svg+xml"}]},
-    {"name":"Service status","short_name":"Status","description":"Check live service readiness","url":"/#status","icons":[{"src":"/icon.svg","sizes":"any","type":"image/svg+xml"}]}
+    {"name":"Physical SIM","short_name":"SIM","description":"Order a physical SIM","url":"/#buy","icons":[{"src":"/icon.svg","sizes":"any","type":"image/svg+xml"}]}
   ]
 }
