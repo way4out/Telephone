@@ -68,7 +68,7 @@ a{text-decoration:none;color:inherit}button,select{font:inherit}.wrap{max-width:
 <section id="integration" class="section card"><div class="head"><div><h2>Telecom Control & Bankr Integration</h2><p>Normalized public state for embedded apps. Provider/carrier dependencies are labeled instead of simulated.</p></div><span class="pill">BANKR READY</span></div><div class="kpis" id="architectureScan"></div><div class="rows"><div class="row"><span>Status endpoint</span><b>/api/telecom-status</b></div><div class="row"><span>Embedded iframe</span><b class="ok">Render header configuration required</b></div><div class="row"><span>Token contracts</span><b id="tokenState">Checking…</b></div><div class="row"><span>Bankr auto-sync</span><b class="warn">External integration required</b></div></div></section>
 <section id="tokens" class="section card"><div class="head"><div><h2>Base Token Registry</h2><p>All 12 user-supplied Base token contracts are available across the responsive web/PWA interface. Balances, prices and payment acceptance are shown only when verified/configured.</p></div><span class="pill">12 TOKENS</span></div><div id="tokenGrid" class="grid3"></div></section><section id="global" class="section card"><h2>Global Coverage & Language</h2><p>Verified provider data only.</p><select id="globalCountry"><option>US</option><option>CA</option><option>MX</option><option>GB</option><option>DE</option><option>FR</option><option>ES</option><option>IT</option><option>BR</option><option>IN</option><option>JP</option><option>KR</option><option>CN</option><option>AU</option><option>AE</option></select><select id="globalLanguage" aria-label="Language">
 <option value="en">English</option><option value="es">Español</option><option value="fr">Français</option><option value="de">Deutsch</option><option value="pt">Português</option><option value="it">Italiano</option><option value="ja">日本語</option><option value="ko">한국어</option><option value="zh">中文</option><option value="ar">العربية</option><option value="hi">हिन्दी</option><option value="nl">Nederlands</option><option value="pl">Polski</option><option value="tr">Türkçe</option><option value="sv">Svenska</option><option value="no">Norsk</option><option value="da">Dansk</option><option value="fi">Suomi</option><option value="el">Ελληνικά</option><option value="he">עברית</option><option value="th">ไทย</option><option value="vi">Tiếng Việt</option><option value="id">Bahasa Indonesia</option><option value="ms">Bahasa Melayu</option><option value="uk">Українська</option><option value="cs">Čeština</option><option value="ro">Română</option><option value="hu">Magyar</option>
-</select><div id="globalResults">Checking verified network data…</div></section><section id="buy" class="section">
+</select><div id="globalResults">Checking verified network data…</div></section><section id="wallet" class="section card"><div class="head"><div><h2>Base Wallet · One-tap payment</h2><p>Connect a Base-compatible wallet, see your configured token registry, and use a verified payment route when the merchant is configured.</p></div><span class="pill">BASE · 8453</span></div><div class="actions"><button class="btn primary" id="connectWallet">Connect Base Wallet</button><button class="btn" id="refreshWallet">Refresh balances</button></div><div id="walletMsg" class="status"></div><div id="walletGrid" class="grid3" style="margin-top:10px"></div></section><section id="buy" class="section">
 <div class="head"><div><h2>Start in one tap</h2><p>No pricing maze. Pick the format that fits your phone.</p></div></div>
 <div class="buygrid">
 <div class="card buy"><span class="pill">FASTEST</span><h3>eSIM</h3><div class="price2">$4 start + $4/mo</div><p class="muted">Digital-first checkout. Final activation depends on a compatible device and an authorized eSIM provider.</p><a class="btn primary full" href="https://buy.stripe.com/28E00leF9bjm6Yf09UdIA06">Get eSIM</a></div>
@@ -257,5 +257,32 @@ liveTick();
 <script>
 (async()=>{try{const r=await fetch(API+"/api/telecom-status?country="+encodeURIComponent(document.getElementById("globalCountry")?.value||"US"),{cache:"no-store"});const j=await r.json();const layers=j.config?.architecture_layers||[];const box=document.getElementById("architectureScan");if(box)box.innerHTML=layers.map((x,i)=>"<div class='kpi'><b>"+(i+1)+"</b><span>"+x.replaceAll("_"," ")+"</span></div>").join("");const n=j.architecture?.sovereign_token_registry?.tokens?.length||0;const ts=document.getElementById("tokenState");if(ts)ts.textContent=n?n+" configured token contract(s)":"No token contracts configured";}catch(e){const ts=document.getElementById("tokenState");if(ts)ts.textContent="Status endpoint unavailable";}})();
 </script>
-<script>(async()=>{try{const r=await fetch(API+"/api/telecom-status",{cache:"no-store"});const j=await r.json(),tokens=j.config?.token_registry||[];const g=document.getElementById("tokenGrid");if(g)g.innerHTML=tokens.map(t=>"<div class='card feature'><span class='pill'>BASE · "+t.symbol+"</span><h3>"+t.name+"</h3><p class='muted' style='word-break:break-all;font-size:.78rem'>"+t.address+"</p><a class='btn full' href='https://basescan.org/token/"+t.address+"'>View contract</a></div>").join("");const ts=document.getElementById("tokenState");if(ts)ts.textContent=tokens.length+" configured Base token contract(s)"}catch(e){const ts=document.getElementById("tokenState");if(ts)ts.textContent="Token registry unavailable"}})();</script></body>
+<script>(async()=>{try{const r=await fetch(API+"/api/telecom-status",{cache:"no-store"});const j=await r.json(),tokens=j.config?.token_registry||[];const g=document.getElementById("tokenGrid");if(g)g.innerHTML=tokens.map(t=>"<div class='card feature'><span class='pill'>BASE · "+t.symbol+"</span><h3>"+t.name+"</h3><p class='muted' style='word-break:break-all;font-size:.78rem'>"+t.address+"</p><a class='btn full' href='https://basescan.org/token/"+t.address+"'>View contract</a></div>").join("");const ts=document.getElementById("tokenState");if(ts)ts.textContent=tokens.length+" configured Base token contract(s)"}catch(e){const ts=document.getElementById("tokenState");if(ts)ts.textContent="Token registry unavailable"}})();</script><script>
+const walletState={provider:null,address:null,assets:[]};
+const walletMsg=document.getElementById("walletMsg");
+function walletNotice(m){show(walletMsg,m)}
+async function walletConnect(){
+ try{
+  if(!window.ethereum){walletNotice("No EVM wallet detected. Open this site in a compatible Base wallet app/browser or install a wallet.");return}
+  walletState.provider=window.ethereum;
+  const accounts=await window.ethereum.request({method:"eth_requestAccounts"});
+  walletState.address=accounts?.[0]||null;
+  if(!walletState.address){walletNotice("Wallet connection was cancelled.");return}
+  try{await window.ethereum.request({method:"wallet_switchEthereumChain",params:[{chainId:"0x2105"}]})}catch(e){walletNotice("Wallet connected. Switch to Base Mainnet (chain 8453) to view Base assets.");}
+  walletNotice("Connected: "+walletState.address.slice(0,6)+"…"+walletState.address.slice(-4));
+  await renderWalletAssets();
+ }catch(e){walletNotice("Wallet connection failed or was cancelled.")}
+}
+async function renderWalletAssets(){
+ const g=document.getElementById("walletGrid"); if(!g)return;
+ try{
+  const j=await fetch(API+"/v1/payments/assets",{cache:"no-store"}).then(r=>r.json());
+  walletState.assets=j.assets||[];
+  g.innerHTML=walletState.assets.map(t=>"<div class='card feature'><span class='pill'>BASE · "+t.symbol+"</span><h3>"+t.name+"</h3><p class='muted'>"+(t.payment_enabled?"Payment route configured":"Payment route not configured")+"</p><p class='micro' style='word-break:break-all'>"+t.address+"</p><a class='btn full' target='_blank' rel='noopener' href='https://basescan.org/token/"+t.address+"'>Contract</a></div>").join("");
+ }catch(e){g.innerHTML="<div class='notice'>Token payment registry unavailable.</div>"}
+}
+document.getElementById("connectWallet")?.addEventListener("click",walletConnect);
+document.getElementById("refreshWallet")?.addEventListener("click",renderWalletAssets);
+renderWalletAssets();
+</script></body>
 </html>
