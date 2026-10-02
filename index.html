@@ -48,7 +48,7 @@ body{font-size:14px;padding-bottom:68px}
 <div class="wrap">
 <header class="top">
 <a class="brand" href="#top"><div class="mark"></div><div><b>StellarNet Telecom</b><div class="micro">Customer-first connectivity</div></div></a>
-<nav class="nav"><a href="#home">Home</a><a href="#buy">Buy</a><a href="#account">Account</a><a href="#status">Status</a><a href="#faq">Help</a></nav>
+<nav class="nav"><a href="#home">Home</a><a href="#buy">Buy</a><a href="#account">Account</a><a href="#faq">Help</a></nav>
 <span class="pill"><i class="dot"></i> LIVE</span>
 </header>
 
@@ -74,7 +74,7 @@ body{font-size:14px;padding-bottom:68px}
 <div class="row"><span>Cancellation</span><b class="ok">Anytime</b></div>
 <div class="row"><span>Payment</span><b>Stripe</b></div>
 </div>
-<div class="actions"><a class="btn primary full" href="#status">Check service readiness</a></div>
+<div class="actions"></div>
 </aside>
 </section>
 
@@ -88,8 +88,8 @@ body{font-size:14px;padding-bottom:68px}
 <section id="home" class="section card">
 <div class="head"><div><h2>Universal Customer Home</h2><p>One compact control center for every supported screen: web, phone, tablet, desktop and installable PWA.</p></div><span class="pill">ALL USERS</span></div>
 <div class="grid3">
-<div class="card feature"><div class="num">A</div><h3>Start service</h3><p>Choose eSIM or physical SIM, review the current verified state, and continue to secure checkout.</p><div class="actions"><a class="btn primary" href="#buy">Start</a><a class="btn" href="#status">Check</a></div></div>
-<div class="card feature"><div class="num">B</div><h3>Manage service</h3><p>Open billing, refresh service readiness, review provider-dependent activation, and return home without losing your place.</p><div class="actions"><a class="btn" href="#account">Account</a><a class="btn" href="#status">Status</a></div></div>
+<div class="card feature"><div class="num">A</div><h3>Start service</h3><p>Choose eSIM or physical SIM, review the current verified state, and continue to secure checkout.</p><div class="actions"><a class="btn primary" href="#buy">Start</a></div></div>
+<div class="card feature"><div class="num">B</div><h3>Manage service</h3><p>Open billing, refresh service readiness, review provider-dependent activation, and return home without losing your place.</p><div class="actions"><a class="btn" href="#account">Account</a></div></div>
 <div class="card feature"><div class="num">C</div><h3>Help & access</h3><p>Language, region, accessibility-friendly controls and short next-step guidance stay available throughout the experience.</p><div class="actions"><a class="btn" href="#global">Language</a><a class="btn" href="#faq">Help</a></div></div>
 </div>
 </section>
@@ -123,18 +123,6 @@ body{font-size:14px;padding-bottom:68px}
 </div>
 <div class="actions"><button class="btn primary" id="manage">Manage / cancel</button><a class="btn" href="#status">View status</a></div>
 <div id="accountMsg" class="status"></div>
-</section>
-
-<section id="status" class="section card">
-<div class="head"><div><h2>Live readiness</h2><p>We show what is actually configured — never pretend an unavailable carrier integration is active.</p></div><button class="btn" id="refresh">Refresh</button></div>
-<div class="rows">
-<div class="row"><span>Control-plane API</span><b id="apiState">Checking…</b></div>
-<div class="row"><span>Payments</span><b id="payState">Checking…</b></div>
-<div class="row"><span>eSIM provider</span><b id="esimState">Checking…</b></div>
-<div class="row"><span>Physical SIM fulfillment</span><b id="simState">Checking…</b></div>
-<div class="row"><span>Commercial carrier authorization</span><b id="carrierState">Checking…</b></div>
-</div>
-<div id="statusMsg" class="status"></div>
 </section>
 
 <section class="section card">
@@ -273,31 +261,6 @@ document.getElementById("globalCountry").addEventListener("change",globalData);
 document.getElementById("globalLanguage").addEventListener("change",applyGlobalLanguage);
 autoDetectLocalSettings();
 applyGlobalLanguage();
-</script><div id="liveClock" class="micro" style="margin-top:8px">Live operations: connecting…</div>
-<script>
-let liveTimer=null;
-async function liveTick(){
- try{
-  const country=document.getElementById("globalCountry")?.value||"US";
-  const r=await fetch(API+"/v1/live?country="+encodeURIComponent(country),{cache:"no-store"});
-  const j=await r.json();
-  const t=new Date(j.server_time);
-  const el=document.getElementById("liveClock");
-  if(el)el.textContent="● LIVE · "+t.toLocaleTimeString()+" · "+(j.readiness?.production_carrier_authorized?"Carrier authorized":"Carrier authorization required");
-  if(j.readiness?.control_plane){set("apiState","Online","ok");document.getElementById("apiKpi").textContent="LIVE";}
-  const p=j.readiness||{};
-  set("payState",p.payments?"Ready":"Not configured",p.payments?"ok":"warn");
-  set("esimState",p.eSIM_RSP?"Configured":"Provider required",p.eSIM_RSP?"ok":"warn");
-  set("simState",p.physical_SIM_fulfillment?"Ready":"Partner required",p.physical_SIM_fulfillment?"ok":"warn");
-  set("carrierState",p.production_carrier_authorized?"Authorized":"Authorization required",p.production_carrier_authorized?"ok":"warn");
-  const g=j.global||{}, t=globalI18n?.[document.getElementById("globalLanguage")?.value||"en"]||globalI18n?.en;
-  if(g.coverage&&t)document.getElementById("globalResults").innerHTML="<b>"+t.coverage+":</b> "+(g.coverage.available?t.available:t.required)+"<br><b>"+t.speed+":</b> "+(g.speed?.measured?(g.speed.data.down_mbps+" Mbps down / "+g.speed.data.up_mbps+" Mbps up"):t.measured)+"<br><b>"+t.numbers+":</b> "+(g.numbering?.available?t.available:t.numbering)+"<br><b>"+t.carrier+":</b> "+(g.carrier?.production_authorized?t.available:t.auth)+"<br><b>"+t.voice+":</b> "+(g.carrier?.voice_sms?t.enabled:t.required)+"<br><b>"+t.roaming+":</b> "+(g.carrier?.roaming?t.enabled:t.required);
- }catch(e){
-  const el=document.getElementById("liveClock");if(el)el.textContent="● LIVE CHECK · connection retrying…";
- }
-}
-setInterval(liveTick,1000);
-liveTick();
 </script>
 <script>
 (async()=>{try{const r=await fetch(API+"/api/telecom-status?country="+encodeURIComponent(document.getElementById("globalCountry")?.value||"US"),{cache:"no-store"});const j=await r.json();const layers=j.config?.architecture_layers||[];const box=document.getElementById("architectureScan");if(box)box.innerHTML=layers.map((x,i)=>"<div class='kpi'><b>"+(i+1)+"</b><span>"+x.replaceAll("_"," ")+"</span></div>").join("");const n=j.architecture?.sovereign_token_registry?.tokens?.length||0;const ts=document.getElementById("tokenState");if(ts)ts.textContent=n?n+" configured token contract(s)":"No token contracts configured";}catch(e){const ts=document.getElementById("tokenState");if(ts)ts.textContent="Status endpoint unavailable";}})();
