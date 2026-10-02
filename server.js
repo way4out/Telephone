@@ -82,7 +82,7 @@ app.post("/v1/journey/esim/provision",async(req,res)=>{
   }catch(e){res.status(502).json({ok:false,error:"journey_connection_failed"});}
 });
 
-app.get("/v1/journey/catalog",async(_,res)=>{
+app.get("/v1/journey/status",async(_,res)=>{\n  if(!journeyKey)return res.status(503).json({ok:false,error:"journey_api_key_not_configured"});\n  try{const r=await fetch(journeyBase+"/balance",{headers:{authorization:`Bearer ${journeyKey}`}});const data=await r.json().catch(()=>({}));if(!r.ok)return res.status(502).json({ok:false,error:"journey_balance_failed",provider_status:r.status});res.json({ok:true,provider:"Journey eSIMs",wholesale_ready:true,balance:data.balance,balanceCents:data.balanceCents,currency:data.currency});}catch(e){res.status(502).json({ok:false,error:"journey_connection_failed"});}\n});\n\napp.get("/v1/journey/catalog",async(_,res)=>{
   if(!journeyKey)return res.status(503).json({ok:false,error:"journey_api_key_not_configured"});
   try{
     const r=await fetch(journeyBase+"/catalog",{headers:{authorization:`Bearer ${journeyKey}`}});
