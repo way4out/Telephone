@@ -227,5 +227,30 @@ async function globalData(){
 document.getElementById("globalCountry").addEventListener("change",globalData);
 document.getElementById("globalLanguage").addEventListener("change",applyGlobalLanguage);
 applyGlobalLanguage();
-</script></body>
+</script><div id="liveClock" class="micro" style="margin-top:8px">Live operations: connecting…</div>
+<script>
+let liveTimer=null;
+async function liveTick(){
+ try{
+  const country=document.getElementById("globalCountry")?.value||"US";
+  const r=await fetch(API+"/v1/live?country="+encodeURIComponent(country),{cache:"no-store"});
+  const j=await r.json();
+  const t=new Date(j.server_time);
+  const el=document.getElementById("liveClock");
+  if(el)el.textContent="● LIVE · "+t.toLocaleTimeString()+" · "+(j.readiness?.production_carrier_authorized?"Carrier authorized":"Carrier authorization required");
+  if(j.readiness?.control_plane){set("apiState","Online","ok");document.getElementById("apiKpi").textContent="LIVE";}
+  const p=j.readiness||{};
+  set("payState",p.payments?"Ready":"Not configured",p.payments?"ok":"warn");
+  set("esimState",p.eSIM_RSP?"Configured":"Provider required",p.eSIM_RSP?"ok":"warn");
+  set("simState",p.physical_SIM_fulfillment?"Ready":"Partner required",p.physical_SIM_fulfillment?"ok":"warn");
+  set("carrierState",p.production_carrier_authorized?"Authorized":"Authorization required",p.production_carrier_authorized?"ok":"warn");
+  if(typeof globalData==="function")globalData();
+ }catch(e){
+  const el=document.getElementById("liveClock");if(el)el.textContent="● LIVE CHECK · connection retrying…";
+ }
+}
+setInterval(liveTick,1000);
+liveTick();
+</script>
+</body>
 </html>
