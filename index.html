@@ -304,7 +304,7 @@ async function bankrPay(tokenAddress,tokenSymbol){
     const ref=j.jobId;
     show(msg,"✓ Paid and confirmed on Base. Receipt ready.");
     const panel=document.getElementById("bankrState");
-    panel.innerHTML="<strong>✓ Payment confirmed</strong><br><span>Tx: "+s.txHash+"</span><br><img alt='Scannable receipt QR' style='max-width:220px;margin-top:12px;border-radius:12px' src='"+API+"/v1/receipt/"+encodeURIComponent(ref)+"/qr'><br><a class='btn primary' target='_blank' rel='noopener' href='"+publicApp+"/receipt/"+encodeURIComponent(ref)+"'>Open receipt</a>";
+    panel.innerHTML="<strong>✓ Payment confirmed</strong><br><span>Tx: "+s.txHash+"</span><br><img alt='Scannable receipt QR' style='max-width:220px;margin-top:12px;border-radius:12px' src='"+API+"/v1/receipt/"+encodeURIComponent(ref)+"/qr'><br><a class='btn primary' target='_blank' rel='noopener' href='"+window.location.origin+"/receipt/"+encodeURIComponent(ref)+"'>Open receipt</a>";
     return;
    }
    if(s.status==="failed"||s.status==="cancelled"){show(msg,"Bankr payment did not complete: "+s.status);return;}
