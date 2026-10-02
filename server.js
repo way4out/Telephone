@@ -21,6 +21,9 @@ const stripeKey=process.env.STRIPE_SECRET_KEY;
 const priceId=process.env.STRIPE_PRICE_ID||"price_1UM2djRPRXTyZSXkK8ceygV3";
 const publicApp=process.env.PUBLIC_APP_URL||"https://oeql-quantum-telecom-phone.onrender.com";
 const stripe=stripeKey?new Stripe(stripeKey):null;
+const atomicBase=(process.env.ATOMIC_API_BASE_URL||"https://api.atomicmobile.com").replace(/\\/$/,"");
+const atomicKey=process.env.ATOMIC_API_KEY||process.env.ESIM_PROVIDER_API_KEY||"";
+const atomicPlan=process.env.ATOMIC_PLAN_ID||"plan_att_platinum_5g";
 function id(){return crypto.randomUUID();}
 const LIVE_MEDIA_CATALOG={
  tv:[{name:"NASA TV",region:"Global",kind:"official"},{name:"DW English",region:"Global",kind:"official"},{name:"Al Jazeera English",region:"Global",kind:"official"},{name:"France 24",region:"Global",kind:"official"},{name:"NHK WORLD-JAPAN",region:"Global",kind:"official"}],
@@ -64,12 +67,12 @@ app.post("/v1/esim/provision",async(req,res)=>{
   const {checkout_session_id,eid,device_id}=req.body||{};
   if(!checkout_session_id||!eid)return res.status(400).json({ok:false,error:"checkout_session_id_and_eid_required"});
   if(!stripe)return res.status(503).json({ok:false,error:"payments_not_configured"});
-  if(!process.env.ESIM_PROVIDER_BASE_URL||!process.env.ESIM_PROVIDER_API_KEY)
+  if(!atomicKey)
     return res.status(503).json({ok:false,error:"esim_provider_not_configured",message:"Authorized carrier/eSIM RSP credentials are required before a real profile can be downloaded."});
   try{
     const session=await stripe.checkout.sessions.retrieve(checkout_session_id,{expand:["subscription"]});
     if(session.payment_status!=="paid"||!session.subscription)return res.status(402).json({ok:false,error:"subscription_not_paid"});
-    const r=await fetch(process.env.ESIM_PROVIDER_BASE_URL+"/v1/provision",{method:"POST",headers:{"content-type":"application/json","authorization":`Bearer ${process.env.ESIM_PROVIDER_API_KEY}`},body:JSON.stringify({eid,device_id,subscription_id:session.subscription.id,external_reference:id()})});
+    const r=await fetch(atomicBase+"/v1/subscriptions",{method:"POST",headers:{"content-type":"application/json","authorization":`Bearer ${atomicKey}`},body:JSON.stringify({planId:atomicPlan,simType:"esim",activation:"immediate",eid,deviceId:device_id,externalReference:id(),subscriptionId:session.subscription.id})});
     const data=await r.json().catch(()=>({}));
     if(!r.ok)return res.status(502).json({ok:false,error:"esim_provider_error",provider_status:r.status});
     res.json({ok:true,provisioning:data});
@@ -118,9 +121,11 @@ app.get("/v1/telecom/readiness",(_,res)=>res.json({
   ok:true,
   control_plane:true,
   payments:Boolean(stripe),
-  eSIM_RSP:Boolean(process.env.ESIM_PROVIDER_BASE_URL&&process.env.ESIM_PROVIDER_API_KEY),
+  eSIM_RSP:Boolean(atomicKey),
   physical_SIM_fulfillment:Boolean(process.env.CARRIER_FULFILLMENT_BASE_URL&&process.env.CARRIER_FULFILLMENT_API_KEY),
   production_carrier_authorized:process.env.CARRIER_MODE==="production_authorized",
+  atomic_adapter:Boolean(atomicKey),
+  atomic_plan:atomicPlan,
   quantum_radio:false,
   note:"Real operator credentials and SIM profiles must come from an authorized carrier/RSP; this service does not generate them."
 }));
