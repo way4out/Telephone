@@ -5,81 +5,75 @@ import crypto from "node:crypto";
 
 const app=express();
 app.use(cors({origin:(process.env.CORS_ORIGIN||"").split(",").filter(Boolean),credentials:false}));
+app.post("/v1/webhooks/stripe",express.raw({type:"application/json"}),async(req,res)=>{
+  const stripeKey=process.env.STRIPE_SECRET_KEY;
+  if(!stripeKey||!process.env.STRIPE_WEBHOOK_SECRET) return res.status(503).send("webhook_not_configured");
+  try{
+    const stripe=new Stripe(stripeKey);
+    const event=stripe.webhooks.constructEvent(req.body,req.headers["stripe-signature"],process.env.STRIPE_WEBHOOK_SECRET);
+    res.json({received:true,type:event.type});
+  }catch(e){res.status(400).send("invalid_signature");}
+});
 app.use(express.json({limit:"32kb"}));
 
 const PORT=process.env.PORT||10000;
 const stripeKey=process.env.STRIPE_SECRET_KEY;
-const priceId=process.env.STRIPE_PRICE_ID||"price_1ULnPURPRXTyZSXkc7iu3H5o";
+const priceId=process.env.STRIPE_PRICE_ID||"price_1UM2djRPRXTyZSXkK8ceygV3";
 const publicApp=process.env.PUBLIC_APP_URL||"https://oeql-quantum-telecom-phone.onrender.com";
 const stripe=stripeKey?new Stripe(stripeKey):null;
-
 function id(){return crypto.randomUUID();}
 const LIVE_MEDIA_CATALOG={
  tv:[{name:"NASA TV",region:"Global",kind:"official"},{name:"DW English",region:"Global",kind:"official"},{name:"Al Jazeera English",region:"Global",kind:"official"},{name:"France 24",region:"Global",kind:"official"},{name:"NHK WORLD-JAPAN",region:"Global",kind:"official"}],
  radio:[{name:"BBC World Service",region:"Global",kind:"official"},{name:"VOA",region:"Global",kind:"official"},{name:"RFI",region:"Global",kind:"official"},{name:"Global Player",region:"Supported territories",kind:"official"}],
  data:[{name:"NOAA",region:"Global",kind:"public"},{name:"NASA Earthdata",region:"Global",kind:"public"},{name:"USGS",region:"Global",kind:"public"}]
 };
+function requireStripe(res){if(!stripe)return res.status(503).json({ok:false,error:"payments_not_configured"});}
 
-function requireStripe(res){if(!stripe){return res.status(503).json({ok:false,error:"payments_not_configured"});}}
-
-app.get("/health",(_,res)=>res.json({ok:true,service:"oeql-quantum-telecom-api",payments:Boolean(stripe),esim:Boolean(process.env.ESIM_PROVIDER_BASE_URL),carrier_mode:process.env.CARRIER_MODE||"development",version:"1.1.0"}));
-app.get("/v1/media/catalog",(req,res)=>res.json({ok:true,scope:"global-live-media",policy:"public-authorized-or-licensed-feeds-only",catalog:LIVE_MEDIA_CATALOG,relay:"direct relay requires explicit feed authorization"}));
-app.get("/v1/carrier/status",(_,res)=>res.json({
-  carrier:process.env.CARRIER_NAME||"OEQL Quantum Telecom",
-  mode:process.env.CARRIER_MODE||"development",
-  network:"7G+ experimental",
-  public_cellular_authorization:false,
-  esim_rsp_ready:Boolean(process.env.ESIM_PROVIDER_BASE_URL&&process.env.ESIM_PROVIDER_API_KEY),
-  note:"This control plane does not itself grant spectrum, carrier, numbering, or GSMA authorization."
-}));
-app.post("/v1/carrier/enroll",async(req,res)=>{
-  const {eid}=req.body||{};
-  if(!eid) return res.status(400).json({ok:false,error:"eid_required"});
-  const enrollment={id:id(),eid,status:"eligible_pending_rasp",carrier:process.env.CARRIER_NAME||"OEQL Quantum Telecom",created_at:new Date().toISOString()};
-  res.json({ok:true,enrollment,next:"authorized_esim_rsp_required"});
-});
+app.get("/health",(_,res)=>res.json({ok:true,service:"stellarnet-telecom-api",payments:Boolean(stripe),esim:Boolean(process.env.ESIM_PROVIDER_BASE_URL),carrier_mode:process.env.CARRIER_MODE||"development",version:"2.0.0"}));
+app.get("/v1/media/catalog",(_,res)=>res.json({ok:true,scope:"global-live-media",policy:"public-authorized-or-licensed-feeds-only",catalog:LIVE_MEDIA_CATALOG}));
+app.get("/v1/carrier/status",(_,res)=>res.json({carrier:process.env.CARRIER_NAME||"StellarNet Telecom",mode:process.env.CARRIER_MODE||"development",network:"7G+ experimental",public_cellular_authorization:false,esim_rsp_ready:Boolean(process.env.ESIM_PROVIDER_BASE_URL&&process.env.ESIM_PROVIDER_API_KEY),note:"This control plane does not itself grant spectrum, carrier, numbering, or GSMA authorization."}));
 
 app.post("/v1/checkout/session",async(req,res)=>{
-  if(requireStripe(res)) return;
+  if(requireStripe(res))return;
   try{
     const session=await stripe.checkout.sessions.create({
-      mode:"subscription",
-      line_items:[{price:priceId,quantity:1}],
+      mode:"subscription",line_items:[{price:priceId,quantity:1}],
       success_url:(req.body.success_url||publicApp)+"?checkout=success&session_id={CHECKOUT_SESSION_ID}",
       cancel_url:(req.body.cancel_url||publicApp)+"?checkout=cancelled",
-      allow_promotion_codes:true,
-      billing_address_collection:"auto",
-      metadata:{vendor:"Quantum Telecom",architecture:"OEQL 7G+",flow:"membership"},
-      subscription_data:{metadata:{vendor:"Quantum Telecom",architecture:"OEQL 7G+"}}
+      allow_promotion_codes:true,billing_address_collection:"auto",
+      metadata:{vendor:"StellarNet Telecom",architecture:"OEQL 7G+",flow:"membership"},
+      subscription_data:{metadata:{vendor:"StellarNet Telecom",architecture:"OEQL 7G+"}}
     });
     res.json({ok:true,url:session.url,id:session.id});
-  }catch(e){res.status(400).json({ok:false,error:"checkout_creation_failed",detail:e.message});}
+  }catch(e){res.status(400).json({ok:false,error:"checkout_creation_failed"});}
+});
+
+app.post("/v1/customer-portal",async(req,res)=>{
+  if(requireStripe(res))return;
+  const {checkout_session_id,return_url}=req.body||{};
+  if(!checkout_session_id)return res.status(400).json({ok:false,error:"checkout_session_id_required"});
+  try{
+    const session=await stripe.checkout.sessions.retrieve(checkout_session_id);
+    if(!session.customer)return res.status(400).json({ok:false,error:"customer_not_found"});
+    const portal=await stripe.billingPortal.sessions.create({customer:session.customer,return_url:return_url||publicApp});
+    res.json({ok:true,url:portal.url});
+  }catch(e){res.status(400).json({ok:false,error:"customer_portal_unavailable"});}
 });
 
 app.post("/v1/esim/provision",async(req,res)=>{
   const {checkout_session_id,eid,device_id}=req.body||{};
-  if(!checkout_session_id||!eid) return res.status(400).json({ok:false,error:"checkout_session_id_and_eid_required"});
-  if(!stripe) return res.status(503).json({ok:false,error:"payments_not_configured"});
-  if(!process.env.ESIM_PROVIDER_BASE_URL||!process.env.ESIM_PROVIDER_API_KEY){
-    return res.status(503).json({ok:false,error:"esim_provider_not_configured",message:"Authorized carrier/eSIM provider credentials are required before a real profile can be downloaded."});
-  }
+  if(!checkout_session_id||!eid)return res.status(400).json({ok:false,error:"checkout_session_id_and_eid_required"});
+  if(!stripe)return res.status(503).json({ok:false,error:"payments_not_configured"});
+  if(!process.env.ESIM_PROVIDER_BASE_URL||!process.env.ESIM_PROVIDER_API_KEY)
+    return res.status(503).json({ok:false,error:"esim_provider_not_configured",message:"Authorized carrier/eSIM RSP credentials are required before a real profile can be downloaded."});
   try{
     const session=await stripe.checkout.sessions.retrieve(checkout_session_id,{expand:["subscription"]});
-    if(session.payment_status!=="paid" || !session.subscription) return res.status(402).json({ok:false,error:"subscription_not_paid"});
+    if(session.payment_status!=="paid"||!session.subscription)return res.status(402).json({ok:false,error:"subscription_not_paid"});
     const r=await fetch(process.env.ESIM_PROVIDER_BASE_URL+"/v1/provision",{method:"POST",headers:{"content-type":"application/json","authorization":`Bearer ${process.env.ESIM_PROVIDER_API_KEY}`},body:JSON.stringify({eid,device_id,subscription_id:session.subscription.id,external_reference:id()})});
     const data=await r.json().catch(()=>({}));
-    if(!r.ok) return res.status(502).json({ok:false,error:"esim_provider_error",provider_status:r.status});
+    if(!r.ok)return res.status(502).json({ok:false,error:"esim_provider_error",provider_status:r.status});
     res.json({ok:true,provisioning:data});
-  }catch(e){res.status(400).json({ok:false,error:"provisioning_failed",detail:e.message});}
+  }catch(e){res.status(400).json({ok:false,error:"provisioning_failed"});}
 });
 
-app.post("/v1/webhooks/stripe",express.raw({type:"application/json"}),async(req,res)=>{
-  if(!stripe||!process.env.STRIPE_WEBHOOK_SECRET) return res.status(503).send("webhook_not_configured");
-  try{
-    const event=stripe.webhooks.constructEvent(req.body,req.headers["stripe-signature"],process.env.STRIPE_WEBHOOK_SECRET);
-    // Entitlement state belongs in durable storage; events are the source of truth.
-    res.json({received:true,type:event.type});
-  }catch(e){res.status(400).send("invalid_signature");}
-});
-
-app.listen(PORT,()=>console.log(`OEQL Quantum Telecom API listening on ${PORT}`));
+app.listen(PORT,()=>console.log(`StellarNet Telecom API listening on ${PORT}`));
