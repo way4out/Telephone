@@ -176,4 +176,26 @@ app.get("/v1/global/coverage",(req,res)=>{const country=String(req.query.country
 app.get("/v1/global/speed",(req,res)=>{const country=String(req.query.country||"").toUpperCase(),x=countryData("NETWORK_SPEED_JSON",country);res.json({ok:true,country,measured:Boolean(x?.measured),data:x,source:x?.source||"measured_telemetry_required"})});
 app.get("/v1/global/numbering",(req,res)=>{const country=String(req.query.country||"").toUpperCase(),x=countryData("NETWORK_NUMBERING_JSON",country);res.json({ok:true,country,available:Boolean(x),data:x,source:x?.source||"authorized_numbering_provider_required"})});
 app.get("/v1/global/carrier",(req,res)=>{const country=String(req.query.country||"").toUpperCase(),x=countryData("NETWORK_CARRIER_CAPABILITIES_JSON",country)||{};res.json({ok:true,country,production_authorized:process.env.CARRIER_MODE==="production_authorized",...x,esim_rsp_ready:Boolean(atomicKey||journeyKey),physical_fulfillment_ready:Boolean(process.env.CARRIER_FULFILLMENT_BASE_URL&&process.env.CARRIER_FULFILLMENT_API_KEY)})});
+app.get("/v1/live",async(req,res)=>{
+  const country=String(req.query.country||"US").toUpperCase();
+  const coverage=countryData("NETWORK_COVERAGE_JSON",country);
+  const speed=countryData("NETWORK_SPEED_JSON",country);
+  const numbering=countryData("NETWORK_NUMBERING_JSON",country);
+  const carrier=countryData("NETWORK_CARRIER_CAPABILITIES_JSON",country)||{};
+  res.set("Cache-Control","no-store");
+  res.json({
+    ok:true,server_time:new Date().toISOString(),country,
+    readiness:{
+      control_plane:true,payments:Boolean(stripe),eSIM_RSP:Boolean(atomicKey||journeyKey),
+      physical_SIM_fulfillment:Boolean(process.env.CARRIER_FULFILLMENT_BASE_URL&&process.env.CARRIER_FULFILLMENT_API_KEY),
+      production_carrier_authorized:process.env.CARRIER_MODE==="production_authorized"
+    },
+    global:{
+      coverage:{available:Boolean(coverage),data:coverage,source:coverage?.source||"provider_data_required"},
+      speed:{measured:Boolean(speed?.measured),data:speed,source:speed?.source||"measured_telemetry_required"},
+      numbering:{available:Boolean(numbering),data:numbering,source:numbering?.source||"authorized_numbering_provider_required"},
+      carrier:{production_authorized:process.env.CARRIER_MODE==="production_authorized",...carrier}
+    }
+  });
+});
 app.listen(PORT,()=>console.log(`StellarNet Telecom API listening on ${PORT}`));
