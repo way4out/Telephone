@@ -197,7 +197,7 @@ app.get("/v1/carrier/capabilities",(req,res)=>{
     production_authorized:process.env.CARRIER_MODE==="production_authorized",
     provider_configured:Boolean(configured&&Object.keys(configured).length),
     capabilities:{
-      2g: "provider_dependent",3g:"provider_dependent",4g_lte:"provider_dependent",
+      "2g":"provider_dependent","3g":"provider_dependent","4g_lte":"provider_dependent",
       5g_nsa:"provider_dependent",5g_sa:"provider_dependent",volte:"provider_dependent",
       vowifi:"provider_dependent",sms:"provider_dependent",mms:"provider_dependent",rcs:"provider_dependent",
       ipv4_ipv6:"provider_dependent",private_apn:"provider_dependent",iot_m2m:"provider_dependent",
