@@ -65,7 +65,7 @@ a{text-decoration:none;color:inherit}button,select{font:inherit}.wrap{max-width:
 <div class="kpi"><b id="apiKpi">Checking</b><span>Live control-plane API</span></div>
 </section>
 
-<section id="buy" class="section">
+<section id="global" class="section card"><h2>Global Coverage & Language</h2><p>Verified provider data only.</p><select id="globalCountry"><option>US</option><option>CA</option><option>MX</option><option>GB</option><option>DE</option><option>FR</option><option>ES</option><option>IT</option><option>BR</option><option>IN</option><option>JP</option><option>KR</option><option>CN</option><option>AU</option><option>AE</option></select><select id="globalLanguage"><option value="en">English</option><option value="es">Español</option><option value="fr">Français</option><option value="de">Deutsch</option><option value="pt">Português</option><option value="it">Italiano</option><option value="ja">日本語</option><option value="ko">한국어</option><option value="zh">中文</option><option value="ar">العربية</option><option value="hi">हिन्दी</option></select><div id="globalResults">Checking verified network data…</div></section><section id="buy" class="section">
 <div class="head"><div><h2>Start in one tap</h2><p>No pricing maze. Pick the format that fits your phone.</p></div></div>
 <div class="buygrid">
 <div class="card buy"><span class="pill">FASTEST</span><h3>eSIM</h3><div class="price2">$4 start + $4/mo</div><p class="muted">Digital-first checkout. Final activation depends on a compatible device and an authorized eSIM provider.</p><a class="btn primary full" href="https://buy.stripe.com/28E00leF9bjm6Yf09UdIA06">Get eSIM</a></div>
@@ -175,5 +175,5 @@ if(qs.get("checkout")==="success")show(document.getElementById("heroMsg"),"Payme
 if(qs.get("checkout")==="cancelled")show(document.getElementById("heroMsg"),"Checkout cancelled. No activation was claimed.");
 readiness();loadPlans();if("serviceWorker"in navigator)navigator.serviceWorker.register("/sw.js").catch(()=>{});
 </script>
-</body>
+<script>async function globalData(){const c=document.getElementById("globalCountry").value;const r=await Promise.all(["coverage","speed","numbering","carrier"].map(x=>fetch(API+"/v1/global/"+x+"?country="+c,{cache:"no-store"}).then(y=>y.json())));const a=r[0],b=r[1],n=r[2],k=r[3];document.getElementById("globalResults").innerHTML="<b>Coverage:</b> "+(a.available?"Available":"Provider data required")+"<br><b>Speed:</b> "+(b.measured?(b.data.down_mbps+" Mbps down / "+b.data.up_mbps+" Mbps up"):"Measured data required")+"<br><b>Numbers:</b> "+(n.available?"Available":"Numbering provider required")+"<br><b>Carrier:</b> "+(k.production_authorized?"Authorized":"Authorization required")+"<br><b>Voice/SMS:</b> "+(k.voice_sms?"Enabled":"Provider required")+"<br><b>Roaming:</b> "+(k.roaming?"Enabled":"Provider required")}</script></body>
 </html>
