@@ -66,14 +66,19 @@ app.post("/v1/customer-portal",async(req,res)=>{
 });
 
 app.post("/v1/journey/esim/provision",async(req,res)=>{
-  const {planId,reference}=req.body||{};
+  const {planId,reference,checkout_session_id}=req.body||{};
   if(!journeyKey)return res.status(503).json({ok:false,error:"journey_api_key_not_configured"});
   if(!planId)return res.status(400).json({ok:false,error:"planId_required"});
+  if(!checkout_session_id)return res.status(400).json({ok:false,error:"checkout_session_id_required"});
+  if(!stripe)return res.status(503).json({ok:false,error:"payments_not_configured"});
   try{
-    const r=await fetch(journeyBase+"/esims",{method:"POST",headers:{"content-type":"application/json","authorization":`Bearer ${journeyKey}`},body:JSON.stringify({planId,quantity:1,reference:reference||id()})});
+    const session=await stripe.checkout.sessions.retrieve(checkout_session_id,{expand:["subscription"]});
+    if(session.payment_status!=="paid"||!session.subscription)return res.status(402).json({ok:false,error:"subscription_not_paid"});
+    const r=await fetch(journeyBase+"/esims",{method:"POST",headers:{"content-type":"application/json","authorization":"Bearer "+journeyKey},body:JSON.stringify({planId,quantity:1,reference:reference||("stellarnet-"+session.id)})});
     const data=await r.json().catch(()=>({}));
-    if(!r.ok)return res.status(r.status===402?402:502).json({ok:false,error:"journey_provisioning_failed",provider_status:r.status,provider:data.error||null});
-    res.status(201).json({ok:true,provider:"Journey eSIMs",order:data});
+    if(!r.ok)return res.status(r.status===402?402:(r.status===422?422:502)).json({ok:false,error:"journey_provisioning_failed",provider_status:r.status,provider:data.error||null});
+    const esim=data.esims?.[0]||null;
+    res.status(201).json({ok:true,provider:"Journey eSIMs",orderId:data.orderId,status:data.status,planId:data.planId||planId,esim});
   }catch(e){res.status(502).json({ok:false,error:"journey_connection_failed"});}
 });
 
