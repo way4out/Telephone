@@ -21,9 +21,11 @@ const stripeKey=process.env.STRIPE_SECRET_KEY;
 const priceId=process.env.STRIPE_PRICE_ID||"price_1UM2djRPRXTyZSXkK8ceygV3";
 const publicApp=process.env.PUBLIC_APP_URL||"https://oeql-quantum-telecom-phone.onrender.com";
 const stripe=stripeKey?new Stripe(stripeKey):null;
-const atomicBase=(process.env.ATOMIC_API_BASE_URL||"https://api.atomicmobile.com").replace(/\\/$/,"");
+const atomicBase=(process.env.ATOMIC_API_BASE_URL||"https://api.atomicmobile.com").replace(/\/$/,"");
 const atomicKey=process.env.ATOMIC_API_KEY||process.env.ESIM_PROVIDER_API_KEY||"";
 const atomicPlan=process.env.ATOMIC_PLAN_ID||"plan_att_platinum_5g";
+const journeyBase=(process.env.JOURNEY_API_BASE_URL||"https://journeyesims.com/api/v1").replace(/\/$/,"");
+const journeyKey=process.env.JOURNEY_API_KEY||"";
 function id(){return crypto.randomUUID();}
 const LIVE_MEDIA_CATALOG={
  tv:[{name:"NASA TV",region:"Global",kind:"official"},{name:"DW English",region:"Global",kind:"official"},{name:"Al Jazeera English",region:"Global",kind:"official"},{name:"France 24",region:"Global",kind:"official"},{name:"NHK WORLD-JAPAN",region:"Global",kind:"official"}],
