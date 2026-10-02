@@ -162,13 +162,51 @@ app.get("/v1/telecom/readiness",(_,res)=>res.json({
 
 app.get("/v1/telecom/capabilities",(_,res)=>res.json({
   brand:process.env.PUBLIC_BRAND_NAME||"StellarNet Telecom",
-  plans:[{name:"StellarNet $4",monthly_usd:4}],
+  plan:{name:"StellarNet $4",activation_usd:4,monthly_usd:4,cancel_anytime:true},
   interfaces:["web","PWA","mobile-responsive","API"],
-  provisioning:["eSIM","physical SIM"],
-  state:["checkout","subscriber registration","device registration","order tracking","carrier provisioning adapter"],
-  security:["Stripe-hosted payment collection","environment-secret provider credentials","no SIM credentials generated locally"],
-  experimental:["quantum/control-plane architecture","7G+ research UI","PWA install and mobile control surface"]
+  customer_flows:["checkout","subscription lifecycle","customer portal","subscriber registration","eSIM provisioning adapter","physical SIM fulfillment adapter","order tracking","live readiness","global capability lookup"],
+  radio_and_core_capabilities:[
+    {name:"2G/GSM",status:"provider_dependent"},{name:"3G/UMTS",status:"provider_dependent"},
+    {name:"4G/LTE",status:"provider_dependent"},{name:"5G NSA",status:"provider_dependent"},
+    {name:"5G SA",status:"provider_dependent"},{name:"VoLTE/IMS",status:"provider_dependent"},
+    {name:"VoWiFi",status:"provider_dependent"},{name:"SMS",status:"provider_dependent"},
+    {name:"MMS",status:"provider_dependent"},{name:"RCS",status:"provider_dependent"},
+    {name:"IPv4/IPv6 data",status:"provider_dependent"},{name:"Private APN",status:"provider_dependent"},
+    {name:"IoT/M2M",status:"provider_dependent"},{name:"NTN/satellite",status:"device_and_provider_dependent"},
+    {name:"International roaming",status:"provider_dependent"}
+  ],
+  subscriber_and_device:["eSIM","physical SIM","EID/device registration","device compatibility checks","numbering-provider lookup","fraud/risk controls","usage/status telemetry"],
+  network_operations:["carrier capability lookup","coverage data adapter","measured speed telemetry adapter","numbering adapter","live one-second control-plane heartbeat","no-store live API"],
+  standards_and_ecosystem:["GSMA eSIM Discovery / RSP integration path","SM-DP+ provider integration path","MNO/MVNO integration path","network settings/device compatibility integration path"],
+  experimental:["quantum/control-plane architecture","7G+ research UI"],
+  activation_reality:{
+    software_control_plane:true,
+    commercial_cellular_authorized:process.env.CARRIER_MODE==="production_authorized",
+    esim_rsp_ready:Boolean(atomicKey||journeyKey),
+    physical_sim_fulfillment_ready:Boolean(process.env.CARRIER_FULFILLMENT_BASE_URL&&process.env.CARRIER_FULFILLMENT_API_KEY),
+    note:"Maximum software capability is exposed here, but live radio access, numbering, roaming, eSIM profiles, and SIM fulfillment activate only through authorized operator/provider contracts and credentials."
+  }
 }));
+
+app.get("/v1/carrier/capabilities",(req,res)=>{
+  const country=String(req.query.country||"US").toUpperCase();
+  const configured=countryData("NETWORK_CARRIER_CAPABILITIES_JSON",country)||{};
+  res.set("Cache-Control","no-store");
+  res.json({
+    ok:true,country,
+    production_authorized:process.env.CARRIER_MODE==="production_authorized",
+    provider_configured:Boolean(configured&&Object.keys(configured).length),
+    capabilities:{
+      2g: "provider_dependent",3g:"provider_dependent",4g_lte:"provider_dependent",
+      5g_nsa:"provider_dependent",5g_sa:"provider_dependent",volte:"provider_dependent",
+      vowifi:"provider_dependent",sms:"provider_dependent",mms:"provider_dependent",rcs:"provider_dependent",
+      ipv4_ipv6:"provider_dependent",private_apn:"provider_dependent",iot_m2m:"provider_dependent",
+      ntn_satellite:"device_and_provider_dependent",roaming:"provider_dependent",
+      esim:Boolean(atomicKey||journeyKey),physical_sim:Boolean(process.env.CARRIER_FULFILLMENT_BASE_URL&&process.env.CARRIER_FULFILLMENT_API_KEY)
+    },
+    configured_data:configured
+  });
+});
 
 // Global verified-data API layer. No synthetic coverage, speed, numbering, or carrier claims.
 function countryData(env,country){try{return JSON.parse(process.env[env]||"{}")[String(country||"").toUpperCase()]||null}catch{return null}}
