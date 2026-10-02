@@ -72,6 +72,15 @@ app.get("/v1/wallet/config",(req,res)=>{res.set({"Cache-Control":"no-store","Acc
 app.get("/api/telecom-config",(req,res)=>{res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*","X-Content-Type-Options":"nosniff"});res.json({ok:true,config:TELECOM_CONFIG,tokens:tokenRegistry()});});
 
 app.get("/health",(_,res)=>res.json({ok:true,service:"stellarnet-telecom-api",payments:Boolean(stripe),journey:Boolean(journeyKey),atomic:Boolean(atomicKey),carrier_mode:process.env.CARRIER_MODE||"development",version:"2.1.0"}));
+// Deterministic receipt rail: creates a signed receipt payload after a verified checkout/tx reference.
+// It never claims an on-chain settlement until the transaction hash is supplied and can be verified by a wallet/indexer.
+app.get("/v1/receipt/:reference",async(req,res)=>{
+  const reference=String(req.params.reference||"").trim();
+  if(!reference)return res.status(400).json({ok:false,error:"reference_required"});
+  const receipt={schema_version:"1.0",reference,product:"Quantum Telecom",pricing:TELECOM_CONFIG.pricing,network:"Base",chain_id:8453,created_at:new Date().toISOString(),settlement_status:"reference_only",onchain_tx:null,qr_payload:publicApp+"/receipt/"+encodeURIComponent(reference)};
+  res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*"}).json({ok:true,receipt});
+});
+
 app.get("/v1/media/catalog",(_,res)=>res.json({ok:true,scope:"global-live-media",policy:"public-authorized-or-licensed-feeds-only",catalog:LIVE_MEDIA_CATALOG}));
 app.get("/v1/carrier/status",(_,res)=>res.json({carrier:process.env.CARRIER_NAME||"StellarNet Telecom",mode:process.env.CARRIER_MODE||"development",network:"7G+ experimental",public_cellular_authorization:process.env.CARRIER_MODE==="production_authorized",esim_rsp_ready:Boolean(atomicKey||journeyKey),journey_ready:Boolean(journeyKey),atomic_ready:Boolean(atomicKey),physical_fulfillment_ready:Boolean(process.env.CARRIER_FULFILLMENT_BASE_URL&&process.env.CARRIER_FULFILLMENT_API_KEY),note:"The software control plane does not itself grant spectrum, carrier, numbering, or GSMA authorization."}));
 
