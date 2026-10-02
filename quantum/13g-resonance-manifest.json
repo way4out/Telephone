@@ -1,0 +1,43 @@
+{
+  "schema_version": "1.0.0",
+  "architecture": "StellarNet 13G+ experimental",
+  "standard_status": "non_standard_experimental",
+  "compatibility_targets": [
+    "1G",
+    "2G",
+    "3G",
+    "4G",
+    "4G+",
+    "5G",
+    "5G+",
+    "6G/IMT-2030"
+  ],
+  "dimensions": [
+    "2D",
+    "3D",
+    "4D",
+    "5D+"
+  ],
+  "resonance_index": 189.3,
+  "vector_slots": 189,
+  "continuous_weight": 0.3,
+  "execution_mode": "simulation_until_physical_instrument_validation",
+  "physical_quantum_execution": false,
+  "quantum_radio": false,
+  "claims_blocked": [
+    "13G standardized service",
+    "quantum radio",
+    "retrocausal communication",
+    "faster-than-light communication",
+    "physical quantum hardware"
+  ],
+  "state_machine": [
+    "UNCONFIGURED",
+    "SIMULATED",
+    "INSTRUMENT_CONNECTED",
+    "CALIBRATED",
+    "LAB_VALIDATED",
+    "AUTHORIZED_FIELD_TEST",
+    "PROVIDER_INTEGRATED"
+  ]
+}
