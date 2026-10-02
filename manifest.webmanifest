@@ -1,1 +1,22 @@
-{"name":"StellarNet Telecom","short_name":"StellarNet","start_url":"/","scope":"/","display":"standalone","background_color":"#05070b","theme_color":"#05070b","description":"StellarNet Telecom mobile control surface with eSIM and physical SIM purchase flows.","orientation":"portrait-primary","categories":["business","communication","utilities"],"icons":[]}
+{
+  "name":"StellarNet Telecom",
+  "short_name":"StellarNet",
+  "start_url":"/#home",
+  "scope":"/",
+  "display":"standalone",
+  "background_color":"#05070b",
+  "theme_color":"#05070b",
+  "description":"StellarNet Telecom universal customer control surface with one-tap eSIM, physical SIM, account, status and Bankr/Base flows.",
+  "orientation":"portrait-primary",
+  "categories":["business","communication","utilities"],
+  "lang":"en",
+  "dir":"ltr",
+  "icons":[
+    {"src":"/icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+  ],
+  "shortcuts":[
+    {"name":"Start eSIM","short_name":"eSIM","description":"Start eSIM service","url":"/#buy","icons":[{"src":"/icon.svg","sizes":"any","type":"image/svg+xml"}]},
+    {"name":"Physical SIM","short_name":"SIM","description":"Order a physical SIM","url":"/#buy","icons":[{"src":"/icon.svg","sizes":"any","type":"image/svg+xml"}]},
+    {"name":"Service status","short_name":"Status","description":"Check live service readiness","url":"/#status","icons":[{"src":"/icon.svg","sizes":"any","type":"image/svg+xml"}]}
+  ]
+}
