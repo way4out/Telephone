@@ -1,0 +1,47 @@
+name: Build StellarNet Telecom Native Apps
+on:
+  push:
+    branches: [main]
+    paths: ['native/**','.github/workflows/native-apps.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: '17' }
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Build Android APK
+        working-directory: native/android
+        run: gradle assembleDebug --no-daemon
+      - name: Verify Android APK
+        run: test -s native/android/app/build/outputs/apk/debug/app-debug.apk
+      - uses: actions/upload-artifact@v6
+        with:
+          name: StellarNet-Telecom-Android-debug
+          path: native/android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+  ios:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install XcodeGen
+        run: brew install xcodegen
+      - name: Generate Xcode project
+        working-directory: native/ios
+        run: xcodegen generate
+      - name: Build unsigned iOS app
+        working-directory: native/ios
+        run: xcodebuild -project StellarNetTelecom.xcodeproj -scheme StellarNetTelecom -configuration Release -sdk iphoneos -derivedDataPath build CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO build
+      - name: Verify iOS app
+        run: |
+          APP=$(find native/ios/build/Build/Products/Release-iphoneos -maxdepth 1 -name '*.app' -type d | head -1)
+          test -n "$APP" && test -d "$APP"
+      - uses: actions/upload-artifact@v6
+        with:
+          name: StellarNet-Telecom-iOS-unsigned
+          path: native/ios/build/Build/Products/Release-iphoneos/*.app
+          if-no-files-found: error
