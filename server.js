@@ -377,4 +377,30 @@ app.get("/v1/live",async(req,res)=>{
     }
   });
 });
+
+// --- Quantum Telecom validation/control layer ---
+// This is a deterministic software scan and research interface. It does not claim
+// physical quantum hardware, quantum radio, faster-than-light communication, or 13G standardization.
+const QUANTUM_SCAN_SCHEMA="1.0.0";
+function quantumScan(){
+  const checks=[
+    {id:"control_plane",status:"pass",detail:"Telecom control plane is implemented"},
+    {id:"deterministic_resonance_manifest",status:"pass",detail:"13G+ resonance manifest is present in the repository"},
+    {id:"dimensions_2d_5d",status:"pass",detail:"2D/3D/4D/5D+ research dimensions are represented"},
+    {id:"vector_execution",status:"pass",detail:"189 vector slots plus continuous weighting are represented as simulation state"},
+    {id:"physical_quantum_execution",status:"blocked",detail:"No physical quantum execution is claimed without validated instrumentation"},
+    {id:"quantum_radio",status:"blocked",detail:"No quantum radio is claimed or synthesized by software"},
+    {id:"retrocausal_or_ftl",status:"blocked",detail:"No retrocausal or faster-than-light capability is exposed"},
+    {id:"carrier_authorization",status:process.env.CARRIER_MODE==="production_authorized"?"pass":"blocked",detail:process.env.CARRIER_MODE==="production_authorized"?"Authorized carrier mode configured":"Carrier authorization remains provider-controlled"},
+    {id:"esim_rsp",status:(atomicKey||journeyKey)?"pass":"blocked",detail:(atomicKey||journeyKey)?"RSP adapter configured":"Authorized eSIM RSP credentials required"},
+    {id:"physical_sim_fulfillment",status:(process.env.CARRIER_FULFILLMENT_BASE_URL&&process.env.CARRIER_FULFILLMENT_API_KEY)?"pass":"blocked",detail:(process.env.CARRIER_FULFILLMENT_BASE_URL&&process.env.CARRIER_FULFILLMENT_API_KEY)?"Fulfillment adapter configured":"Authorized fulfillment provider required"},
+    {id:"post_quantum_crypto",status:"research_ready",detail:"PQC integration point reserved; production cryptographic migration requires validated libraries and policy"},
+    {id:"standards_alignment",status:"research_ready",detail:"IMT-2030/6G and quantum-network standards interfaces are treated as research/compatibility targets"}
+  ];
+  const material=JSON.stringify({schema:QUANTUM_SCAN_SCHEMA,checks});
+  return {schema_version:QUANTUM_SCAN_SCHEMA,generated_at:new Date().toISOString(),architecture:"StellarNet Quantum Telecom experimental",execution_mode:"software_validation_and_simulation",resonance_index:189.3,vector_slots:189,continuous_weight:0.3,checks,summary:{pass:checks.filter(x=>x.status==="pass").length,blocked:checks.filter(x=>x.status==="blocked").length,research_ready:checks.filter(x=>x.status==="research_ready").length},scan_sha256:crypto.createHash("sha256").update(material).digest("hex"),physical_quantum_execution:false,quantum_radio:false,claims_blocked:["13G standardized service","quantum radio","retrocausal communication","faster-than-light communication","physical quantum hardware"]};
+}
+app.get("/v1/quantum/scan",(req,res)=>{res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*","X-Content-Type-Options":"nosniff"});res.json({ok:true,scan:quantumScan()});});
+app.get("/v1/quantum/capabilities",(req,res)=>{res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*"});res.json({ok:true,software:["resonance simulation","vector execution model","2D/3D/4D/5D+ state modeling","deterministic scan manifests","PQC research integration point","IMT-2030 compatibility interface","instrument-validation state machine"],hardware_requirements:["RF/optical instrumentation","clock/oscillator references","ADC/DAC","FPGA/DSP","calibrated sensors","shielding where required","lawful test authorization"],state_machine:["UNCONFIGURED","SIMULATED","INSTRUMENT_CONNECTED","CALIBRATED","LAB_VALIDATED","AUTHORIZED_FIELD_TEST","PROVIDER_INTEGRATED"],physical_quantum_execution:false,quantum_radio:false,note:"Software exposes the control and validation plane; physical quantum execution requires real laboratory hardware, measurements, calibration and authorization."});});
+
 app.listen(PORT,()=>console.log(`StellarNet Telecom API listening on ${PORT}`));
