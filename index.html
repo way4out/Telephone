@@ -360,5 +360,5 @@ document.addEventListener("click",e=>{const b=e.target.closest(".tokenQuickPay")
 renderWalletAssets();
 </script><script>
 (async()=>{try{const j=await fetch(API+"/v1/payments/assets",{cache:"no-store"}).then(r=>r.json());const sel=document.getElementById("tokenPayAsset");if(sel)sel.innerHTML=(j.assets||[]).map(t=>"<option value='"+t.address+"'>"+t.symbol+" — "+t.name+"</option>").join("");const msg=document.getElementById("tokenPayMsg"),btn=document.getElementById("tokenPay");if(btn&&!j.merchant_address_configured){btn.disabled=true;btn.title="Merchant receiving address required"}btn?.addEventListener("click",async()=>{if(!window.ethereum){show(msg,"Open this page in a Base-compatible wallet to continue.");return}if(!j.merchant_address_configured){show(msg,"Token checkout is not executable yet: a merchant receiving address must be configured server-side.");return}show(msg,"Merchant route is configured. A verified token quote and decimals are required before a $4-equivalent transfer can be signed.")});}catch(e){}})();
-</script></body>
+</script><script id="universal-sw-registration">if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("/sw.js",{scope:"/"}).catch(()=>{}));}</script></body>
 </html>
