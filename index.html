@@ -43,7 +43,7 @@ a{text-decoration:none;color:inherit}button,select{font:inherit}.wrap{max-width:
 <a class="btn green" href="https://buy.stripe.com/9B6eVf1Snafi1DV7CmdIA07">Order physical SIM</a>
 <a class="btn" href="#buy">See choices ↓</a>
 </div>
-<div id="heroMsg" class="status"></div><div id="checkoutState" class="status"></div>
+<div id="heroMsg" class="status"></div><div id="checkoutState" class="status"></div><div id="receiptPanel" class="status"><b>Digital receipt</b><div id="receiptText"></div><button class="btn" id="copyReceipt">Copy receipt reference</button></div>
 </div>
 <aside class="card">
 <div class="micro">YOUR SIMPLE PLAN</div>
@@ -160,7 +160,7 @@ async function billing(){
  try{const r=await fetch(API+"/v1/customer-portal",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({checkout_session_id:sessionId,return_url:location.origin})});const j=await r.json();if(j.url)location.href=j.url;else show(box,j.error||"Billing portal unavailable.")}catch(e){show(box,"Billing portal unavailable right now.")}
 }
 document.getElementById("manage").onclick=billing;document.getElementById("refresh").onclick=readiness;
-(()=>{const box=document.getElementById("checkoutState"),mode=qs.get("checkout");if(mode==="success"){show(box,"Checkout completed. Use Manage / cancel for billing, then check Live readiness for provisioning status.");location.hash="account"}else if(mode==="cancelled"){show(box,"Checkout was cancelled. No activation is claimed; you can restart checkout above.")}})();
+(()=>{const box=document.getElementById("checkoutState"),mode=qs.get("checkout"),ref=qs.get("session_id")||qs.get("reference");if(mode==="success"){show(box,"Checkout completed. Use Manage / cancel for billing, then check Live readiness for provisioning status.");if(ref){const p=document.getElementById("receiptPanel"),t=document.getElementById("receiptText");p?.classList.add("show");if(t)t.innerHTML="Receipt reference: <code>"+ref+"</code><br>Settlement is verified only by the payment provider; an on-chain receipt requires a confirmed Base transaction hash.";document.getElementById("copyReceipt")?.addEventListener("click",()=>navigator.clipboard?.writeText(ref));}location.hash="account"}else if(mode==="cancelled"){show(box,"Checkout was cancelled. No activation is claimed; you can restart checkout above.")}})();
 let deferredInstall=null;window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredInstall=e;const b=document.getElementById("install");if(b)b.textContent="Install App"});document.getElementById("install").onclick=async()=>{if(deferredInstall){deferredInstall.prompt();await deferredInstall.userChoice;deferredInstall=null}else show(document.getElementById("statusMsg"),"Use your browser’s Add to Home Screen / Install App option when available.");location.hash="status"};
 
 let plans=[];
