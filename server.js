@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import Stripe from "stripe";
 import crypto from "node:crypto";
+import QRCode from "qrcode";
 
 const app=express();
 // Public status/config is intentionally readable by embedded Bankr and other client iframes.
@@ -126,6 +127,14 @@ app.get("/v1/bankr/payment/:jobId",async(req,res)=>{
     const chain=txHash?await verifyBasePayment(txHash,tokenAddress):{confirmed:false,error:"transaction_not_reported_yet"};
     res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*"}).json({ok:true,jobId:job.jobId,status:job.status,txHash,bankr_response:job.response||null,onchain:chain,receipt_url:chain.confirmed?publicApp+"/receipt/"+encodeURIComponent(req.params.jobId):null});
   }catch(e){res.status(502).json({ok:false,error:"bankr_job_connection_failed"});}
+});
+app.get("/v1/receipt/:reference/qr",async(req,res)=>{
+  const reference=String(req.params.reference||"").trim();
+  if(!reference)return res.status(400).send("reference_required");
+  try{
+    const svg=await QRCode.toString(publicApp+"/receipt/"+encodeURIComponent(reference),{type:"svg",margin:1,width:320,errorCorrectionLevel:"M"});
+    res.set({"Cache-Control":"no-store","Content-Type":"image/svg+xml; charset=utf-8","Access-Control-Allow-Origin":"*"}).send(svg);
+  }catch(e){res.status(500).send("qr_generation_failed");}
 });
 app.get("/v1/receipt/:reference",async(req,res)=>{
   const reference=String(req.params.reference||"").trim();
