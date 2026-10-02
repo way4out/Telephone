@@ -31,7 +31,7 @@ a{text-decoration:none;color:inherit}button,select{font:inherit}.shell{max-width
 <div class="shell">
 <nav class="nav">
 <a class="brand" href="#top"><div class="logo"></div><div><b>StellarNet Telecom</b><div class="micro">OEQL connectivity control plane</div></div></a>
-<div class="navlinks"><a href="#how">How it works</a><a href="#journey">eSIM</a><a href="#status">Status</a><a href="#faq">FAQ</a></div>
+<div class="navlinks"><a href="#suite">Executive</a><a href="#how">How it works</a><a href="#journey">eSIM</a><a href="#status">Status</a><a href="#support">Support</a></div>
 <span class="badge"><i class="dot"></i> ONLINE</span>
 </nav>
 
@@ -68,7 +68,7 @@ a{text-decoration:none;color:inherit}button,select{font:inherit}.shell{max-width
 <div class="kpi"><b id="apiKpi">Checking</b><span>Control-plane status</span></div>
 </section>
 
-<section id="how" class="section">
+<section id="suite" class="section"><div class="sectionHead"><div><h2>Executive Suite</h2><p>One public control surface for service, billing, fulfillment and operational visibility.</p></div><span class="badge">PUBLIC • EXECUTIVE</span></div><div class="grid3"><div class="card feature"><span class="badge">SERVICE</span><h3>Service command</h3><p>Review the control-plane state, choose SIM/eSIM and move directly into secure checkout.</p><div class="actions"><a class="btn primary" href="#status">Open status</a></div></div><div class="card feature"><span class="badge">BILLING</span><h3>Account control</h3><p>Manage recurring billing through the secure customer portal after checkout.</p><div class="actions"><button class="btn ghost" id="suiteBilling">Manage billing</button></div></div><div class="card feature"><span class="badge">OPERATIONS</span><h3>Fulfillment visibility</h3><p>See whether payments, eSIM providers, physical fulfillment and carrier authorization are configured.</p><div class="actions"><a class="btn ghost" href="#status">View readiness</a></div></div></div><div class="card" style="margin-top:12px"><div class="sectionHead"><div><h3 style="margin:0">Public operating principles</h3><p>Designed for trust, repeat use and a fast path to the next action.</p></div></div><div class="rows"><div class="row"><span>Purchase</span><b>Stripe-hosted</b></div><div class="row"><span>Recurring plan</span><b>$4/month</b></div><div class="row"><span>Start fee</span><b>$4 one-time</b></div><div class="row"><span>Service state</span><b>Verified before fulfillment</b></div><div class="row"><span>Carrier claims</span><b>Only when authorized</b></div></div></div></section><section id="how" class="section">
 <div class="sectionHead"><div><h2>Designed around the return visit</h2><p>Every screen answers the next question instead of adding another menu.</p></div></div>
 <div class="grid3">
 <div class="card feature"><div class="num">1</div><h3>Pick your path</h3><p>Start with eSIM or physical SIM. Keep the primary action visible on mobile.</p></div>
@@ -117,7 +117,7 @@ a{text-decoration:none;color:inherit}button,select{font:inherit}.shell{max-width
 <div class="card feature"><span class="badge">SUPPORT</span><h3>Clear boundaries</h3><p>Experimental “quantum” and “7G+” architecture is labeled separately from actual carrier capabilities.</p><div class="actions"><a class="btn ghost" href="#faq">Read FAQ</a></div></div>
 </section>
 
-<section id="faq" class="section card faq">
+<section id="support" class="section card"><div class="sectionHead"><div><h2>Executive support</h2><p>Public access points for customers and partners.</p></div></div><div class="grid3"><div class="feature"><h3>Sales</h3><p>Start a new service subscription from the primary checkout.</p><div class="actions"><a class="btn primary" href="https://buy.stripe.com/28E00leF9bjm6Yf09UdIA06">Start service</a></div></div><div class="feature"><h3>Existing customers</h3><p>Return with your Stripe checkout session to manage billing and subscription settings.</p><div class="actions"><a class="btn ghost" href="#status">Customer access</a></div></div><div class="feature"><h3>Technical status</h3><p>Use the public readiness panel for provider and fulfillment availability.</p><div class="actions"><a class="btn ghost" href="#status">Check status</a></div></div></div></section><section id="faq" class="section card faq">
 <div class="sectionHead"><div><h2>Questions, answered</h2><p>Short answers keep the purchase path moving.</p></div></div>
 <details open><summary>What do I pay?</summary><p>The advertised service path is a $4 start fee plus a $4/month recurring subscription. The exact checkout total and terms shown by Stripe control the transaction.</p></details>
 <details><summary>Does the website itself activate cellular service?</summary><p>No. The site handles the software control plane and payment flow. A real phone number, spectrum access, SIM profile or eSIM download requires an authorized carrier/RSP/MVNO integration.</p></details>
@@ -155,7 +155,7 @@ async function billing(){
  show(statusMsg,"Opening secure billing management…");
  try{const r=await fetch(API+"/v1/customer-portal",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({checkout_session_id:sessionId,return_url:location.origin})});const j=await r.json();if(j.url)location.href=j.url;else show(statusMsg,j.error||"Billing portal unavailable.")}catch(e){show(statusMsg,"Billing portal unavailable right now.")}
 }
-document.getElementById("manage").onclick=billing;document.getElementById("manage2").onclick=billing;document.getElementById("refresh").onclick=readiness;
+document.getElementById("manage").onclick=billing;document.getElementById("manage2").onclick=billing;document.getElementById("suiteBilling").onclick=billing;document.getElementById("refresh").onclick=readiness;
 document.getElementById("install").onclick=async()=>{show(statusMsg,"Use your browser’s Add to Home Screen / Install App option when available.");window.scrollTo({top:0,behavior:"smooth"})};
 
 const planSelect=document.getElementById("journeyPlan"),details=document.getElementById("journeyDetails"),journeyResult=document.getElementById("journeyResult");
