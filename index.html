@@ -22,6 +22,26 @@ a{text-decoration:none;color:inherit}button,select{font:inherit}.wrap{max-width:
 .bottom{position:fixed;z-index:20;left:0;right:0;bottom:0;background:#060b10ee;border-top:1px solid #273947;backdrop-filter:blur(16px);padding:9px max(10px,env(safe-area-inset-left)) calc(9px + env(safe-area-inset-bottom))}.bottomIn{max-width:760px;margin:auto;display:flex;gap:7px}.bottom .btn{flex:1}.footer{text-align:center;color:#657b8c;font-size:11px;padding:24px 0}
 @media(max-width:820px){.hero,.buygrid{grid-template-columns:1fr}.grid3{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}.nav{display:none}.hero{padding-top:12px}.heroMain{padding:22px}.hero h1{font-size:48px}}
 @media(max-width:480px){.wrap{padding:10px}.hero h1{font-size:42px}.card{border-radius:19px;padding:17px}.actions .btn{width:100%}.bottom .btn{font-size:12px;padding:9px 7px}}
+/* Universal compact front-end mode: preserve every operation, remove only visual excess. */
+body{font-size:14px;padding-bottom:68px}
+.wrap{max-width:1180px;padding:8px}
+.top{height:48px}
+.mark{width:34px;height:34px}.mark:after{width:13px;height:13px}
+.card{border-radius:16px;padding:14px;box-shadow:0 12px 35px #0007}
+.hero{gap:8px;padding:10px 0 7px}
+.heroMain{padding:18px}.hero h1{font-size:clamp(34px,6vw,58px);margin:9px 0}
+.lead{font-size:15px}.actions{gap:6px;margin-top:10px}.btn{min-height:40px;padding:8px 12px;border-radius:10px}
+.kpis{gap:6px;margin-top:6px}.kpi{padding:9px;border-radius:11px}.kpi b{font-size:16px}
+.section{margin-top:7px}.head{margin-bottom:6px}.head h2{font-size:20px}
+.grid3,.buygrid{gap:6px}.feature h3{margin:7px 0 3px}.feature p{font-size:13px}
+.rows{margin-top:7px}.row{padding:7px 0}
+.select{padding:9px;border-radius:9px}
+.notice{padding:9px;border-radius:11px}
+.faq details{padding:9px 0}
+.footer{padding:12px 0}
+.bottom{padding-top:6px}
+@media(max-width:820px){.hero{padding-top:5px}.heroMain{padding:15px}.card{padding:12px}}
+@media(max-width:480px){.wrap{padding:7px}.hero h1{font-size:36px}.card{border-radius:14px;padding:11px}.actions .btn{width:auto}.bottom .btn{font-size:11px;padding:7px 5px}}
 </style>
 </head>
 <body>
