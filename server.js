@@ -66,6 +66,9 @@ const LIVE_MEDIA_CATALOG={
 function requireStripe(res){if(!stripe)return res.status(503).json({ok:false,error:"payments_not_configured"});}
 
 app.get("/api/telecom-status",(req,res)=>{res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*","X-Content-Type-Options":"nosniff"});res.json(telecomStatusPayload(req.query.country||"US"));});
+function tokenPaymentCapabilities(){return tokenRegistry().map(t=>({...t,network:"Base",chain_id:8453,wallet_supported:true,payment_enabled:Boolean(process.env.TOKEN_MERCHANT_ADDRESS),payment_mode:process.env.TOKEN_MERCHANT_ADDRESS?"direct_transfer_requires_user_confirmation":"merchant_address_required",coinbase_base_app:"wallet_compatible",coinbase_com_listing:"not_inferred"}));}
+app.get("/v1/payments/assets",(req,res)=>{res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*","X-Content-Type-Options":"nosniff"});res.json({ok:true,network:"Base",chain_id:8453,merchant_address_configured:Boolean(process.env.TOKEN_MERCHANT_ADDRESS),pricing:TELECOM_CONFIG.pricing,assets:tokenPaymentCapabilities(),note:"Wallet visibility does not imply Coinbase.com listing, liquidity, swap availability, or telecom payment acceptance."});});
+app.get("/v1/wallet/config",(req,res)=>{res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*"});res.json({ok:true,network:"Base",chain_id:8453,chain_name:"Base Mainnet",wallets:["Base App / Coinbase Wallet","Injected EVM wallet"],dapp_connection:"supported_by_wallet",merchant_address:process.env.TOKEN_MERCHANT_ADDRESS||null});});
 app.get("/api/telecom-config",(req,res)=>{res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*","X-Content-Type-Options":"nosniff"});res.json({ok:true,config:TELECOM_CONFIG,tokens:tokenRegistry()});});
 
 app.get("/health",(_,res)=>res.json({ok:true,service:"stellarnet-telecom-api",payments:Boolean(stripe),journey:Boolean(journeyKey),atomic:Boolean(atomicKey),carrier_mode:process.env.CARRIER_MODE||"development",version:"2.1.0"}));
@@ -197,7 +200,7 @@ app.get("/v1/telecom/readiness",(_,res)=>res.json({
 app.get("/v1/telecom/capabilities",(_,res)=>res.json({
   brand:process.env.PUBLIC_BRAND_NAME||"StellarNet Telecom",
   plan:{name:"StellarNet $4",activation_usd:4,monthly_usd:4,cancel_anytime:true},
-  interfaces:["web","PWA","mobile-responsive","API"],
+  interfaces:["web","PWA","mobile-responsive","iOS-ready","Android-ready","desktop","API","Base-wallet","EVM-wallet"],
   customer_flows:["checkout","subscription lifecycle","customer portal","subscriber registration","eSIM provisioning adapter","physical SIM fulfillment adapter","order tracking","live readiness","global capability lookup"],
   radio_and_core_capabilities:[
     {name:"2G/GSM",status:"provider_dependent"},{name:"3G/UMTS",status:"provider_dependent"},
@@ -210,7 +213,7 @@ app.get("/v1/telecom/capabilities",(_,res)=>res.json({
     {name:"International roaming",status:"provider_dependent"}
   ],
   subscriber_and_device:["eSIM","physical SIM","EID/device registration","device compatibility checks","numbering-provider lookup","fraud/risk controls","usage/status telemetry"],
-  network_operations:["carrier capability lookup","coverage data adapter","measured speed telemetry adapter","numbering adapter","live one-second control-plane heartbeat","no-store live API"],
+  network_operations:["carrier capability lookup","coverage data adapter","measured speed telemetry adapter","numbering adapter","live one-second control-plane heartbeat","no-store live API","Base token payment capability registry","wallet connection capability"],
   standards_and_ecosystem:["GSMA eSIM Discovery / RSP integration path","SM-DP+ provider integration path","MNO/MVNO integration path","network settings/device compatibility integration path"],
   experimental:["quantum/control-plane architecture","7G+ research UI"],
   activation_reality:{
