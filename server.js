@@ -4,7 +4,9 @@ import Stripe from "stripe";
 import crypto from "node:crypto";
 
 const app=express();
-app.use(cors({origin:(process.env.CORS_ORIGIN||"https://oeql-quantum-telecom-phone.onrender.com").split(",").filter(Boolean),credentials:false}));
+// Public status/config is intentionally readable by embedded Bankr and other client iframes.
+// No credentials/cookies are exposed through CORS.
+app.use(cors({origin:"*",credentials:false,methods:["GET","POST","OPTIONS"],allowedHeaders:["Content-Type","Authorization"]}));
 app.post("/v1/webhooks/stripe",express.raw({type:"application/json"}),async(req,res)=>{
   const stripeKey=process.env.STRIPE_SECRET_KEY;
   if(!stripeKey||!process.env.STRIPE_WEBHOOK_SECRET) return res.status(503).send("webhook_not_configured");
@@ -21,6 +23,27 @@ const stripeKey=process.env.STRIPE_SECRET_KEY;
 const priceId=process.env.STRIPE_PRICE_ID||"price_1UM2djRPRXTyZSXkK8ceygV3";
 const publicApp=process.env.PUBLIC_APP_URL||"https://oeql-quantum-telecom-phone.onrender.com";
 const stripe=stripeKey?new Stripe(stripeKey):null;
+const TELECOM_CONFIG={
+  schema_version:"1.0.0",
+  app_slug:"oeql-telecom",
+  brand:"StellarNet Telecom",
+  pricing:{activation_usd:4,monthly_usd:4,currency:"USD",recurring:true},
+  checkout:{
+    esim:"https://buy.stripe.com/28E00leF9bjm6Yf09UdIA06",
+    physical_sim:"https://buy.stripe.com/9B6eVf1Snafi1DV7CmdIA07"
+  },
+  bankr:{app_slug:"oeql-telecom",integration_mode:"iframe-fetch",status_endpoint:"/api/telecom-status"},
+  architecture_layers:["telecom_plans","control_plane_status","sovereign_token_registry","frequency_bands","localization","upstream_mirror_status","spectrum_compliance","gsma_rsp_profiles","telephony_core","numbering_pool","wholesale_routing","autonomous_support","node_security"],
+  dependency_policy:{hardware:"provider_required",carrier:"authorization_required",radio_access:"authorization_required",numbering:"authorized_numbering_provider_required",roaming:"wholesale_operator_agreement_required",esim_profiles:"authorized_rsp_required",physical_sim:"authorized_fulfillment_provider_required"},
+  token_registry_source:"TOKEN_CONTRACTS_JSON",
+  note:"Token contracts are surfaced only when explicitly configured; this API never invents contract addresses or token holdings."
+};
+function tokenRegistry(){try{const x=JSON.parse(process.env.TOKEN_CONTRACTS_JSON||"[]");return Array.isArray(x)?x:[]}catch{return []}}
+function telecomStatusPayload(country="US"){
+ const c=String(country||"US").toUpperCase();
+ const coverage=countryData("NETWORK_COVERAGE_JSON",c), speed=countryData("NETWORK_SPEED_JSON",c), numbering=countryData("NETWORK_NUMBERING_JSON",c), carrier=countryData("NETWORK_CARRIER_CAPABILITIES_JSON",c)||{};
+ return {ok:true,updated_at:new Date().toISOString(),config:TELECOM_CONFIG,pricing:TELECOM_CONFIG.pricing,checkout:TELECOM_CONFIG.checkout,architecture:{telecom_plans:TELECOM_CONFIG.pricing,control_plane_status:{online:true,payments:Boolean(stripe),live_api:true},sovereign_token_registry:{configured:tokenRegistry().length>0,tokens:tokenRegistry()},frequency_bands:{status:"provider_required"},localization:{languages_supported:28},upstream_mirror_status:{render:true,github:true,bankr:"external_app_sync_required"},spectrum_compliance:{status:"authorization_required"},gsma_rsp_profiles:{status:(atomicKey||journeyKey)?"provider_configured":"provider_required"},telephony_core:{status:"provider_dependent"},numbering_pool:{status:numbering?"configured_data_available":"authorized_numbering_provider_required"},wholesale_routing:{status:"wholesale_operator_agreement_required"},autonomous_support:{status:"control_plane_ready"},node_security:{cors_public_read:true,secrets_server_side:true}},dependencies:TELECOM_CONFIG.dependency_policy,global:{country:c,coverage:{available:Boolean(coverage),data:coverage,source:coverage?.source||"provider_data_required"},speed:{measured:Boolean(speed?.measured),data:speed,source:speed?.source||"measured_telemetry_required"},numbering:{available:Boolean(numbering),data:numbering,source:numbering?.source||"authorized_numbering_provider_required"},carrier:{production_authorized:process.env.CARRIER_MODE==="production_authorized",...carrier}},bankr_sync:{required:true,endpoint_path:"/api/telecom-status",cors:"*",iframe_embedding:"allowed_by_render_header_configuration",auto_push_to_bankr:false}};
+}
 const atomicBase=(process.env.ATOMIC_API_BASE_URL||"https://api.atomicmobile.com").replace(/\/$/,"");
 const atomicKey=process.env.ATOMIC_API_KEY||process.env.ESIM_PROVIDER_API_KEY||"";
 const atomicPlan=process.env.ATOMIC_PLAN_ID||"plan_att_platinum_5g";
@@ -33,6 +56,9 @@ const LIVE_MEDIA_CATALOG={
  data:[{name:"NOAA",region:"Global",kind:"public"},{name:"NASA Earthdata",region:"Global",kind:"public"},{name:"USGS",region:"Global",kind:"public"}]
 };
 function requireStripe(res){if(!stripe)return res.status(503).json({ok:false,error:"payments_not_configured"});}
+
+app.get("/api/telecom-status",(req,res)=>{res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*","X-Content-Type-Options":"nosniff"});res.json(telecomStatusPayload(req.query.country||"US"));});
+app.get("/api/telecom-config",(req,res)=>{res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*","X-Content-Type-Options":"nosniff"});res.json({ok:true,config:TELECOM_CONFIG,tokens:tokenRegistry()});});
 
 app.get("/health",(_,res)=>res.json({ok:true,service:"stellarnet-telecom-api",payments:Boolean(stripe),journey:Boolean(journeyKey),atomic:Boolean(atomicKey),carrier_mode:process.env.CARRIER_MODE||"development",version:"2.1.0"}));
 app.get("/v1/media/catalog",(_,res)=>res.json({ok:true,scope:"global-live-media",policy:"public-authorized-or-licensed-feeds-only",catalog:LIVE_MEDIA_CATALOG}));
