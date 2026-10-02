@@ -87,11 +87,51 @@ app.get("/api/telecom-config",(req,res)=>{res.set({"Cache-Control":"no-store","A
 app.get("/health",(_,res)=>res.json({ok:true,service:"stellarnet-telecom-api",payments:Boolean(stripe),journey:Boolean(journeyKey),atomic:Boolean(atomicKey),carrier_mode:process.env.CARRIER_MODE||"development",version:"2.1.0"}));
 // Deterministic receipt rail: creates a signed receipt payload after a verified checkout/tx reference.
 // It never claims an on-chain settlement until the transaction hash is supplied and can be verified by a wallet/indexer.
+async function baseRpc(method,params=[]){
+  const r=await fetch(process.env.BASE_RPC_URL||"https://mainnet.base.org",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({jsonrpc:"2.0",id:1,method,params})});
+  const j=await r.json().catch(()=>({}));
+  if(!r.ok||j.error)throw new Error(j.error?.message||"base_rpc_failed");
+  return j.result;
+}
+function extractTxHash(job){
+  const text=[job?.response||"",JSON.stringify(job?.richData||[])].join(" ");
+  const m=text.match(/0x[a-fA-F0-9]{64}/);
+  return m?m[0]:null;
+}
+async function verifyBasePayment(txHash,tokenAddress){
+  if(!/^0x[a-fA-F0-9]{64}$/.test(String(txHash||"")))return {confirmed:false,error:"tx_hash_required"};
+  const receipt=await baseRpc("eth_getTransactionReceipt",[txHash]);
+  if(!receipt)return {confirmed:false,error:"transaction_pending"};
+  if(receipt.status!=="0x1")return {confirmed:false,error:"transaction_failed"};
+  const wanted=String(tokenAddress||"").toLowerCase();
+  let recipientMatched=false;
+  for(const log of (receipt.logs||[])){
+    if(String(log.address||"").toLowerCase()!==wanted)continue;
+    const topics=log.topics||[];
+    if(topics.length>=3 && String(topics[0]).toLowerCase()==="0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55aebef3b1ef" &&
+       String("0x"+String(topics[2]).slice(-40)).toLowerCase()===String(process.env.TOKEN_MERCHANT_ADDRESS||"").toLowerCase()){
+      recipientMatched=true; break;
+    }
+  }
+  return {confirmed:recipientMatched,txHash,blockHash:receipt.blockHash,blockNumber:receipt.blockNumber,recipient:process.env.TOKEN_MERCHANT_ADDRESS||null,tokenAddress,verification:recipientMatched?"base_receipt_and_transfer_log_verified":"receipt_confirmed_but_recipient_or_token_unverified"};
+}
+app.get("/v1/bankr/payment/:jobId",async(req,res)=>{
+  if(!process.env.BANKR_API_KEY)return res.status(503).json({ok:false,error:"bankr_api_key_not_configured"});
+  try{
+    const r=await fetch("https://api.bankr.bot/agent/job/"+encodeURIComponent(req.params.jobId),{headers:{"X-API-Key":process.env.BANKR_API_KEY}});
+    const job=await r.json().catch(()=>({}));
+    if(!r.ok)return res.status(r.status).json({ok:false,error:"bankr_job_lookup_failed"});
+    const txHash=extractTxHash(job);
+    const tokenAddress=String(req.query.tokenAddress||"");
+    const chain=txHash?await verifyBasePayment(txHash,tokenAddress):{confirmed:false,error:"transaction_not_reported_yet"};
+    res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*"}).json({ok:true,jobId:job.jobId,status:job.status,txHash,bankr_response:job.response||null,onchain:chain,receipt_url:chain.confirmed?publicApp+"/receipt/"+encodeURIComponent(req.params.jobId):null});
+  }catch(e){res.status(502).json({ok:false,error:"bankr_job_connection_failed"});}
+});
 app.get("/v1/receipt/:reference",async(req,res)=>{
   const reference=String(req.params.reference||"").trim();
   if(!reference)return res.status(400).json({ok:false,error:"reference_required"});
-  const receipt={schema_version:"1.0",reference,product:"Quantum Telecom",pricing:TELECOM_CONFIG.pricing,network:"Base",chain_id:8453,created_at:new Date().toISOString(),settlement_status:"reference_only",onchain_tx:null,qr_payload:publicApp+"/receipt/"+encodeURIComponent(reference)};
-  res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*"}).json({ok:true,receipt});
+  res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*"});
+  res.json({ok:true,receipt:{schema_version:"1.1",reference,product:"Quantum Telecom",pricing:TELECOM_CONFIG.pricing,network:"Base",chain_id:8453,settlement_status:"verify_onchain",qr_payload:publicApp+"/receipt/"+encodeURIComponent(reference)}});
 });
 
 app.get("/v1/media/catalog",(_,res)=>res.json({ok:true,scope:"global-live-media",policy:"public-authorized-or-licensed-feeds-only",catalog:LIVE_MEDIA_CATALOG}));
@@ -124,6 +164,37 @@ app.post("/v1/customer-portal",async(req,res)=>{
   }catch(e){res.status(400).json({ok:false,error:"customer_portal_unavailable"});}
 });
 
+app.post("/v1/bankr/esim/provision",async(req,res)=>{
+  const {jobId,tokenAddress,planId,reference}=req.body||{};
+  if(!jobId||!tokenAddress||!planId)return res.status(400).json({ok:false,error:"jobId_tokenAddress_planId_required"});
+  if(!journeyKey)return res.status(503).json({ok:false,error:"journey_api_key_not_configured"});
+  try{
+    const r=await fetch("https://api.bankr.bot/agent/job/"+encodeURIComponent(jobId),{headers:{"X-API-Key":process.env.BANKR_API_KEY||""}});
+    const job=await r.json().catch(()=>({}));
+    const txHash=extractTxHash(job);
+    const verified=await verifyBasePayment(txHash,tokenAddress);
+    if(!verified.confirmed)return res.status(402).json({ok:false,error:"payment_not_confirmed",onchain:verified});
+    const p=await fetch(journeyBase+"/esims",{method:"POST",headers:{"content-type":"application/json","authorization":"Bearer "+journeyKey},body:JSON.stringify({planId,quantity:1,reference:reference||("bankr-"+jobId)})});
+    const data=await p.json().catch(()=>({}));
+    if(!p.ok)return res.status(502).json({ok:false,error:"journey_provisioning_failed",provider_status:p.status});
+    res.status(201).json({ok:true,payment:verified,provider:"Journey eSIMs",orderId:data.orderId,status:data.status,esim:data.esims?.[0]||null});
+  }catch(e){res.status(502).json({ok:false,error:"bankr_esim_provisioning_failed"});}
+});
+app.post("/v1/bankr/sim/order",async(req,res)=>{
+  const {jobId,tokenAddress,email,shipping_address,reference}=req.body||{};
+  if(!jobId||!tokenAddress||!email||!shipping_address)return res.status(400).json({ok:false,error:"jobId_tokenAddress_email_shipping_address_required"});
+  try{
+    const r=await fetch("https://api.bankr.bot/agent/job/"+encodeURIComponent(jobId),{headers:{"X-API-Key":process.env.BANKR_API_KEY||""}});
+    const job=await r.json().catch(()=>({}));
+    const txHash=extractTxHash(job);
+    const verified=await verifyBasePayment(txHash,tokenAddress);
+    if(!verified.confirmed)return res.status(402).json({ok:false,error:"payment_not_confirmed",onchain:verified});
+    const order_id=id();
+    const order={order_id,email,shipping_address,status:"paid_pending_authorized_fulfillment",payment_tx:verified.txHash,reference:reference||jobId,created_at:new Date().toISOString()};
+    simOrders.set(order_id,order);
+    res.status(202).json({ok:true,payment:verified,order,carrier_fulfillment_ready:Boolean(process.env.CARRIER_FULFILLMENT_BASE_URL&&process.env.CARRIER_FULFILLMENT_API_KEY)});
+  }catch(e){res.status(502).json({ok:false,error:"bankr_sim_order_failed"});}
+});
 app.post("/v1/journey/esim/provision",async(req,res)=>{
   const {planId,reference,checkout_session_id}=req.body||{};
   if(!journeyKey)return res.status(503).json({ok:false,error:"journey_api_key_not_configured"});
