@@ -82,18 +82,17 @@ body{font-size:14px;padding-bottom:68px}
 <div class="kpi"><b>$4 + $4</b><span>Clear start + monthly price</span></div>
 <div class="kpi"><b>eSIM / SIM</b><span>Choose your device path</span></div>
 <div class="kpi"><b>1 dashboard</b><span>Billing + service state</span></div>
-<div class="kpi"><b id="apiKpi">Checking</b><span>Live control-plane API</span></div>
+<div class="kpi"><b>Secure</b><span>Customer control center</span></div>
 </section>
 
 <section id="home" class="section card">
 <div class="head"><div><h2>Universal Customer Home</h2><p>One compact control center for every supported screen: web, phone, tablet, desktop and installable PWA.</p></div><span class="pill">ALL USERS</span></div>
 <div class="grid3">
 <div class="card feature"><div class="num">A</div><h3>Start service</h3><p>Choose eSIM or physical SIM, review the current verified state, and continue to secure checkout.</p><div class="actions"><a class="btn primary" href="#buy">Start</a></div></div>
-<div class="card feature"><div class="num">B</div><h3>Manage service</h3><p>Open billing, refresh service readiness, review provider-dependent activation, and return home without losing your place.</p><div class="actions"><a class="btn" href="#account">Account</a></div></div>
+<div class="card feature"><div class="num">B</div><h3>Manage service</h3><p>Open billing, refresh service status, review provider-dependent activation, and return home without losing your place.</p><div class="actions"><a class="btn" href="#account">Account</a></div></div>
 <div class="card feature"><div class="num">C</div><h3>Help & access</h3><p>Language, region, accessibility-friendly controls and short next-step guidance stay available throughout the experience.</p><div class="actions"><a class="btn" href="#global">Language</a><a class="btn" href="#faq">Help</a></div></div>
 </div>
 </section>
-<section id="integration" class="section card"><div class="head"><div><h2>Telecom Control & Bankr Integration</h2><p>Normalized public state for embedded apps. Provider/carrier dependencies are labeled instead of simulated.</p></div><span class="pill">BANKR READY</span></div><div class="kpis" id="architectureScan"></div><div class="rows"><div class="row"><span>Status endpoint</span><b>/api/telecom-status</b></div><div class="row"><span>Embedded iframe</span><b class="ok">Render header configuration required</b></div><div class="row"><span>Token contracts</span><b id="tokenState">Checking…</b></div><div class="row"><span>Bankr auto-sync</span><b class="warn">External integration required</b></div></div></section>
 <section id="tokens" class="section card"><div class="head"><div><h2>Base Token Registry</h2><p>All 14 user-supplied Base token contracts are available across the responsive web/PWA interface. Balances, prices and payment acceptance are shown only when verified/configured.</p></div><span class="pill">14 TOKENS</span></div><div id="tokenGrid" class="grid3"></div></section><section id="global" class="section card"><h2>Global Coverage & Language</h2><p>Verified provider data only.</p><select id="globalCountry"><option>US</option><option>CA</option><option>MX</option><option>GB</option><option>DE</option><option>FR</option><option>ES</option><option>IT</option><option>BR</option><option>IN</option><option>JP</option><option>KR</option><option>CN</option><option>AU</option><option>AE</option></select><select id="globalLanguage" aria-label="Language">
 <option value="en">English</option><option value="es">Español</option><option value="fr">Français</option><option value="de">Deutsch</option><option value="pt">Português</option><option value="it">Italiano</option><option value="ja">日本語</option><option value="ko">한국어</option><option value="zh">中文</option><option value="ar">العربية</option><option value="hi">हिन्दी</option><option value="nl">Nederlands</option><option value="pl">Polski</option><option value="tr">Türkçe</option><option value="sv">Svenska</option><option value="no">Norsk</option><option value="da">Dansk</option><option value="fi">Suomi</option><option value="el">Ελληνικά</option><option value="he">עברית</option><option value="th">ไทย</option><option value="vi">Tiếng Việt</option><option value="id">Bahasa Indonesia</option><option value="ms">Bahasa Melayu</option><option value="uk">Українська</option><option value="cs">Čeština</option><option value="ro">Română</option><option value="hu">Magyar</option>
 </select><div id="globalResults">Checking verified network data…</div></section><section id="bankr" class="section card"><div class="head"><div><h2>Bankr · My Tokens · Base</h2><p>Every registered Base asset has its own placement, contract view and payment action. Bankr can execute on-chain wallet operations when a configured API rail is enabled; otherwise the button opens Bankr for user approval.</p></div><span class="pill">ONCHAIN</span></div><div class="actions"><a class="btn primary" href="https://bankr.bot" target="_blank" rel="noopener">Open Bankr</a><a class="btn" href="https://bankr.bot/api-keys" target="_blank" rel="noopener">Connect Bankr API</a></div><div id="bankrState" class="status"></div></section><section id="wallet" class="section card"><div class="head"><div><h2>Base Wallet · One-tap payment</h2><p>Connect a Base-compatible wallet, see your configured token registry, and use a verified payment route when the merchant is configured.</p></div><span class="pill">BASE · 8453</span></div><div class="actions"><button class="btn primary" id="connectWallet">Connect Base Wallet</button><button class="btn" id="refreshWallet">Refresh balances</button></div><div id="walletMsg" class="status"></div><div id="walletGrid" class="grid3" style="margin-top:10px"></div></section><section id="tokenpay" class="section card"><div class="head"><div><h2>Pay with any configured Base token</h2><p>All 14 registered Base assets are selectable. The wallet signs the transaction; this site never requests or stores private keys.</p></div><span class="pill">12 ASSETS</span></div><select id="tokenPayAsset" class="select"></select><div class="actions"><button class="btn primary" id="tokenPay">1-tap pay $4 activation</button></div><div id="tokenPayMsg" class="status"></div></section><section id="buy" class="section">
@@ -109,7 +108,7 @@ body{font-size:14px;padding-bottom:68px}
 <div class="grid3">
 <div class="card feature"><div class="num">1</div><h3>Choose</h3><p>eSIM for compatible phones, or physical SIM when you want a card shipped.</p></div>
 <div class="card feature"><div class="num">2</div><h3>Pay</h3><p>Use the hosted Stripe checkout. The exact checkout terms and total are authoritative.</p></div>
-<div class="card feature"><div class="num">3</div><h3>Manage</h3><p>Return here to manage billing, check readiness and follow authorized fulfillment.</p></div>
+<div class="card feature"><div class="num">3</div><h3>Manage</h3><p>Return here to manage billing, check service status and follow authorized fulfillment.</p></div>
 </div>
 </section>
 
@@ -117,7 +116,7 @@ body{font-size:14px;padding-bottom:68px}
 <div class="head"><div><h2>Your account</h2><p>One place after checkout.</p></div></div>
 <div class="rows">
 <div class="row"><span>Billing</span><b>Stripe customer portal</b></div>
-<div class="row"><span>Service</span><b>Control-plane status</b></div>
+<div class="row"><span>Service</span><b>Customer service</b></div>
 <div class="row"><span>eSIM</span><b>Authorized provider</b></div>
 <div class="row"><span>Physical SIM</span><b>Fulfillment partner</b></div>
 </div>
@@ -147,7 +146,6 @@ body{font-size:14px;padding-bottom:68px}
 <details><summary>What does quantum / 7G+ mean?</summary><p>It refers to the project's experimental control-plane and research architecture. It is not a claim of currently delivered commercial 7G or quantum radio service.</p></details>
 </section>
 
-<div class="notice"><b>Production truth:</b> payment checkout can be live independently of carrier provisioning. This interface only reports activation or provisioning when the corresponding authorized integration is actually configured.</div>
 <footer class="footer">StellarNet Telecom · OEQL / Telephone · Secure checkout via Stripe · Cellular fulfillment subject to provider authorization and availability.</footer>
 </main>
 </div>
@@ -165,16 +163,6 @@ window.addEventListener("hashchange",()=>window.scrollTo({top:Math.max(0,documen
 const qs=new URLSearchParams(location.search),sessionId=qs.get("session_id");
 const show=(el,msg)=>{el.textContent=msg;el.classList.add("show")};
 const set=(id,msg,kind)=>{const e=document.getElementById(id);e.textContent=msg;e.className=kind||""};
-async function readiness(){
- try{
-  const r=await fetch(API+"/v1/telecom/readiness",{cache:"no-store"}),j=await r.json();
-  set("apiState","Online","ok");document.getElementById("apiKpi").textContent="Online";
-  set("payState",j.payments?"Ready":"Not configured",j.payments?"ok":"warn");
-  set("esimState",j.eSIM_RSP?"Configured":"Provider required",j.eSIM_RSP?"ok":"warn");
-  set("simState",j.physical_SIM_fulfillment?"Ready":"Partner required",j.physical_SIM_fulfillment?"ok":"warn");
-  set("carrierState",j.production_carrier_authorized?"Authorized":"Authorization required",j.production_carrier_authorized?"ok":"warn");
- }catch(e){set("apiState","Unavailable","bad");document.getElementById("apiKpi").textContent="Offline";["payState","esimState","simState","carrierState"].forEach(x=>set(x,"Check API","warn"))}
-}
 async function billing(){
  const box=document.getElementById("accountMsg");
  if(!sessionId){show(box,"Open this page from a completed Stripe checkout to manage that subscription.");return}
@@ -199,7 +187,7 @@ document.getElementById("provision").onclick=async()=>{
 };
 if(qs.get("checkout")==="success")show(document.getElementById("heroMsg"),"Payment return detected. Your paid session can now be used for authorized fulfillment.");
 if(qs.get("checkout")==="cancelled")show(document.getElementById("heroMsg"),"Checkout cancelled. No activation was claimed.");
-readiness();loadPlans();if("serviceWorker"in navigator)navigator.serviceWorker.register("/sw.js").catch(()=>{});
+loadPlans();if("serviceWorker"in navigator)navigator.serviceWorker.register("/sw.js").catch(()=>{});
 </script>
 <script>
 const globalI18n={
