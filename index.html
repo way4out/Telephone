@@ -210,6 +210,15 @@ cs:{title:"Globální pokrytí a jazyk",sub:"Pouze ověřená data poskytovatele
 ro:{title:"Acoperire globală și limbă",sub:"Doar date verificate de la furnizor.",coverage:"Acoperire",speed:"Viteză",numbers:"Numere",carrier:"Operator",voice:"Voce/SMS",roaming:"Roaming",available:"Disponibil",required:"Sunt necesare datele furnizorului",measured:"Sunt necesare date măsurate",numbering:"Este necesar furnizorul de numerotație",auth:"Este necesară autorizarea",enabled:"Activat",language:"Limbă"},
 hu:{title:"Globális lefedettség és nyelv",sub:"Csak ellenőrzött szolgáltatói adatok.",coverage:"Lefedettség",speed:"Sebesség",numbers:"Számok",carrier:"Szolgáltató",voice:"Hang/SMS",roaming:"Roaming",available:"Elérhető",required:"Szolgáltatói adatok szükségesek",measured:"Mért adatok szükségesek",numbering:"Számozási szolgáltató szükséges",auth:"Engedély szükséges",enabled:"Engedélyezve",language:"Nyelv"}
 };
+function autoDetectLocalSettings(){
+ const lang=(navigator.language||"en").toLowerCase().split("-")[0];
+ const supported=new Set(Object.keys(globalI18n));
+ const ls=document.getElementById("globalLanguage");
+ if(ls&&supported.has(lang))ls.value=lang;
+ const region=(navigator.language||"").split("-")[1]?.toUpperCase();
+ const cs=document.getElementById("globalCountry");
+ if(cs&&region&&[...cs.options].some(o=>o.value===region))cs.value=region;
+}
 function applyGlobalLanguage(){
  const t=globalI18n[document.getElementById("globalLanguage").value]||globalI18n.en;
  const box=document.getElementById("global");
@@ -228,6 +237,7 @@ async function globalData(){
 }
 document.getElementById("globalCountry").addEventListener("change",globalData);
 document.getElementById("globalLanguage").addEventListener("change",applyGlobalLanguage);
+autoDetectLocalSettings();
 applyGlobalLanguage();
 </script><div id="liveClock" class="micro" style="margin-top:8px">Live operations: connecting…</div>
 <script>
