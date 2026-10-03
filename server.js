@@ -602,6 +602,24 @@ function quantumScan(){
 app.get("/v1/quantum/scan",(req,res)=>{res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*","X-Content-Type-Options":"nosniff"});res.json({ok:true,scan:quantumScan()});});
 app.get("/v1/quantum/capabilities",(req,res)=>{res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*"});res.json({ok:true,software:["resonance simulation","vector execution model","2D/3D/4D/5D+ state modeling","deterministic scan manifests","PQC research integration point","IMT-2030 compatibility interface","instrument-validation state machine"],hardware_requirements:["RF/optical instrumentation","clock/oscillator references","ADC/DAC","FPGA/DSP","calibrated sensors","shielding where required","lawful test authorization"],state_machine:["UNCONFIGURED","SIMULATED","INSTRUMENT_CONNECTED","CALIBRATED","LAB_VALIDATED","AUTHORIZED_FIELD_TEST","PROVIDER_INTEGRATED"],physical_quantum_execution:false,quantum_radio:false,note:"Software exposes the control and validation plane; physical quantum execution requires real laboratory hardware, measurements, calibration and authorization."});});
 
+
+// --- Universal Atlas live-data gateway ---
+app.get("/v1/universe/live",async(req,res)=>{
+  const started=Date.now();
+  const out={ok:true,server_time:new Date().toISOString(),sources:[],render_policy:"real published observations are separated from procedural/model geometry"};
+  try{
+    const r=await fetch("https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY",{headers:{accept:"application/json"}});
+    if(r.ok){const j=await r.json();out.apod={date:j.date,title:j.title,media_type:j.media_type,url:j.url,source:"NASA APOD"};out.sources.push({name:"NASA APOD",status:"live"});}
+    else out.sources.push({name:"NASA APOD",status:"unavailable",http_status:r.status});
+  }catch(e){out.sources.push({name:"NASA APOD",status:"unavailable"});}
+  try{
+    const r=await fetch("https://celestrak.org/GP.php?GROUP=STATIONS&FORMAT=json",{headers:{accept:"application/json"}});
+    if(r.ok){const j=await r.json();out.satellites={source:"CelesTrak",group:"STATIONS",count:Array.isArray(j)?j.length:0,updated_at:new Date().toISOString()};out.sources.push({name:"CelesTrak",status:"live"});}
+    else out.sources.push({name:"CelesTrak",status:"unavailable",http_status:r.status});
+  }catch(e){out.sources.push({name:"CelesTrak",status:"unavailable"});}
+  out.latency_ms=Date.now()-started;
+  res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*","X-Content-Type-Options":"nosniff"}).json(out);
+});
 const server=app.listen(PORT,()=>console.log(`StellarNet Telecom API listening on ${PORT}`));
 process.on("SIGTERM",()=>{console.log("SIGTERM received; draining HTTP server");server.close(()=>process.exit(0));setTimeout(()=>process.exit(1),25000);});
 process.on("SIGINT",()=>server.close(()=>process.exit(0)));
