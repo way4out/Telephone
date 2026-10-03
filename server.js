@@ -148,7 +148,7 @@ app.post("/v1/payments/verify-transfer",async(req,res)=>{
   const merchantAddress=process.env.TOKEN_MERCHANT_ADDRESS||"";
   if(!merchantAddress)return res.status(503).json({ok:false,error:"merchant_address_not_configured"});
   const quote=await exactTokenQuote(String(tokenAddress||""),amountUsd);
-  if(String(quote.amount_base_units)!==String(amountUnits||""""))return res.status(402).json({ok:false,confirmed:false,settled:false,error:"exact_amount_mismatch"});
+  if(String(quote.amount_base_units)!==String(amountUnits||""))return res.status(402).json({ok:false,confirmed:false,settled:false,error:"exact_amount_mismatch"});
   const result=await verifyExactBaseTransfer({txHash,tokenAddress,merchantAddress,amountUnits});
   if(result.confirmed)return res.json({ok:true,confirmed:true,settled:true,network:"Base Mainnet",chain_id:8453,tx_hash:txHash,from:from||null,payment:result,amount_usd:Number(amountUsd),receipt_url:publicApp+"/receipt/"+encodeURIComponent(txHash)});
   res.status(result.error==="transaction_pending"?202:402).json({ok:false,confirmed:false,settled:false,payment:result});
@@ -161,14 +161,14 @@ app.post("/v1/bankr/pay",async(req,res)=>{
   const {tokenAddress,tokenSymbol,amountUsd=4}=req.body||{};
   const asset=tokenRegistry().find(t=>String(t.address||"").toLowerCase()===String(tokenAddress||"").toLowerCase()&&t.enabled!==false);
   if(!asset)return res.status(400).json({ok:false,error:"token_not_supported_for_telecom_payment"});
-  if(Number(amountUsd)!==4)return res.status(400).json({ok:false,error:"telecom_activation_amount_fixed_at_4_usd"});
+  let quote; try{quote=await exactTokenQuote(asset.address,amountUsd)}catch(e){return res.status(400).json({ok:false,error:e.message||"quote_unavailable"});}
   if(!process.env.TOKEN_MERCHANT_ADDRESS)return res.status(400).json({ok:false,error:"tokenAddress_and_merchant_required"});
-  const prompt=`For StellarNet Telecom on Base, first approve only the exact token amount required for the $4 activation for this transaction, then transfer that exact amount of ${asset.symbol} (${asset.address}) to merchant ${process.env.TOKEN_MERCHANT_ADDRESS}; never grant unlimited allowance; return the approval and final transfer transaction hashes.`;
+  const prompt=`For StellarNet Universe Simulator on Base, pay exactly ${quote.amount_usd} using ${asset.symbol} (${asset.address}), exact amount ${quote.amount_base_units} base units, to merchant ${process.env.TOKEN_MERCHANT_ADDRESS}. Approve only this exact amount; never grant unlimited allowance; return approval and final transfer tx hashes.`;
   try{
     const r=await fetch("https://api.bankr.bot/agent/prompt",{method:"POST",headers:{"content-type":"application/json","X-API-Key":process.env.BANKR_API_KEY},body:JSON.stringify({prompt})});
     const data=await r.json().catch(()=>({}));
     if(!r.ok)return res.status(r.status).json({ok:false,error:"bankr_payment_request_failed",provider:data});
-    res.status(202).json({ok:true,provider:"Bankr",token:tokenSymbol||tokenAddress,amount_usd:Number(amountUsd),merchant_address:process.env.TOKEN_MERCHANT_ADDRESS,incentive:tokenIncentiveOffer(asset),jobId:data.jobId,threadId:data.threadId,note:"Payment is pending until Bankr reports a confirmed on-chain transaction. Service credit is earned only after confirmation and is subject to the displayed Telecom terms."});
+    res.status(202).json({ok:true,provider:"Bankr",token:tokenSymbol||tokenAddress,amount_usd:Number(amountUsd),exact_amount_base_units:quote.amount_base_units,merchant_address:process.env.TOKEN_MERCHANT_ADDRESS,incentive:tokenIncentiveOffer(asset),jobId:data.jobId,threadId:data.threadId,note:"Payment is pending until Bankr reports a confirmed on-chain transaction. Service credit is earned only after confirmation and is subject to the displayed Telecom terms."});
   }catch(e){res.status(502).json({ok:false,error:"bankr_connection_failed"});}
 });
 app.get("/v1/wallet/config",(req,res)=>{res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*"});res.json({ok:true,network:"Base",chain_id:8453,chain_name:"Base Mainnet",wallets:["Base App / Coinbase Wallet","Injected EVM wallet"],dapp_connection:"supported_by_wallet",merchant_address:process.env.TOKEN_MERCHANT_ADDRESS||null});});
