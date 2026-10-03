@@ -122,17 +122,17 @@ app.get("/v1/incentives/base",(req,res)=>{
   res.json({ok:true,network:"Base",chain_id:8453,pricing:TELECOM_CONFIG.pricing,offers:assets.map(tokenIncentiveOffer)});
 });
 
-const SIMULATOR_PRICE_POINTS=[4,5,6,7,8,20,60,365,441000000];
+const SIMULATOR_PRICE_POINTS=[0.99,1.49,2.49,3.99,4.99,12.99,39.99,299,9999];
 const SIMULATOR_TIME_PACKAGES=[
- {id:"minute",name:"1 Minute",duration_ms:60000,usd:8},
- {id:"five",name:"5 Minutes",duration_ms:300000,usd:7},
- {id:"fifteen",name:"15 Minutes",duration_ms:900000,usd:6},
- {id:"hour",name:"1 Hour",duration_ms:3600000,usd:5},
- {id:"day",name:"1 Day",duration_ms:86400000,usd:4},
- {id:"week",name:"1 Week",duration_ms:604800000,usd:20},
- {id:"month",name:"1 Month",duration_ms:2592000000,usd:60},
- {id:"year",name:"1 Year",duration_ms:31536000000,usd:365},
- {id:"forever",name:"Forever ∞",duration_ms:null,usd:441000000}
+ {id:"minute",name:"1 Minute",duration_ms:60000,usd:0.99},
+ {id:"five",name:"5 Minutes",duration_ms:300000,usd:1.49},
+ {id:"fifteen",name:"15 Minutes",duration_ms:900000,usd:2.49},
+ {id:"hour",name:"1 Hour",duration_ms:3600000,usd:3.99},
+ {id:"day",name:"1 Day",duration_ms:86400000,usd:4.99},
+ {id:"week",name:"1 Week",duration_ms:604800000,usd:12.99},
+ {id:"month",name:"1 Month",duration_ms:2592000000,usd:39.99},
+ {id:"year",name:"1 Year",duration_ms:31536000000,usd:299},
+ {id:"forever",name:"Forever ∞",duration_ms:null,usd:9999}
 ];
 const SIMULATOR_PACKAGES=SIMULATOR_TIME_PACKAGES.map(x=>({id:x.id,name:x.name,usd:x.usd,duration_ms:x.duration_ms}));
 function normalizeSimulatorPrice(value){const n=Number(value);if(!Number.isFinite(n)||!SIMULATOR_PRICE_POINTS.includes(n))throw new Error("unsupported_price_point");return n;}
