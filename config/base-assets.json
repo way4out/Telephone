@@ -1,0 +1,168 @@
+{
+  "chain": "base",
+  "chain_id": 8453,
+  "owner": "0x13653b6b8bd4b274da565faf6fa894e3418a6d10",
+  "assets": [
+    {
+      "name": "NFTQRX",
+      "symbol": "NQRX",
+      "contract": "0x7b609a9389097a7d06daebc818a41651fe01bba3",
+      "tx": "0xe36a61b51662ef6f63a5c0f79bf32fbf2389f7b1488fcb3cf844d36f2b7f18b6",
+      "created": "2026-10-03"
+    },
+    {
+      "name": "Harmonic Intelligence",
+      "symbol": "HIR",
+      "contract": "0x542165dafde4242939415b8f2ec8686a4f43cba3",
+      "tx": "0x977d4491b61d5fe9598eeca43e494d49d8064f546f2276fed0645d8d4ecff846",
+      "created": "2026-10-01"
+    },
+    {
+      "name": "OEQL Quantum Telecom",
+      "symbol": "OEQL",
+      "contract": "0x5490c75dfe7b790351dea6736c742e5e3c4c4ba3",
+      "tx": "0xca0d6b11b621ae2c56bcb7ef8a41d2bf624c6e2e065c852e6cc2376db5ab2d6c",
+      "created": "2026-10-01"
+    },
+    {
+      "name": "Node",
+      "symbol": "NODE",
+      "contract": "0x27610a648e32176cf1ccd11e501bc3f900dbdba3",
+      "tx": "0x6c61499887208c332125accf6b081e715dc075deb5725e9e7d7f5c93a1d0271c",
+      "created": "2026-09-30"
+    },
+    {
+      "name": "upgrade",
+      "symbol": "OEQL",
+      "contract": "0x90e59e7ca1f2e4b2404342af3e5e0578880ddba3",
+      "tx": "0xa0ab5568ab6058946f808db6bde68e201414e8883ac8cb81429be21634c1f183",
+      "created": "2026-09-30"
+    },
+    {
+      "name": "OEQL",
+      "symbol": "OEQL",
+      "contract": "0x2d76de6c499d0011999395ed5e437eb604635ba3",
+      "tx": "0xca20c0b9d6ea7b502fcdbc1cf62654d4c40b29f98d12a73f9475b698d069153f",
+      "created": "2026-09-30"
+    },
+    {
+      "name": "Rollin'",
+      "symbol": "ROLLIN",
+      "contract": "0x622e4536a4b3d5a3acb99a70bdfc50a3255d3ba3",
+      "tx": "0xad36baaaa8566797c679fef68f6bedb4330009ebf1a75b9401c1abbbf47a712b",
+      "created": "2026-09-28"
+    },
+    {
+      "name": "AETHER",
+      "symbol": "AETH",
+      "contract": "0x8c7cffbdd51be8c43300f38f052ccdaac59f0ba3",
+      "tx": "0x6835583a38f3ef1035b978cd2ddcc5e5e2944c941c65aeed12983dc958fb963b",
+      "created": "2026-08-08"
+    },
+    {
+      "name": "AI Use Token",
+      "symbol": "AIUSE",
+      "contract": "0xe512509731c33632d3048948bc8471fba1ad4ba3",
+      "tx": "0x194deab76a4a0b46ef4b2243ba5c924dee8d0c01ee24bbf0612b83a2c9a7dbd4",
+      "created": "2026-08-05"
+    },
+    {
+      "name": "Autonomy",
+      "symbol": "AUTO",
+      "contract": "0x910cb6ce72a2ee7b1c9d093d5b09aed7f19f8ba3",
+      "tx": "0x7a070d16084d0b003a5991e21be5d566bdada05ffac422732834b6619cf70e46",
+      "created": "2026-08-05"
+    },
+    {
+      "name": "ZenoState AI",
+      "symbol": "ZAi",
+      "contract": "0x05e4c8b357da5981496cc7b2b0b8ea3956212ba3",
+      "tx": "0xb11c247f021a20cf6f11d4b592af7b54d2380250ff1e729dd1fa11fd820bda5c",
+      "created": "2026-08-03"
+    },
+    {
+      "name": "Balloon App",
+      "symbol": "BALLOON",
+      "contract": "0x494301facc434ca703239e3e1e5def31fdc20ba3",
+      "tx": "0xf69f51e28b48bb456824aae2b55c904273b0ce9fbecceafb9ed259c52f4f1595",
+      "created": "2026-08-02"
+    },
+    {
+      "name": "3tree",
+      "symbol": "TREE",
+      "contract": "0xb628f3f2aab853a95602dd45aeed48c807f93ba3",
+      "tx": "0x7ee0da5c2454397644ad9baf781ba2b0117ae222e8c63a1e3f8921b2d0c973cf",
+      "created": "2026-08-02"
+    },
+    {
+      "name": "1one",
+      "symbol": "ONE",
+      "contract": "0xc0d3b63dac80270379c87fa9dcab3421a5b2aba3",
+      "tx": "0x3a9f9e07d02f6c2aa9e1ca23e4ba27e4f8a803283cda8451f5ea65bb2780d647",
+      "created": "2026-08-02"
+    },
+    {
+      "name": "hahahaha4",
+      "symbol": "HAHA",
+      "contract": "0x7d9eeaf34246adf90b0ac9ae1525049249347ba3",
+      "tx": "0x103b8a55bdfc718c6c5bbd3e8c9f7eb64e234c63162c90ea08eab8c0fdbee0d7",
+      "created": "2026-08-02"
+    },
+    {
+      "name": "2two",
+      "symbol": "TWO",
+      "contract": "0x0033cf7b0e3ab5c1baa3509e27e7015743bc1ba3",
+      "tx": "0x381f9a2bf94952214072d9da7118da8769db41da8c51bc59cf4cf13a6d3ef59d",
+      "created": "2026-08-02"
+    },
+    {
+      "name": "Coffee Powered",
+      "symbol": "CAFFEINE",
+      "contract": "0x5a69d0cc5783bd15c437dc329d78319325d13ba3",
+      "tx": "0x7999587aec5e06528aaf033096a3626724611d055d7b6756fbdcfd6ea5219bb7",
+      "created": "2026-08-02"
+    },
+    {
+      "name": "AIUSE",
+      "symbol": "AIU4",
+      "contract": "0xa6700712d8dbba2005ecffd277cec2f14871aba3",
+      "tx": "0x15c6ebc5618cc0fa32531612d8da284ae3f028ba4122ad5d318d0a69cb5dff6e",
+      "created": "2026-08-02"
+    },
+    {
+      "name": "Buy Drunk Stay High",
+      "symbol": "BLZET",
+      "contract": "0xad4f3857808a7c3b420c87d7cfabfe3934c18ba3",
+      "tx": "0x569caf554f5736213caba8ecb6625bcb9b681210667b1a892d6b427e43c4cea7",
+      "created": "2026-07-22"
+    },
+    {
+      "name": "Flawless",
+      "symbol": "FLAW",
+      "contract": "0xe9bd329a1ff8c56c9f44a937863983ec5b81aba3",
+      "tx": "0x5883bafa7e251b0e2520bf6e7e17741c280b9b9ea25d5e1064e9b5ec1f77dafa",
+      "created": "2026-07-20"
+    },
+    {
+      "name": "Way Out",
+      "symbol": "WO",
+      "contract": "0x7811d40ec95015c4571663a2eaaeca58c4412ba3",
+      "tx": "0x5c9a41eb52f9679619e1c6b6761e13f9088842be10921a1fd347c303e875e81d",
+      "created": "2026-07-19"
+    },
+    {
+      "name": "EMERALD TABLETS",
+      "symbol": "EMRLD",
+      "contract": "0x4b89c4263e1dc7c843482b85bff12b142ac4aba3",
+      "tx": "0xbfa4efc8718c565acb891a146199ace11d2407e68a0b831f408186e90802d589",
+      "created": "2026-07-16"
+    },
+    {
+      "name": "REVELATIONS",
+      "symbol": "REV",
+      "contract": "0xaf4721ead1b366b88d21d6a0bfec7b25cb118ba3",
+      "tx": "0x25613dea6113224327bf7fa34d20ade81dd4e558962f669a9f6e4fb60f88117e",
+      "created": "2026-07-15"
+    }
+  ]
+}
