@@ -142,6 +142,7 @@ body{font-size:14px;padding-bottom:68px}
 <div class="card feature"><span class="pill">SUPPORT</span><h3>Always know the next step</h3><p>Buy, manage, refresh status or return to the main offer without hunting through menus.</p></div>
 </section>
 
+<section id="telecom-upgrade" class="section card"><div class="head"><div><h2>Telecom Upgrade Control Center</h2><p>One live software surface for plan selection, checkout routing, provider readiness and service state.</p></div><span class="pill">TELECOM · LIVE</span></div><div class="grid3" id="telecomPlanGrid"><div class="notice">Loading plans…</div></div><div class="grid3" style="margin-top:10px" id="telecomReadinessGrid"></div><div class="actions"><button class="btn primary" id="refreshTelecom">Refresh live readiness</button><a class="btn" href="#tokens">Base token payment</a><a class="btn" href="#account">Account</a></div><div class="notice" id="telecomUpgradeMsg" style="margin-top:10px">Provider-dependent steps remain clearly gated until authorized carrier/RSP/fulfillment credentials are configured.</div></section>
 <section id="faq" class="section card faq">
 <div class="head"><div><h2>Customer help</h2><p>Short answers before you buy.</p></div></div>
 <details open><summary>What is the price?</summary><p>The site advertises $4 activation plus $4/month. Stripe checkout controls the exact transaction terms, taxes and any applicable charges.</p></details>
@@ -157,7 +158,7 @@ body{font-size:14px;padding-bottom:68px}
 <div class="bottom"><div class="bottomIn"><a class="btn" href="#home">Home</a><a class="btn primary" href="https://buy.stripe.com/28E00leF9bjm6Yf09UdIA06">Start eSIM</a><a class="btn green" href="https://buy.stripe.com/9B6eVf1Snafi1DV7CmdIA07">Physical SIM</a></div></div>
 
 <script>
-const APP_VERSION="2026.10.02";
+const APP_VERSION="2026.10.03";
 const API="https://oeql-quantum-telecom-api.onrender.com";
 function announce(msg){try{const e=document.getElementById("heroMsg");if(e){e.textContent=msg;e.classList.add("show")}}catch{}}
 window.addEventListener("error",e=>{if(e&&e.message)announce("A page feature needs attention. Refreshing the live control plane…")});
@@ -324,6 +325,18 @@ document.addEventListener("click",e=>{const b=e.target.closest(".tokenQuickPay")
 renderWalletAssets();
 </script><script>
 (async()=>{try{const j=await fetch(API+"/v1/payments/assets",{cache:"no-store"}).then(r=>r.json());const sel=document.getElementById("tokenPayAsset");if(sel)sel.innerHTML=(j.assets||[]).map(t=>"<option value='"+t.address+"'>"+t.symbol+" — "+t.name+"</option>").join("");const msg=document.getElementById("tokenPayMsg"),btn=document.getElementById("tokenPay");if(btn&&!j.merchant_address_configured){btn.disabled=true;btn.title="Merchant receiving address required"}btn?.addEventListener("click",async()=>{if(!window.ethereum){show(msg,"Open this page in a Base-compatible wallet to continue.");return}if(!j.merchant_address_configured){show(msg,"Token checkout is not executable yet: a merchant receiving address must be configured server-side.");return}show(msg,"Merchant route is configured. A verified token quote and decimals are required before a $4-equivalent transfer can be signed.")});}catch(e){}})();
+</script><script>
+async function loadTelecomUpgrade(){
+ const pg=document.getElementById("telecomPlanGrid"),rg=document.getElementById("telecomReadinessGrid"),msg=document.getElementById("telecomUpgradeMsg");
+ try{
+  const [p,r]=await Promise.all([fetch(API+"/v1/telecom/plans",{cache:"no-store"}).then(x=>x.json()),fetch(API+"/v1/telecom/readiness",{cache:"no-store"}).then(x=>x.json())]);
+  pg.innerHTML=(p.plans||[]).map(x=>"<div class='card feature'><span class='pill'>"+x.delivery.toUpperCase()+"</span><h3>"+x.name+"</h3><p><b>$"+x.activation_usd+" activation</b> + <b>$"+x.monthly_usd+"/mo</b></p><p class='muted'>"+(x.delivery==="digital"?(p.fulfillment.esim==="provider_configured"?"Provider configured":"Provider required"):(p.fulfillment.physical_sim==="provider_configured"?"Fulfillment configured":"Fulfillment provider required"))+"</p><button class='btn primary telecomOrder' data-plan='"+x.id+"'>Start 1-tap checkout</button></div>").join("");
+ rg.innerHTML=Object.entries(r.checks||{}).map(([k,v])=>"<div class='card feature'><b>"+k.replaceAll("_"," ")+"</b><div class='v'>"+(v?"READY":"GATED / REQUIRED")+"</div></div>").join("");
+ msg.textContent=r.ready?"Telecom control plane ready for checkout; provider activation remains explicitly verified at fulfillment time.":"Control plane online. Missing provider credentials remain gated: "+Object.entries(r.checks||{}).filter(([,v])=>!v).map(([k])=>k.replaceAll("_"," ")).join(", ")+".";
+ }catch(e){msg.textContent="Live telecom readiness unavailable; no activation state is fabricated."}
+}
+document.addEventListener("click",async e=>{const b=e.target.closest(".telecomOrder");if(!b)return;const msg=document.getElementById("telecomUpgradeMsg");msg.textContent="Creating checkout session…";try{const j=await fetch(API+"/v1/telecom/order",{method:"POST",headers:{"content-type":"application/json","idempotency-key":"telecom-"+b.dataset.plan+"-"+Date.now()},body:JSON.stringify({planId:b.dataset.plan,customerCountry:document.getElementById("globalCountry")?.value||"US",source:"web"})}).then(x=>x.json());if(j.next?.checkout_url)window.location.href=j.next.checkout_url;else msg.textContent=j.error||"Checkout unavailable."}catch(e){msg.textContent="Checkout route unavailable; no order was marked paid."}});
+document.getElementById("refreshTelecom")?.addEventListener("click",loadTelecomUpgrade);loadTelecomUpgrade();
 </script><script id="universal-sw-registration">if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("/sw.js",{scope:"/"}).catch(()=>{}));}</script><script>(function(){const b=document.getElementById("easyMode");if(!b)return;const k="stellar_easy_mode";function apply(){const on=localStorage.getItem(k)==="1";document.body.style.fontSize=on?"17px":"";document.querySelectorAll(".btn,.select").forEach(x=>{x.style.minHeight=on?"52px":"";x.style.fontSize=on?"17px":""});b.textContent=on?"Disable Easy Mode":"Enable Easy Mode";}b.onclick=()=>{localStorage.setItem(k,localStorage.getItem(k)==="1"?"0":"1");apply()};apply()})();</script><script>
 (function(){
  const state={sweeps:0,lastServerScan:0,lastStatus:"boot"};
