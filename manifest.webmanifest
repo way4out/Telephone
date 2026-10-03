@@ -1,21 +1,20 @@
 {
-  "name":"StellarNet Telecom",
+  "name":"StellarNet Telecom + Universal Atlas",
   "short_name":"StellarNet",
   "start_url":"/#home",
   "scope":"/",
   "display":"standalone",
   "background_color":"#05070b",
   "theme_color":"#05070b",
-  "description":"StellarNet Telecom universal customer control surface with one-tap eSIM, physical SIM, account and Bankr/Base flows.",
+  "description":"StellarNet Telecom plus a free Universal Atlas PWA with Earth, star-catalog, Solar System reference and explicitly simulated multiverse layers.",
   "orientation":"portrait-primary",
-  "categories":["business","communication","utilities"],
+  "categories":["business","communication","utilities","education","science"],
   "lang":"en",
   "dir":"ltr",
-  "icons":[
-    {"src":"/icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
-  ],
+  "icons":[{"src":"/icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}],
   "shortcuts":[
     {"name":"Start eSIM","short_name":"eSIM","description":"Start eSIM service","url":"/#buy","icons":[{"src":"/icon.svg","sizes":"any","type":"image/svg+xml"}]},
-    {"name":"Physical SIM","short_name":"SIM","description":"Order a physical SIM","url":"/#buy","icons":[{"src":"/icon.svg","sizes":"any","type":"image/svg+xml"}]}
+    {"name":"Physical SIM","short_name":"SIM","description":"Order a physical SIM","url":"/#buy","icons":[{"src":"/icon.svg","sizes":"any","type":"image/svg+xml"}]},
+    {"name":"Universal Atlas","short_name":"Atlas","description":"Open Earth, star, Solar System and simulation maps","url":"/atlas.html","icons":[{"src":"/icon.svg","sizes":"any","type":"image/svg+xml"}]}
   ]
 }
