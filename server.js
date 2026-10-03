@@ -683,6 +683,60 @@ const QUANTUM_MODULES=[
 ];
 app.get("/v1/system/registry",(req,res)=>res.json({ok:true,version:"quantum-control-plane-2.0",generated_at:new Date().toISOString(),modules:QUANTUM_MODULES.length,categories:QUANTUM_MODULES.map(([name,scope])=>({name,scope,status:"registered"})),boundaries:{observed_data:"separate",authorized_services:"provider_required",payments:"exact_transfer_verified",physical_reality_override:false}}));
 app.get("/v1/system/health",(req,res)=>res.json({ok:true,status:"operational",version:"quantum-control-plane-2.0",modules:QUANTUM_MODULES.length,api_time:new Date().toISOString(),bankr_configured:Boolean(process.env.BANKR_API_KEY),merchant_configured:Boolean(process.env.TOKEN_MERCHANT_ADDRESS),stripe_configured:Boolean(process.env.STRIPE_SECRET_KEY),persistence:"process_local",boundaries:{observed_data:"separate",simulation_layers:"explicit",payment_settlement:"verification_required",physical_reality_override:false}}));
+
+/* NFTQR v1.0 — 4000 individually addressable, one-time-use QR editions.
+   Storage is process-local unless a durable database is added. This deliberately does not claim
+   blockchain minting; minting is a separate authorized Bankr/contract operation. */
+const NFTQR_TOTAL=4000;
+const nftqr=new Map();
+for(let i=1;i<=NFTQR_TOTAL;i++){
+  const id="SNQR-V1-"+String(i).padStart(4,"0");
+  nftqr.set(id,{id,issued:false,used:false,label:"",destination:"",dark:"#02070b",light:"#ffffff",size:512,secret:crypto.randomBytes(24).toString("hex"),created_at:null,used_at:null});
+}
+function nftqrPublic(x){
+  return {id:x.id,issued:x.issued,used:x.used,label:x.label,redeem_url:x.issued?publicApp+"/v1/nftqr/redeem/"+encodeURIComponent(x.id)+"?k="+x.secret:null,metadata_url:x.issued?publicApp+"/v1/nftqr/metadata/"+encodeURIComponent(x.id):null,created_at:x.created_at,used_at:x.used_at};
+}
+function validUrl(v){try{const u=new URL(String(v));return ["http:","https:"].includes(u.protocol)?u.toString():null}catch{return null}}
+function validHex(v,fallback){return /^#[0-9a-fA-F]{6}$/.test(String(v||""))?String(v):fallback}
+app.get("/v1/nftqr/catalog",(req,res)=>{
+  const all=[...nftqr.values()];
+  res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*","X-Content-Type-Options":"nosniff"})
+    .json({ok:true,version:"1.0.0",network:"Base",total:NFTQR_TOTAL,issued:all.filter(x=>x.issued).length,used:all.filter(x=>x.used).length,available:all.filter(x=>!x.issued).length});
+});
+app.post("/v1/nftqr/create",(req,res)=>{
+  try{
+    const destination=validUrl(req.body?.destination);
+    if(!destination)return res.status(400).json({ok:false,error:"valid_http_destination_required"});
+    const slot=[...nftqr.values()].find(x=>!x.issued);
+    if(!slot)return res.status(409).json({ok:false,error:"inventory_exhausted"});
+    slot.issued=true;slot.label=String(req.body?.label||"StellarNet NFTQR v1.0").slice(0,120);
+    slot.destination=destination;slot.dark=validHex(req.body?.dark,"#02070b");slot.light=validHex(req.body?.light,"#ffffff");
+    slot.size=Math.min(2048,Math.max(256,Number(req.body?.size)||512));slot.created_at=new Date().toISOString();
+    res.status(201).json({ok:true,...nftqrPublic(slot),application:"one_time_qr",network:"Base"});
+  }catch(e){res.status(500).json({ok:false,error:"nftqr_create_failed"});}
+});
+app.get("/v1/nftqr/metadata/:id",(req,res)=>{
+  const x=nftqr.get(String(req.params.id||""));if(!x||!x.issued)return res.status(404).json({ok:false,error:"nftqr_not_found"});
+  res.json({name:x.label+" · "+x.id,description:"StellarNet NFTQR v1.0 one-time digital edition.",external_url:publicApp+"/nftqr-v1.html",image:publicApp+"/v1/nftqr/render/"+encodeURIComponent(x.id),attributes:[{trait_type:"Edition",value:x.id},{trait_type:"One-Time",value:true},{trait_type:"Network",value:"Base"},{trait_type:"Used",value:Boolean(x.used)}]});
+});
+app.get("/v1/nftqr/render/:id",async(req,res)=>{
+  try{
+    const x=nftqr.get(String(req.params.id||""));if(!x||!x.issued)return res.status(404).send("nftqr_not_found");
+    const payload=publicApp+"/v1/nftqr/redeem/"+encodeURIComponent(x.id)+"?k="+x.secret;
+    const png=await QRCode.toBuffer(payload,{type:"png",width:x.size,margin:2,color:{dark:x.dark,light:x.light}});
+    res.set({"Content-Type":"image/png","Cache-Control":"no-store","X-Content-Type-Options":"nosniff"}).send(png);
+  }catch(e){res.status(500).send("qr_render_failed");}
+});
+app.get("/v1/nftqr/redeem/:id",async(req,res)=>{
+  const x=nftqr.get(String(req.params.id||""));
+  if(!x||!x.issued)return res.status(404).send("QR not found");
+  if(String(req.query.k||"")!==x.secret)return res.status(403).send("Invalid QR credential");
+  if(x.used)return res.status(410).send("This 1× QR has already been redeemed");
+  x.used=true;x.used_at=new Date().toISOString();
+  res.set({"Cache-Control":"no-store","X-Content-Type-Options":"nosniff"});
+  res.redirect(303,x.destination);
+});
+
 const server=app.listen(PORT,()=>console.log(`StellarNet Telecom API listening on ${PORT}`));
 process.on("SIGTERM",()=>{console.log("SIGTERM received; draining HTTP server");server.close(()=>process.exit(0));setTimeout(()=>process.exit(1),25000);});
 process.on("SIGINT",()=>server.close(()=>process.exit(0)));
