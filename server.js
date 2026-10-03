@@ -675,7 +675,7 @@ app.get("/v1/universe/live",async(req,res)=>{
   out.latency_ms=Date.now()-started;
   res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*","X-Content-Type-Options":"nosniff"}).json(out);
 });
-const STELLARNET_SYSTEM={name:"StellarNet Unified Control Plane",version:"stellarnet-1.0",domains:["Core OS","Quantum Earth","Atlas","Reality Matrix","Pixel Render","Accounts","Community","Payments","Bankr","Token Layer","Telecom","eSIM","Physical SIM","Wholesale","Security","Diagnostics","Accessibility","Observed Data","Simulation","User State"]};
+const STELLARNET_SYSTEM={name:"StellarNet Unified Control Plane",version:"stellarnet-1.1",organization:"StellarNet LLC",jurisdiction:"Mesa, AZ 85210",domains:["Core OS","Quantum Earth","Atlas","Reality Matrix","Pixel Render","Accounts","Community","Payments","Bankr","Token Layer","Telecom","eSIM","Physical SIM","Wholesale","Security","Diagnostics","Accessibility","Observed Data","Simulation","User State"]};
 app.get("/v1/stellarnet/status",(req,res)=>res.json({ok:true,service:STELLARNET_SYSTEM,api_time:new Date().toISOString()}));
 // Unified Quantum Earth OS control-plane registry and health surface.
 const QUANTUM_MODULES=[
