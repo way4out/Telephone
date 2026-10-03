@@ -10,6 +10,62 @@
 <br><br><b style="color:#fff">Pricing rule for Pass 2:</b> every category receives its own buyer package and a minimum proposed listing floor above $4M; final market price is determined by verified financials, transferable assets, contracts, IP, data rights and buyer bids. The prior $400B figures remain <b>proposed headline asking values</b>, not verified market prices.
 </div>
 </section>
+<section id="stellar-pass3" style="margin:12px 0;padding:18px;border:1px solid #245269;border-radius:18px;background:#040c13;color:#eef8ff;font:14px system-ui,-apple-system,sans-serif">
+<div style="color:#63eaff;font-weight:900;letter-spacing:.12em;font-size:11px">STELLARNET LLC · PASS 3/4 · SUBCATEGORIES + SYSTEM PACKAGES</div>
+<h2 style="margin:6px 0;font-size:27px">Every system is separately packageable</h2>
+<p style="color:#9db2bf;margin:6px 0 12px">Each line below is an <b>indicative proposed package price</b>, not an independent appraisal. A 1-tap purchase requests on-chain settlement in USDC or one of the 22 configured Base token rails; ownership, IP, data, contracts and transfer rights remain subject to definitive sale documents.</p>
+<div id="sn3-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:9px"></div>
+<div style="margin-top:12px;padding:12px;border:1px solid #173d4e;border-radius:12px;background:#06111a">
+<b>1-TAP ON-CHAIN BUY · BANKR-COMPATIBLE TOKEN RAIL</b>
+<div style="color:#9db2bf;font-size:10px;margin-top:4px">Base · USDC default · 22 configured token addresses loaded from the live payment registry. The buyer signs in their wallet; no private key is requested. Bankr supports Base USDC and arbitrary ERC-20 payment configurations, but this StellarNet page only claims Bankr compatibility where the live configuration is actually connected. urlBankr payment documentationhttps://docs.bankr.bot/x402-cloud/config-file/</div>
+<div id="sn3-rail" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:6px;margin-top:9px"></div>
+<div id="sn3-status" style="margin-top:9px;color:#9db2bf">Loading 22-token payment registry…</div>
+</div>
+</section>
+<script>
+(()=>{const A='https://oeql-quantum-telecom-api.onrender.com';let selected='';const packs=[
+['ROLLIN','Marketplace','Buyer/seller accounts · listings · checkout · seller shipping · posts/shares','$12,000,000'],
+['ROLLIN','Commerce Core','Catalog · categories · cart · order state · sales interfaces','$8,000,000'],
+['ROLLIN','Marketplace Infrastructure','Deployment · routes · APIs · eligible source/configuration assets','$6,000,000'],
+['UNIVERSE SIMULATOR','Simulation Core','3D universe renderer · controls · telemetry · public-data bridge','$12,000,000'],
+['UNIVERSE SIMULATOR','Atlas / Reality Maps','Atlas · map layers · derived/model/speculative boundaries','$8,000,000'],
+['UNIVERSE SIMULATOR','Quantum Visualization','Quantum field UI · coherence/phase models · node visualizations','$6,000,000'],
+['QUANTUM','Quantum Control Plane','Quantum software concepts · orchestration interfaces · models','$12,000,000'],
+['QUANTUM','Quantum Research Stack','R&D interfaces · mathematical models · documentation','$8,000,000'],
+['QUANTUM','Quantum UI Systems','Command surfaces · telemetry · control dashboards','$6,000,000'],
+['TELECOM','Telecom Commerce','eSIM/SIM purchase UI · checkout · receipts · account flows','$12,000,000'],
+['TELECOM','Payment Rails','USDC/Base checkout · token registry · quote/verification services','$8,000,000'],
+['TELECOM','Provisioning Interface','Carrier/provisioning integration software, subject to provider rights','$6,000,000'],
+['HARDWARE + SOFTWARE','Device Platform','Hardware concepts · firmware/software interfaces · specifications','$12,000,000'],
+['HARDWARE + SOFTWARE','Engineering Portfolio','BOM concepts · prototypes · technical documentation','$8,000,000'],
+['HARDWARE + SOFTWARE','Development Stack','Build/deploy tooling · source/configuration assets eligible for transfer','$6,000,000'],
+['AETHER / DEVICE SYSTEMS','AetherOS','DSi-oriented OS/UI software and eligible source assets','$8,000,000'],
+['AETHER / DEVICE SYSTEMS','AetherCore','Device-system software modules and eligible development assets','$8,000,000'],
+['AETHER / DEVICE SYSTEMS','Device UX','Touch, accessibility, controls and system interfaces','$6,000,000'],
+['OEQL PLATFORM','OEQL Applications','OEQL software applications and eligible modules','$12,000,000'],
+['OEQL PLATFORM','OEQL Infrastructure','Routes · APIs · deployment configuration · eligible source assets','$8,000,000'],
+['OEQL PLATFORM','OEQL Commerce','Payments · account flows · product/service interfaces','$6,000,000'],
+['STELLARNET CORE','Corporate Digital Package','Brand/domain/software/infrastructure only to extent owned and transferable','$25,000,000'],
+['STELLARNET CORE','Command Center','Executive command UI · site map · operating interfaces','$8,000,000'],
+['STELLARNET CORE','Public Web Portfolio','Public pages · navigation · discovery/sale interfaces','$6,000,000'],
+['DATA + DIGITAL INFRASTRUCTURE','Data Systems','Eligible datasets · schemas · metadata · documentation','$8,000,000'],
+['DATA + DIGITAL INFRASTRUCTURE','API Systems','Eligible APIs · integration contracts/configuration · deployment assets','$8,000,000'],
+['DATA + DIGITAL INFRASTRUCTURE','Deployment Systems','Render/GitHub deployment configuration and eligible automation','$6,000,000'],
+['DEVELOPMENT / R&D','Research Portfolio','Research notes · prototypes · specifications · technical documentation','$8,000,000'],
+['DEVELOPMENT / R&D','Prototype Portfolio','Eligible experimental software and proof-of-concept systems','$6,000,000'],
+['DEVELOPMENT / R&D','Integration Portfolio','Cross-project interfaces and eligible integration assets','$4,000,000']
+];
+function esc(x){return x.replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+const grid=document.getElementById('sn3-grid');
+grid.innerHTML=packs.map((p,i)=>'<article style="padding:12px;border:1px solid #173d4e;border-radius:12px;background:#061019"><div style="color:#65f2a4;font-size:10px;font-weight:900">'+esc(p[0])+'</div><b style="font-size:15px">'+esc(p[1])+'</b><p style="color:#b9ccd5;font-size:10px;line-height:1.35">'+esc(p[2])+'</p><div style="font-size:18px;font-weight:950">'+p[3]+'</div><button class="sn3-buy" data-price="'+p[3].replace(/[$,]/g,'')+'" data-name="'+esc(p[0]+' — '+p[1])+'" style="margin-top:8px;width:100%;padding:10px;border:1px solid #63eaff;border-radius:10px;background:#087f9b;color:#fff;font-weight:900;cursor:pointer">1-TAP BUY · USDC</button></article>').join('');
+async function j(u,o){const r=await fetch(u,o);const x=await r.json();if(!r.ok)throw Error(x.error||'request failed');return x}
+async function load(){try{const x=await j(A+'/v1/payments/assets',{cache:'no-store'});const arr=(x.assets||x.tokens||x.payment_assets||[]).slice(0,22);const rail=document.getElementById('sn3-rail');rail.innerHTML=arr.map((t,i)=>'<button class="sn3-token" data-a="'+(t.address||'')+'" data-s="'+esc(t.symbol||t.name||('TOKEN '+(i+1)))+'" style="padding:8px;border:1px solid #20485a;border-radius:9px;background:#081721;color:#eef8ff;cursor:pointer"><b>'+esc(t.symbol||t.name||('TOKEN '+(i+1)))+'</b><br><small style="color:'+(t.payment_enabled===false?'#ffb3b3':'#65f2a4')+'">'+(t.payment_enabled===false?'CONFIG CHECK':'PAY ENABLED')+'</small></button>').join('');
+document.querySelectorAll('.sn3-token').forEach(b=>b.onclick=()=>{selected=b.dataset.a;document.getElementById('sn3-status').textContent='Selected '+b.dataset.s+' · 1-tap package buttons will quote the exact on-chain amount.'});
+document.getElementById('sn3-status').textContent='Loaded '+arr.length+' configured Base payment rails. USDC is the default when configured.';
+}catch(e){document.getElementById('sn3-status').textContent='Payment registry unavailable: '+e.message}}
+async function buy(price,name){const s=document.getElementById('sn3-status');try{if(!window.ethereum)throw Error('Connect a Base-compatible wallet.');const acct=(await ethereum.request({method:'eth_requestAccounts'}))[0];await ethereum.request({method:'wallet_switchEthereumChain',params:[{chainId:'0x2105'}]});let tok=selected;if(!tok){const x=await j(A+'/v1/payments/assets',{cache:'no-store'});const arr=(x.assets||x.tokens||x.payment_assets||[]).filter(t=>t.payment_enabled!==false);const usdc=arr.find(t=>(t.symbol||'').toUpperCase()==='USDC');tok=(usdc||arr[0])?.address}if(!tok)throw Error('No payment-enabled token is configured.');const q=await j(A+'/v1/payments/quote?tokenAddress='+encodeURIComponent(tok)+'&amountUsd='+price,{cache:'no-store'});s.textContent='Confirm '+q.amount_human+' '+q.token.symbol+' for '+name+' · '+price+' USD package.';const data='0xa9059cbb'+q.merchant_address.replace(/^0x/,'').padStart(64,'0')+BigInt(q.amount_base_units).toString(16).padStart(64,'0');const tx=await ethereum.request({method:'eth_sendTransaction',params:[{from:acct,to:tok,data,value:'0x0'}]});s.textContent='Submitted '+tx.slice(0,14)+'… verifying Base settlement…';for(let i=0;i<60;i++){await new Promise(r=>setTimeout(r,2000));try{const v=await j(A+'/v1/payments/verify-transfer',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({txHash:tx,tokenAddress:tok,from:acct,amountUnits:q.amount_base_units,amountUsd:Number(price)})});if(v.confirmed){s.textContent='✓ Confirmed on Base: '+tx+' · Package purchase recorded for definitive-document transfer.';return}}catch{}}s.textContent='Transaction submitted; confirmation still pending: '+tx}catch(e){s.textContent=e.message||'Purchase cancelled'}}
+document.querySelectorAll('.sn3-buy').forEach(b=>b.onclick=()=>buy(Number(b.dataset.price),b.dataset.name));load()})();
+</script>
 <section id="stellar-sale" style="margin:12px 0;padding:18px;border:1px solid #245269;border-radius:18px;background:linear-gradient(135deg,#06111a,#081c27);color:#eef8ff;font:14px system-ui,-apple-system,sans-serif">
 <div style="color:#63eaff;font-weight:900;letter-spacing:.12em;font-size:11px">STELLARNET LLC · 1-TAP ACQUISITION</div>
 <h2 style="margin:6px 0;font-size:28px">Choose the transferable package</h2>
