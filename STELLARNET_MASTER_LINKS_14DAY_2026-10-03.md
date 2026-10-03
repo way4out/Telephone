@@ -1,0 +1,448 @@
+# StellarNet Master Source Index — 14-Day Complete Build Ledger
+Generated 2026-10-03. Window: 2026-09-19 through 2026-10-03 UTC.
+
+## Primary paths
+- https://www.stellarnetllc.com/
+- https://way4out.github.io/Rollin/
+- https://stellarnet-marketplace.onrender.com/
+- https://stellarnet-nftqr.onrender.com/
+- https://stellarnet-nftqr-public.onrender.com/
+- https://stellarnet.onrender.com/
+- https://stellarnet-limited-free.onrender.com/
+- https://oeql-quantum-telecom-live.onrender.com/
+- https://oeql-quantum-telecom.onrender.com/
+- https://oeql-quantum-telecom-phone.onrender.com/
+- https://oeql-quantum-telecom-7g-plus.onrender.com/
+- https://oeql-quantum-telecom-api.onrender.com/
+- https://oeql-bank-forever.onrender.com/
+- https://bankr.bot/u/0x13653b6b8bd4b274da565faf6fa894e3418a6d10/apps/oeql-bank-forever
+- https://github.com/way4out/OEQL
+- https://github.com/way4out/Rollin
+- https://github.com/way4out/Telephone
+- https://github.com/way4out/AetherOS
+
+## Recursive lane model
+**POINHI:** 69^n logical lanes at recursion depth n. Runtime materialization remains bounded by configured compute/storage/rate limits.
+
+## Complete GitHub commit ledger
+### way4out/OEQL — 100 commits
+- 2026-10-03T13:45:10Z — Remove stale lockfile blocking Render static deploy — https://github.com/way4out/OEQL/commit/96f40cf4aad575a5ac12b0f06f637f0d918ea342
+- 2026-10-03T13:44:54Z — Add POINHI resonance readout and evidence boundaries — https://github.com/way4out/OEQL/commit/d4d0404b7f83d7b65d2895554191f2a4cba15f5c
+- 2026-10-03T13:44:48Z — Upgrade POINHI resonance and NFTQR homepage control surface — https://github.com/way4out/OEQL/commit/1d0fffef5c9501de71bf996a71fb3793ffabd302
+- 2026-10-03T13:34:21Z — Add recursive exponential POINHI gate coin triangulation architecture — https://github.com/way4out/OEQL/commit/a215108527708a07b846d5f93d1c837d127d1a56
+- 2026-10-03T13:32:20Z — Add gate-as-coin Yin Yang Yong harmony and Bankr integration architecture — https://github.com/way4out/OEQL/commit/8a6b22c7aac3168484280ecdecd3802f4ee73bdf
+- 2026-10-03T13:31:16Z — Add recursive Yin Yang Yong braid rope architecture for quantum radio applications — https://github.com/way4out/OEQL/commit/5768db6b801cb0447051a74b69e1f1a2bc975a9b
+- 2026-10-03T13:28:11Z — Add full 23-gate triangulated Yin Yang Yong lane matrix and quantum-thread flow — https://github.com/way4out/OEQL/commit/b659092cdbb760d1d9077d999f3a994f866e3c7e
+- 2026-10-03T13:26:07Z — Upgrade POINHI architecture to full 23-gate Yin Yang Yong system — https://github.com/way4out/OEQL/commit/a8e856e2b20df5472e9836c242d262c4ce1ad4b2
+- 2026-10-03T13:25:25Z — Add Yin Yang Yong one-token fractional dispersion architecture — https://github.com/way4out/OEQL/commit/de4eb2ba7518cb181416f7a469642068466a9bef
+- 2026-10-03T13:22:27Z — Add POINHI Yin Yang Yong triad architecture across 22 gates and reusable surfaces — https://github.com/way4out/OEQL/commit/7eeb27ea7a125f01d7656334e96e6c494cf80a7b
+- 2026-10-03T13:20:25Z — Add 11-lane Bankr resonance mapping across POINHI 22-gate architecture — https://github.com/way4out/OEQL/commit/32bc7cc153be593591e25a2b708c1c50e808006b
+- 2026-10-03T13:19:08Z — Define POINHI full 22-gate architecture and fail-closed release policy — https://github.com/way4out/OEQL/commit/a3fe67153dde64eea5c489afb0bf45dbcde44b45
+- 2026-10-03T13:13:52Z — Add POINHI v12 launch and infrastructure manifest — https://github.com/way4out/OEQL/commit/bc63bfcc76b5467504b33eb2cad0bc298d9b95f2
+- 2026-10-03T13:13:48Z — Add v12 POINHI and NFTQR Base token-gating control plane — https://github.com/way4out/OEQL/commit/db5fcb6a35f05053675b7f944b03dd6b3f3473ee
+- 2026-10-03T13:12:48Z — Fix OEQL Forever server syntax error found in 123-point scan — https://github.com/way4out/OEQL/commit/34c45cd4b466563228095a37eb0c8b9b3a00e479
+- 2026-10-02T09:10:32Z — Build out all 15 modules with unified app web mobile control surfaces — https://github.com/way4out/OEQL/commit/0d7546ae2e26b216416a5bb47a955f4347dbfce3
+- 2026-10-02T08:36:46Z — Enable quantum control-plane across OEQL application modules and IBM integration — https://github.com/way4out/OEQL/commit/d865bc76bbcceb3a785707f351b12b1efdb35aa4
+- 2026-10-02T08:34:59Z — Connect OEQL physical quantum execution directly to IBM Quantum REST API — https://github.com/way4out/OEQL/commit/c3a5e78af0907e48b56aa36bd5c5cc043be33741
+- 2026-10-02T08:30:16Z — Add authorized physical QPU bridge and hardware status endpoints — https://github.com/way4out/OEQL/commit/fcf4e3f4ccb6123ad140d8731b4614f0c0f55efd
+- 2026-10-02T08:27:26Z — Add 15-module launcher — https://github.com/way4out/OEQL/commit/5ae457c6669c40609c6fb663e124bf8eb964aef2
+- 2026-10-02T08:27:20Z — Add standalone module route — https://github.com/way4out/OEQL/commit/5c5996237063433fd366033dab2626979c06ae64
+- 2026-10-02T08:21:12Z — Add $1 archived database search product and paid query endpoint — https://github.com/way4out/OEQL/commit/a1db173902b53f125a2481fe86f9cdf8f2330f7c
+- 2026-10-02T08:18:18Z — Expose federated universal data sources in StellarNet UI — https://github.com/way4out/OEQL/commit/be880ddd988a09e0377906a551b0723787ffda92
+- 2026-10-02T08:18:10Z — Expand StellarNet universal data federation layer — https://github.com/way4out/OEQL/commit/ab54c232161940879e1d7d9c665c80a452c15bf2
+- 2026-10-02T08:16:26Z — Add live universal data hub to StellarNet game — https://github.com/way4out/OEQL/commit/80d53e39d48cfc00e39a72e5186e2ab6f7463a50
+- 2026-10-02T08:16:19Z — Add universal data hub for StellarNet game — https://github.com/way4out/OEQL/commit/86310e3e87accd80f5e10c90e9d48fc5f3959e2e
+- 2026-10-02T08:15:20Z — Upgrade StellarNet realtime game experience — https://github.com/way4out/OEQL/commit/2c6ea759167d2e2c1081484a5a70b1cb50b09d2d
+- 2026-10-02T08:13:33Z — Fix realtime arena runtime dependency — https://github.com/way4out/OEQL/commit/6d8ada26c63e9ea20ac6e0984caee2582e9433f1
+- 2026-10-02T08:12:20Z — Upgrade arena networking with room isolation, events, energy and server-authoritative state — https://github.com/way4out/OEQL/commit/9771694c913bdd13e7029330e30738961abcf2a2
+- 2026-10-02T08:11:41Z — Upgrade Universe with immersive live missions and world event HUD — https://github.com/way4out/OEQL/commit/05a8724979204ea06619a5942b05a48ec6d70889
+- 2026-10-02T08:10:22Z — Connect Universe arena to realtime WebSocket multiplayer — https://github.com/way4out/OEQL/commit/ddbf973adbacaf414cc57bf9157277b21ea9defe
+- 2026-10-02T08:10:15Z — Add authoritative realtime multiplayer WebSocket arena — https://github.com/way4out/OEQL/commit/f8c11591e8dea34c46f1d247aadd05171c9a26b1
+- 2026-10-02T08:09:43Z — Add community arena gameplay layer — https://github.com/way4out/OEQL/commit/afbcc2f5206d7cb7ab9e59fa105c1071f069fa05
+- 2026-10-02T08:09:10Z — Upgrade Universe into playable quantum game lab — https://github.com/way4out/OEQL/commit/e2ff3764db4664f560803b61acb1368b483085bd
+- 2026-10-02T08:08:21Z — Upgrade Universe runtime with Chronovisor-inspired resonance vector layer — https://github.com/way4out/OEQL/commit/73ffe4b3d935a04cfedf02bcbb08b9ae8dffaf4e
+- 2026-10-02T08:05:57Z — Use explicit Base native-token amounts for onchain checkout — https://github.com/way4out/OEQL/commit/ffd6f7ace8551dad87c5496eb4e715d372301a64
+- 2026-10-02T08:05:53Z — Add direct Base wallet onchain pay flow — https://github.com/way4out/OEQL/commit/4ef3e07d8ae1f94aeb2d26e162432a41c8e2163a
+- 2026-10-02T08:04:44Z — Integrate Base and Coinbase-compatible wallet connection — https://github.com/way4out/OEQL/commit/54156ed43cf2de45cf8beb7b0dc187d3cc354e6c
+- 2026-10-02T08:03:50Z — Create OEQL Universe pay-to-play simulator — https://github.com/way4out/OEQL/commit/88deaee73f3f04485889cd969f0902286740324a
+- 2026-10-02T08:03:40Z — Add OEQL Universe token data and pay-per-customization checkout — https://github.com/way4out/OEQL/commit/d27b654706dedda8776069825f705ca4fe0d89a4
+- 2026-10-02T08:01:03Z — Make OEQL homepage the shareable marketplace app — https://github.com/way4out/OEQL/commit/988b4f6f59e06e945286acd109eb1bf313af893e
+- 2026-10-02T07:59:17Z — Cache full buyable catalog for instant web and mobile render — https://github.com/way4out/OEQL/commit/d79e828bf04f511f83ccb163bf4590d29e2eb5f7
+- 2026-10-02T07:59:13Z — Render all verified buyables across web and mobile — https://github.com/way4out/OEQL/commit/e15f47868af3ddaffbb6a011e01d863f1b51dcf7
+- 2026-10-02T07:57:10Z — Redesign OEQL marketplace for instant cached-first UI — https://github.com/way4out/OEQL/commit/93a21213bd1f4d5a343651aad5cb847a6c1fd493
+- 2026-10-02T07:55:30Z — Make storefront load instantly with cached catalog and fast revalidation — https://github.com/way4out/OEQL/commit/1ec2b51a10f5145a19dbefe750e1a766e9bd731d
+- 2026-10-02T07:52:29Z — Fix duplicate webhook session declaration — https://github.com/way4out/OEQL/commit/256b5f83af0fb137004cba1cafa9f4b2997265c7
+- 2026-10-02T07:51:44Z — Update OEQL storefront for verified offers and disclosed 4.4% checkout fee — https://github.com/way4out/OEQL/commit/b1297cd0b7a8661e3a83d3ea7cdec16e25c9eda0
+- 2026-10-02T07:51:34Z — Fix webhook syntax after real catalog checkout update — https://github.com/way4out/OEQL/commit/36c582f347280b634acec06d7ea88894f10d898f
+- 2026-10-02T07:51:23Z — Make OEQL catalog real-sale only with 4.4% checkout fee and verified order flow — https://github.com/way4out/OEQL/commit/c585e5a1008ba4a7ed0461c4fd54ec39d4d68c42
+- 2026-10-02T07:46:41Z — Expose full catalog API with legal sale controls and one-tap links — https://github.com/way4out/OEQL/commit/5a4e5521a14aea3a78fc38a325ea752464267ba8
+- 2026-10-02T07:45:26Z — Add buyer email capture and 4444x storefront display — https://github.com/way4out/OEQL/commit/702aaad1771317edf3ec0d829c36498460a40512
+- 2026-10-02T07:45:22Z — Expand marketplace to 4444x and collect buyer shipping/email details — https://github.com/way4out/OEQL/commit/6d1c55dd2272041e2eaa831f9a059a0fceeb7cd8
+- 2026-10-02T07:41:44Z — Set marketplace capacity multiplier to 796x — https://github.com/way4out/OEQL/commit/c000ac5167219fdb973c106387b510b2947c04c8
+- 2026-10-02T07:41:37Z — Update marketplace capacity display — https://github.com/way4out/OEQL/commit/8fec2f28138818dd19b41ac4dce2b252d107b59f
+- 2026-10-02T07:41:21Z — Expand capacity 4x and fully plan telecom legal sales controls — https://github.com/way4out/OEQL/commit/a99fcf7b48c57d91ff7569750418d5d4db93fd4c
+- 2026-10-02T07:40:10Z — Add QR receipt generation dependency — https://github.com/way4out/OEQL/commit/8c45aadcf56e61b510307be3b96f889339c62670
+- 2026-10-02T07:40:08Z — Update catalog UI to 199x and expose receipt QR path — https://github.com/way4out/OEQL/commit/d09a8d371cb1d6a816cdf05a3e08cfd368ed2b0d
+- 2026-10-02T07:40:06Z — Expand catalog to 199x with live inventory, per-item pricing, receipts and QR — https://github.com/way4out/OEQL/commit/01bfab92fd580364ee2fa69af751ab47cde89be2
+- 2026-10-02T07:37:56Z — Show 111x expanded buyable catalog capacity — https://github.com/way4out/OEQL/commit/b797045376fb93de49dd81258aecd3e11aed2cdc
+- 2026-10-02T07:37:50Z — Expand catalog to 111x capacity with one-tap checkout — https://github.com/way4out/OEQL/commit/8357063eb225d18469a899dc9d7800dda5849870
+- 2026-10-02T07:36:24Z — Add 23 catalog sorts search pagination images and 1-tap browsing — https://github.com/way4out/OEQL/commit/1e9000f42630d554bf01ed1e58dad208e3e2a8af
+- 2026-10-02T07:35:59Z — Expand catalog capacity 100x with 23 sorts and name search — https://github.com/way4out/OEQL/commit/95d4a3f86dd268e44b956f2000b2ce5e26d8ff8e
+- 2026-10-02T07:33:48Z — Fully enrich every catalog item with names descriptions images and applicable metadata — https://github.com/way4out/OEQL/commit/b0ed3bdeb97bcc6b341e9c48e70ab5bc31dbfb26
+- 2026-10-02T07:32:45Z — Give every generated catalog item a real customer-facing name — https://github.com/way4out/OEQL/commit/e5f8e3ac84ba0405d7c2780423f1ebfac033ad79
+- 2026-10-02T07:31:07Z — Prioritize my items across available OEQL catalog data — https://github.com/way4out/OEQL/commit/2af65f33f91831d8c394ae28239b8f7d2bd04587
+- 2026-10-02T07:30:14Z — Frontend-only one-tap buy marketplace redesign — https://github.com/way4out/OEQL/commit/ba25a7fe26221463636730125bc72be7f749450d
+- 2026-10-02T07:28:37Z — Compact OEQL universal web app redesign — https://github.com/way4out/OEQL/commit/179748cbf855e7bc532d75adffe4f515d349ce80
+- 2026-10-02T07:27:10Z — Create immersive animated telecom-first OEQL experience — https://github.com/way4out/OEQL/commit/1f717947b5ee0ae12abc335ca87e91c8f3eb6c3e
+- 2026-10-02T07:25:32Z — Reorganize OEQL for human-friendly mobile-first operations — https://github.com/way4out/OEQL/commit/f4ba04bdbcccf5cf0fa8da91f0ddf1c89813d901
+- 2026-10-02T07:21:40Z — Fix and fully integrate direct 15-module app links — https://github.com/way4out/OEQL/commit/130cadd677d400e15a4e8e25d2664f08729089ed
+- 2026-10-02T07:15:40Z — Enable universal 1-tap catalog checkout and provider-gated fulfillment — https://github.com/way4out/OEQL/commit/95fdd790aeaf8c7412bc4a4c59100c7ac4b8289e
+- 2026-10-02T07:10:21Z — Make public telecom headline primary and expose $4+$4 offer — https://github.com/way4out/OEQL/commit/14b4786fc761c56ba867b4ebde2d4b9ab0ed26bf
+- 2026-10-02T07:08:34Z — Integrate PayGoSIM storefront and accurate $4+$4 telecom status — https://github.com/way4out/OEQL/commit/ccd091974be5383d604a9b8a3462b2e9adc342b7
+- 2026-10-02T06:50:25Z — Gate physical SIM checkout on verified 1PSIM configuration — https://github.com/way4out/OEQL/commit/280a5ff90d7d2adbbf58f394836b06e12713cd82
+- 2026-10-02T06:50:18Z — Wire production 1PSIM physical SIM fulfillment adapter — https://github.com/way4out/OEQL/commit/970c4d11eae72f988ecf796a1100929d99f1f403
+- 2026-10-02T06:38:23Z — Add Printful catalog checkout fulfillment and tracking flow — https://github.com/way4out/OEQL/commit/1e50f78caa7c7fc6535a4de01ab9e8440824aadd
+- 2026-10-02T06:35:11Z — Enable marketplace 1-tap checkout, 44,400 pagination, and supplier capacity UI — https://github.com/way4out/OEQL/commit/4c6dc23cb0e6873cf3f397d3f484c828f8eb3780
+- 2026-10-02T06:35:03Z — Add dropship provider registry, catalog capacity, and 4% platform fee metadata — https://github.com/way4out/OEQL/commit/7fbdd80830179c954b81a06c3aab1c6a807b9959
+- 2026-10-02T06:32:18Z — Paginate 100x marketplace catalog for web and mobile — https://github.com/way4out/OEQL/commit/fa29ed45b2968032f57a4fa19782a2c62c708bc1
+- 2026-10-02T06:32:14Z — Expand marketplace UI to 100x catalog capacity — https://github.com/way4out/OEQL/commit/4276277e8b87d5e0d215ebd01e4b48cdf9d27bc5
+- 2026-10-02T06:32:08Z — Fix 100x catalog individual pricing — https://github.com/way4out/OEQL/commit/e443bb9c6497d12bcf0712a8fb95372ed4d04031
+- 2026-10-02T06:31:57Z — Expand marketplace to 100x individual priced catalog capacity — https://github.com/way4out/OEQL/commit/308f7d72860204fdee2fcaefd66bc568b615e98b
+- 2026-10-02T06:28:42Z — Publish 444 individually buyable SKU catalog across web and mobile — https://github.com/way4out/OEQL/commit/1ce5f15ef7548730b8639831e0ccdfbd7c1d7496
+- 2026-10-02T06:28:36Z — Add 444 individually buyable OEQL marketplace SKUs with shipping-aware checkout — https://github.com/way4out/OEQL/commit/0cea941d378481d85db126e3b058dcb3e9943220
+- 2026-10-02T06:27:28Z — Add hardened public one-tap buying UI — https://github.com/way4out/OEQL/commit/6d6c693347d6b88a6900cb744a012f780e68dd2a
+- 2026-10-02T06:27:19Z — Harden public one-tap buy catalog and allowlisted checkout — https://github.com/way4out/OEQL/commit/d325e9141c336641c527bdb22f989428a9258447
+- 2026-10-02T06:26:10Z — Add unified production platform health verification — https://github.com/way4out/OEQL/commit/dd28d481f2608655ba64e7462c25c1b3ca801212
+- 2026-10-02T06:25:04Z — Upgrade unified OEQL app web mobile control plane — https://github.com/way4out/OEQL/commit/799506b19ad3fb339424ff33269bba3f0409da70
+- 2026-10-02T06:24:28Z — Integrate individual quantum module endpoints into web and mobile UI — https://github.com/way4out/OEQL/commit/2871103f541f6f76d9e50e22426eaacef7278c49
+- 2026-10-02T06:23:35Z — Add individually executable quantum module targets 01-015 — https://github.com/way4out/OEQL/commit/341bb6f7645a6c326c476592c3f0588937c90e45
+- 2026-10-02T06:22:25Z — Add unified full 15-module execution pass — https://github.com/way4out/OEQL/commit/5a434fa499a0ab48738b547ce950a8e163b027bb
+- 2026-10-02T06:21:33Z — Add full 15-module quantum verification endpoint — https://github.com/way4out/OEQL/commit/ff2d0d323c6ea74668651cd6738b67bba81154da
+- 2026-10-02T06:20:05Z — Add direct links for all 15 OEQL modules — https://github.com/way4out/OEQL/commit/dc5221ed0e81842a8b6d9152b87703d973e53a82
+- 2026-10-02T06:19:17Z — Add unified 15-module production operations console — https://github.com/way4out/OEQL/commit/fc6a5566db9b657ff1d9dd7d6b43c29a9d6858bf
+- 2026-10-02T06:19:10Z — Upgrade all 15 OEQL production modules and operations API — https://github.com/way4out/OEQL/commit/11d089fa69d0971750fd51879a92923a13d6931c
+- 2026-10-02T06:17:00Z — Complete installable PWA metadata — https://github.com/way4out/OEQL/commit/6c10e2c609423a6e2d51c9d9100822db30efa61c
+- 2026-10-02T06:16:55Z — Add installable PWA app icon — https://github.com/way4out/OEQL/commit/a14dc61b78053de99e9ded96dc4b8ea207824cab
+- 2026-10-02T06:15:41Z — Add complete quantum job submission console — https://github.com/way4out/OEQL/commit/dfb9c121ff255602055806ab944e5acdfdd70cdc
+- 2026-10-02T06:15:08Z — Complete quantum job control-plane orchestration and reality gates — https://github.com/way4out/OEQL/commit/7ee48e423d63d0002bf588fadf8e5e9b6ce01c47
+- 2026-10-02T06:14:36Z — Add vendor-agnostic quantum provider registry and IBM readiness — https://github.com/way4out/OEQL/commit/1574ee4d0113e6890c5027a834618ddce4769591
+
+### way4out/Rollin — 100 commits
+- 2026-10-03T13:49:07Z — Expand marketplace to 69^n lanes and one-tap purchase model — https://github.com/way4out/Rollin/commit/8cb1bc5935295856b3f2aacb314aa04e6697a5f1
+- 2026-10-03T13:48:56Z — Add machine-readable StellarNet master link registry — https://github.com/way4out/Rollin/commit/c7a77d2daa1c50716bbe722d5cc7e337a74f7860
+- 2026-10-03T13:48:54Z — Add StellarNet master source link index and 7-day build map — https://github.com/way4out/Rollin/commit/cd18094556264d45915e5e254ee091ed0e4a3337
+- 2026-10-03T13:48:31Z — Add one-tap buy action across StellarNet marketplace listings — https://github.com/way4out/Rollin/commit/8c634f58d44a60f4e2f9f2a36ea86a06d8b791cf
+- 2026-10-03T13:17:51Z — Add StellarNet marketplace launch and settlement manifest — https://github.com/way4out/Rollin/commit/d1b6bd3254e8cd16248e6766601706cdfb79d8ec
+- 2026-09-30T01:37:59Z — Add live AI control center — https://github.com/way4out/Rollin/commit/7c421d6028853ea04a238538966448877792ca0b
+- 2026-09-30T01:36:44Z — Build ai/README.md — https://github.com/way4out/Rollin/commit/37ffc47fe57b5460487e3bf09fcddcacaf094d77
+- 2026-09-30T01:36:42Z — Build ai/control-plane.html — https://github.com/way4out/Rollin/commit/2b387bbb6d66c846ff01948e906c7dca2157a318
+- 2026-09-30T01:36:40Z — Build ai/control-plane.json — https://github.com/way4out/Rollin/commit/d8a238a42aee45028d3ba48fe8959e257543984c
+- 2026-09-30T01:36:04Z — Add ai AI experience — https://github.com/way4out/Rollin/commit/c61e06bd2977ed73a5442785bcf25f7e359b19f9
+- 2026-09-30T01:36:01Z — Add agents AI experience — https://github.com/way4out/Rollin/commit/04dac7d32c7dae9b3b45160e97f48562d2cf0815
+- 2026-09-30T01:34:18Z — Build OEQL Forever monetization and control-plane landing site — https://github.com/way4out/Rollin/commit/967e6eb18a447b78603a9c2a61c9639d4f274150
+- 2026-09-30T01:32:37Z — Add machine-readable StellarNet verification record — https://github.com/way4out/Rollin/commit/8bce61698a1bb8384a82bc276c3f246ba7bc41c7
+- 2026-09-30T01:32:33Z — Add StellarNet verification mode — https://github.com/way4out/Rollin/commit/a4ee1d8a070fdd0cac4a852b11a436a981d8cb82
+- 2026-09-30T01:27:43Z — Add public StellarNet production status indicators — https://github.com/way4out/Rollin/commit/f01d8694b1fc18ef3d1c84f26fe1ceefbedf3569
+- 2026-09-30T01:25:39Z — Add ICANN-REGISTRY-READINESS.md — https://github.com/way4out/Rollin/commit/0dbba67e37bfc13ffdefaa70ef6ba5b362d68597
+- 2026-09-30T01:25:37Z — Add OEQL-URI-SCHEME-DRAFT.md — https://github.com/way4out/Rollin/commit/6d938c4ad9ae51d1df34e7d3ccb346f7c0790af4
+- 2026-09-30T01:23:14Z — Add OEQL Forever unbounded namespace specification — https://github.com/way4out/Rollin/commit/db3ad25e25692d8c679b72a1a11f5f3dbff0d884
+- 2026-09-30T01:23:12Z — Strengthen OEQL Forever lease and maximum-rights contract model — https://github.com/way4out/Rollin/commit/a93317045ee0083315be03fc0c0a3d6bf2e4cd3c
+- 2026-09-30T01:23:09Z — Upgrade OEQL Forever Commons to unbounded lease/authorization UX — https://github.com/way4out/Rollin/commit/abbaee5a120e4129ea002946a7d44ba0879276f9
+- 2026-09-30T01:23:07Z — Replace finite 2^64 surface loop with unbounded cursor engine — https://github.com/way4out/Rollin/commit/f6a0fc3079501d7d5aa06fe5706bc07122fec553
+- 2026-09-30T01:19:02Z — Expand OEQL dimensional address space to 64-bit logical capacity — https://github.com/way4out/Rollin/commit/a2e4453402f2ee16ab3390375a99c538841e4e22
+- 2026-09-30T01:13:05Z — Add 87654-surface dimensional OEQL engine — https://github.com/way4out/Rollin/commit/3958aaa6c8b9cd465c06e9fe01d3cf39ec6f579d
+- 2026-09-30T01:12:47Z — Link dimensional surface engine — https://github.com/way4out/Rollin/commit/6d9c6bf1e23581f5750c916d0d74ccb80a17d487
+- 2026-09-30T01:09:51Z — Add 111 OEQL Forever commercial application surfaces — https://github.com/way4out/Rollin/commit/adfc0bcd3722c6de5acb8d3d455eec1285a1f071
+- 2026-09-30T01:07:11Z — Build MediaFoundry vertical marketplace — https://github.com/way4out/Rollin/commit/23d0e3e03513b63c56489902ea14be449dbc01cb
+- 2026-09-30T01:07:08Z — Build SoundMarket vertical marketplace — https://github.com/way4out/Rollin/commit/dd364befe38ad55131949d6eec46fe8fdb5178ee
+- 2026-09-30T01:07:06Z — Build ArtExchange vertical marketplace — https://github.com/way4out/Rollin/commit/5893de5351cec8a0afa69ecaf7ddcb9e32bed932
+- 2026-09-30T01:07:04Z — Build RareMarket vertical marketplace — https://github.com/way4out/Rollin/commit/8a7c514d60de33ee7699c31e813debad77b1a445
+- 2026-09-30T01:07:02Z — Build BrandMarket vertical marketplace — https://github.com/way4out/Rollin/commit/320c4cfa3c8c3a9197eb364860523ad0670b60db
+- 2026-09-30T01:07:00Z — Build FoodSupply vertical marketplace — https://github.com/way4out/Rollin/commit/86e63e232706b319bade24eb64d7250891164e52
+- 2026-09-30T01:06:58Z — Build StayTrade vertical marketplace — https://github.com/way4out/Rollin/commit/260c543b112d7a53aaed49dbad252d35324d9802
+- 2026-09-30T01:06:55Z — Build TripWorks vertical marketplace — https://github.com/way4out/Rollin/commit/5984a911e108633411cf617182a5f96e5d0d1dac
+- 2026-09-30T01:06:53Z — Build FreightLoop vertical marketplace — https://github.com/way4out/Rollin/commit/889a7021946d066f2442de579c00df681f753542
+- 2026-09-30T01:06:51Z — Build BuildSource vertical marketplace — https://github.com/way4out/Rollin/commit/ecda67e23f2437202707c5b700c9084c0c0d0f0f
+- 2026-09-30T01:06:18Z — Build StockExchange vertical marketplace — https://github.com/way4out/Rollin/commit/f852fb67cdceff0a7df000881739418794694ec8
+- 2026-09-30T01:06:16Z — Build AgriTrade vertical marketplace — https://github.com/way4out/Rollin/commit/1aea8f5cbcb7dbb64e07fd36e8dceebf4313cdb9
+- 2026-09-30T01:06:13Z — Build EnergyWorks vertical marketplace — https://github.com/way4out/Rollin/commit/b83f0f18b1d7febec0d05154418b6f7c7d18ff56
+- 2026-09-30T01:06:11Z — Build IndustrialLot vertical marketplace — https://github.com/way4out/Rollin/commit/464ea6c27ab6ff08c3d28c2f8c92e9cdc67017fe
+- 2026-09-30T01:06:08Z — Build PropertyForge vertical marketplace — https://github.com/way4out/Rollin/commit/0365b39d873b70911d530c37eaecc20a24e51cff
+- 2026-09-30T01:06:06Z — Build MotoVault vertical marketplace — https://github.com/way4out/Rollin/commit/03758566f2c50b14822558a57078decfdf6ba09f
+- 2026-09-30T01:06:04Z — Build MarineHub vertical marketplace — https://github.com/way4out/Rollin/commit/a62a27fe3e73717bdcff129cda54e84b78698565
+- 2026-09-30T01:06:01Z — Build AeroExchange vertical marketplace — https://github.com/way4out/Rollin/commit/3856b8965653b49a1523c9822d4aecd314d4d19f
+- 2026-09-30T01:05:58Z — Build AutoForge vertical marketplace — https://github.com/way4out/Rollin/commit/bc8bcaf026abea078811d438aed1a9df6bd32cdc
+- 2026-09-30T01:05:56Z — Build MarketGrid vertical marketplace — https://github.com/way4out/Rollin/commit/f17e562a1212ab55ed6d201fac7c094758ce5564
+- 2026-09-30T01:05:08Z — Add ten independent revenue surfaces to OEQL Rollin home — https://github.com/way4out/Rollin/commit/c4923cf7db04f6ea9daab3d43445ffdf38de1c00
+- 2026-09-30T01:05:03Z — Build AssetVault revenue website — https://github.com/way4out/Rollin/commit/7c5798c17c39b10719cd3616ff6e95b69924d3e4
+- 2026-09-30T01:05:00Z — Build SupplyLoop revenue website — https://github.com/way4out/Rollin/commit/87beb03123727b94caefa5ba3763fdbe68b5365e
+- 2026-09-30T01:04:57Z — Build TaskForge revenue website — https://github.com/way4out/Rollin/commit/0dbc3a6f88eb2da5d54f4ab5a14dbef91a2fe331
+- 2026-09-30T01:04:55Z — Build DealSpring revenue website — https://github.com/way4out/Rollin/commit/95b758079013914d4420cd389d10210061dfb76a
+- 2026-09-30T01:04:53Z — Build QuantumWorks revenue website — https://github.com/way4out/Rollin/commit/0caab6e43e80e38ff9791aa97c64db9409fb57ae
+- 2026-09-30T01:04:51Z — Build DataHarbor revenue website — https://github.com/way4out/Rollin/commit/4b904285df8f1b770a72803d75441e0562032321
+- 2026-09-30T01:04:49Z — Build SignalFoundry revenue website — https://github.com/way4out/Rollin/commit/003c6f65f76c1cb18915328eca249b26c2077ada
+- 2026-09-30T01:04:46Z — Build FleetMint revenue website — https://github.com/way4out/Rollin/commit/4f9fd47d2fede117be4424a5d95b9d52a6cda7f3
+- 2026-09-30T01:04:44Z — Build GroundForge revenue website — https://github.com/way4out/Rollin/commit/a8f18463b5f3a11482d9b975c7477f7083bc134a
+- 2026-09-30T01:04:40Z — Build Apex Market revenue website — https://github.com/way4out/Rollin/commit/a9064f46ff0bf65ebebd764cc4cf8414956dbc59
+- 2026-09-30T01:04:20Z — Build SignalFoundry revenue website — https://github.com/way4out/Rollin/commit/a4b6784978b3d143b0b0d9f5d583762c87aa2879
+- 2026-09-30T01:04:18Z — Build FleetMint revenue website — https://github.com/way4out/Rollin/commit/b99ec94fab8cc348121792e3a54d4021e8382b62
+- 2026-09-30T01:04:16Z — Build GroundForge revenue website — https://github.com/way4out/Rollin/commit/9123c60b4a4e54dce981b9cdb20900c8b6d18cb6
+- 2026-09-30T01:04:14Z — Build Apex Market revenue website — https://github.com/way4out/Rollin/commit/813b70695a07a46df26df5c511f454fd82c3bed7
+- 2026-09-30T01:00:48Z — Make OEQL Rollin the marketplace home and define case-insensitive aliases — https://github.com/way4out/Rollin/commit/34a1eaef26c8a54822c45cf36e76d27c6c962e08
+- 2026-09-30T01:00:39Z — Add OEQL Rollin home route — https://github.com/way4out/Rollin/commit/335dd3c68a7ec8a9e507540e461e0e10f2e4af6c
+- 2026-09-30T00:58:47Z — Publish OEQL Forever free-use covenant in Rollin terms — https://github.com/way4out/Rollin/commit/40b13541518eff5af3509530280a4c27bf20519b
+- 2026-09-30T00:58:45Z — Make OEQL Forever free-use links and HTTPS fallback explicit — https://github.com/way4out/Rollin/commit/e65a309f594e900474befd198c6f94ec9f46556f
+- 2026-09-30T00:55:31Z — Add OEQL Forever control contract and dark light authorization UI — https://github.com/way4out/Rollin/commit/4455c5c24a794d8a31622c844680260b28683cd5
+- 2026-09-30T00:55:19Z — Define OEQL Forever control contract and authorized-use model — https://github.com/way4out/Rollin/commit/c719493c51d6d5e70ba608f9f186d3a7cbcdf6fb
+- 2026-09-30T00:53:00Z — Publish OEQL Forever Commons Apache license and rights boundary — https://github.com/way4out/Rollin/commit/8d47729df1f7f93304bb2be466bcb82f29cdf687
+- 2026-09-30T00:52:55Z — Add public license and stewardship terms to Forever Commons — https://github.com/way4out/Rollin/commit/7e387e6d497b8427359a989d79c1721845fe0403
+- 2026-09-30T00:51:12Z — Build free OEQL Forever Commons naming layer — https://github.com/way4out/Rollin/commit/84228d45e622cc2e255d68c8065bb38c858444d2
+- 2026-09-30T00:48:09Z — Publish OEQL Forever control plane from Rollin — https://github.com/way4out/Rollin/commit/92953d5e94d1037a74d8752635ff28e8f8b4b045
+- 2026-09-30T00:47:58Z — Add OEQL Forever publishing control plane — https://github.com/way4out/Rollin/commit/bcf752d8c99c71586f8659d0521ac005626bf7b6
+- 2026-09-30T00:47:57Z — Add OEQL Forever publishing control plane — https://github.com/way4out/Rollin/commit/8fe31fad9fb22241e41c9fdb76c2a7f2987bca5f
+- 2026-09-30T00:30:46Z — Persist transaction destination readiness with offers — https://github.com/way4out/Rollin/commit/310bb4626a8e9154c68ff65c1900c8f20ede4053
+- 2026-09-30T00:28:09Z — Add transaction readiness gate before marketplace offers — https://github.com/way4out/Rollin/commit/f0664af43ea9978bb0de17229ed9bf27cdad09eb
+- 2026-09-30T00:24:28Z — Add native Rollin AI concierge and error recovery — https://github.com/way4out/Rollin/commit/5ea2217e70e353058a1715536d5aa29c0963ba66
+- 2026-09-30T00:22:06Z — Add public sharing, social previews, and QR access — https://github.com/way4out/Rollin/commit/b7091145936b922ddbf453b6358c3317b2e33e22
+- 2026-09-30T00:20:16Z — Fix production-root navigation on app surfaces — https://github.com/way4out/Rollin/commit/f4fddeb0a975055ac7c2c759516be7e7de555fcc
+- 2026-09-30T00:20:14Z — Fix production-root navigation on app surfaces — https://github.com/way4out/Rollin/commit/b127d816b562255d73f6522a082bbdad34505e2c
+- 2026-09-30T00:20:12Z — Fix production-root navigation on app surfaces — https://github.com/way4out/Rollin/commit/a94818427df27165c1f1e28bfa9bf3e07a31b719
+- 2026-09-30T00:20:10Z — Fix production-root navigation on app surfaces — https://github.com/way4out/Rollin/commit/1aa263194e6efcda2c1d4842701e845e6548e8f4
+- 2026-09-30T00:14:42Z — Finalize hybrid crypto network selection and seller settlement metadata — https://github.com/way4out/Rollin/commit/138ce2c1e0c05ed75d2a12f02661837682c2d7eb
+- 2026-09-30T00:14:35Z — Polish Rollin hybrid payment UI for Base and Robinhood Chain — https://github.com/way4out/Rollin/commit/9c2e0e4ccf438191de6f9e0702f4b7c086f73ccd
+- 2026-09-30T00:14:26Z — Expand Rollin hybrid crypto checkout to Base and Robinhood Chain — https://github.com/way4out/Rollin/commit/ebe2d6aee23b168f77141e931df5c15db154ff23
+- 2026-09-30T00:08:05Z — Link legal marketplace policies from production footer — https://github.com/way4out/Rollin/commit/d12b2fe92a801cc9cba2e7c95a5aba3f9d502d19
+- 2026-09-30T00:08:01Z — Add marketplace legal and restricted-transaction pages — https://github.com/way4out/Rollin/commit/dade9ed1f13fa721d66a8ce523dfeb533b2ba4e1
+- 2026-09-30T00:08:00Z — Add marketplace legal and restricted-transaction pages — https://github.com/way4out/Rollin/commit/3d7dd37197e5ba594334c46e09517ecd90cc9e8f
+- 2026-09-30T00:07:58Z — Add marketplace legal and restricted-transaction pages — https://github.com/way4out/Rollin/commit/4d34d7383b20592e8c5e8fcaba2d300e3179d714
+- 2026-09-30T00:02:00Z — Fix production-root routing for Render deployment — https://github.com/way4out/Rollin/commit/1f659b466936da38c8c72a7cfa993827e3e03ec0
+- 2026-09-29T23:56:17Z — Keep public branding focused on Rollin; identify operator only in Contact — https://github.com/way4out/Rollin/commit/2affd9248b871a4fff90681f35e5beecdce9579b
+- 2026-09-29T23:53:52Z — Harden seller auctions and render auction panel in listing details — https://github.com/way4out/Rollin/commit/b47d61c8c90a1e6b5dbe332006cee2f1515f69d7
+- 2026-09-29T23:53:08Z — Add live auctions and bidding to Rollin listings — https://github.com/way4out/Rollin/commit/19eaad833371081a5d42c885a821628ab097efce
+- 2026-09-29T23:40:58Z — Upgrade Rollin checkout messaging and payment/jurisdiction listing fields — https://github.com/way4out/Rollin/commit/9dc37302f216d2fcd2ab55b0fbdb1c0a9528ff5a
+- 2026-09-29T23:40:01Z — Add Motos and Businesses to marketplace navigation — https://github.com/way4out/Rollin/commit/90c3b481492115600ab4913209c50791cc395f02
+- 2026-09-29T23:39:49Z — Update Rollin PWA metadata for expanded marketplace — https://github.com/way4out/Rollin/commit/6cf221a74e3fadb6244220fa69ed2b9ebc6aa73b
+- 2026-09-29T23:39:46Z — Document global asset marketplace scope and compliance boundary — https://github.com/way4out/Rollin/commit/bb9c72bf07237720a7881f8ff26cb7e2a55159b0
+- 2026-09-29T23:39:40Z — Create Businesses category page — https://github.com/way4out/Rollin/commit/785912e1e3dd1941c5e04da8ceee523a89f86b79
+- 2026-09-29T23:39:38Z — Create Motos category page — https://github.com/way4out/Rollin/commit/0f1f458132c58d613d686399b0b22c0aac0538eb
+- 2026-09-29T23:39:34Z — Expand Rollin marketplace navigation and compliance messaging — https://github.com/way4out/Rollin/commit/5557fe1adc4800b313c4856f614af9bf150db231
+- 2026-09-29T23:39:29Z — Add development and jurisdiction fields to real estate listings — https://github.com/way4out/Rollin/commit/337c5605cdaf12b6ad35f31c2406abc1c7002630
+- 2026-09-29T23:39:24Z — Expand Rollin marketplace categories and compliance fields — https://github.com/way4out/Rollin/commit/5f064efb9054277ce2997e7fbb817c9ce1f46fac
+
+### way4out/Telephone — 100 commits
+- 2026-10-03T13:48:59Z — Mirror StellarNet master source link index — https://github.com/way4out/Telephone/commit/9ac875e8e0ea0f74cf647a947f6814c4248b54ec
+- 2026-10-03T13:13:57Z — Fix NFTQR v1 public layout markup before v12 rollout — https://github.com/way4out/Telephone/commit/a56935cefb40e7daaa831bd14417c52892332c6f
+- 2026-10-03T13:10:33Z — Add 123-point public apps pre-rebuild scan and release gate — https://github.com/way4out/Telephone/commit/e9f9bdbc8e9c6bc752ab81018a7568a07bb74cf7
+- 2026-10-03T12:57:17Z — Prepare StellarNet Base Basenames registration set — https://github.com/way4out/Telephone/commit/77ca73ca3b6bf5c30ab7baed9f4ee828d1b14b28
+- 2026-10-03T12:55:23Z — Add StellarNet onchain domain and 22-token rollout architecture manifest — https://github.com/way4out/Telephone/commit/0edc58121acf72c2cd17f520ca51e1b8b1874aec
+- 2026-10-03T12:55:20Z — Fix NFTQR public server for Render Node ESM runtime — https://github.com/way4out/Telephone/commit/f48dfe540a3b9aa56bc4901f1e3e27c4dd3c7265
+- 2026-10-03T12:50:36Z — Simplify NFTQR for all ages with one-tap purchase and Base mint flow — https://github.com/way4out/Telephone/commit/1f13883d6bdc4ad6a2419c86e7016c0cfa86c1a5
+- 2026-10-03T12:48:47Z — Add dedicated public NFTQR frontend server — https://github.com/way4out/Telephone/commit/265cb9cc6fcb1ab925865a35e2b862e51207f662
+- 2026-10-03T12:45:27Z — Execute paid NFTQR Base mint from live storefront — https://github.com/way4out/Telephone/commit/90fa02a3d07af56bc428125903231fe46951926f
+- 2026-10-03T12:45:22Z — Enable gated live NFTQR Base mint execution through Bankr — https://github.com/way4out/Telephone/commit/1dcff0e77f46a3726975ddc3cdd80632c6dc5b38
+- 2026-10-03T12:39:55Z — Add one-tap Base Coinbase deployment action per NFTQR edition — https://github.com/way4out/Telephone/commit/da5eac28069fc5d7706adab513eb395f7f671e44
+- 2026-10-03T12:39:09Z — Make NFTQR storefront explicitly one-time customization forever — https://github.com/way4out/Telephone/commit/4524b23f64a18bb518166aceeba50d8d71b20627
+- 2026-10-03T12:39:04Z — Lock every NFTQR edition to one customization ever — https://github.com/way4out/Telephone/commit/8f087e7c4a7755a94923bdfed8fbd15344a02bd2
+- 2026-10-03T12:38:06Z — Upgrade NFTQR with multimedia, voice, haptics, capture and provenance layer — https://github.com/way4out/Telephone/commit/0a3b9fe0882b0396d7b8667e58514df8865b1c07
+- 2026-10-03T12:36:45Z — Add pencil pen art and per-cell customization controls to NFTQR storefront — https://github.com/way4out/Telephone/commit/4bebec5017c56c0db49d78a11112c9f4ae092061
+- 2026-10-03T12:36:41Z — Add hand-drawn art and per-cell QR data fields to all NFTQR editions — https://github.com/way4out/Telephone/commit/e30758fd2b08382606eec627c4147d321758cb64
+- 2026-10-03T12:35:28Z — Launch $11.44 custom NFTQR storefront with 22-token discount checkout — https://github.com/way4out/Telephone/commit/46abe31f6b6469b5baf432efeac26ba03d2861d5
+- 2026-10-03T12:35:12Z — Render customizable NFTQR cells as styled SVG — https://github.com/way4out/Telephone/commit/7ca06bea6cd3aa9566a1bd6892a164a400fbe3fa
+- 2026-10-03T12:34:57Z — Upgrade NFTQR customization and rights metadata — https://github.com/way4out/Telephone/commit/17f81317ac4686b8c95b1cf9a08e915bf328229e
+- 2026-10-03T12:31:43Z — Initialize NFTQR catalog and 22-token payment gate — https://github.com/way4out/Telephone/commit/0910deb9c4bbb584475d8a550947337e49c54f29
+- 2026-10-03T12:31:38Z — Gate NFTQR checkout to each configured Base token — https://github.com/way4out/Telephone/commit/18224c2a1393a28719d0c63282d22e090f4c6972
+- 2026-10-03T12:30:11Z — Expose NFTQR v1.0 from StellarNet home — https://github.com/way4out/Telephone/commit/77eaa4899fdf5fd3c2043ea8e9fecfbe7b132993
+- 2026-10-03T12:30:07Z — Add NFTQR v1.0 to StellarNet site map — https://github.com/way4out/Telephone/commit/0dc649da57bd36885557a65aaa451e33da94b408
+- 2026-10-03T12:30:02Z — Add NFTQR v1.0 4000-unit one-time QR backend — https://github.com/way4out/Telephone/commit/c119fd760cb70e9fd819a40c7228ada941dbe422
+- 2026-10-03T12:29:50Z — Add StellarNet NFTQR v1.0 one-time QR sales interface — https://github.com/way4out/Telephone/commit/04b61894767be9e17c679d59de59cd7cbdce2e38
+- 2026-10-03T12:23:42Z — Pass 3: clean payment documentation text in live HTML — https://github.com/way4out/Telephone/commit/4b229c8f1ee7bf1bfe64d0d9aabb704e6e2aa53d
+- 2026-10-03T12:23:39Z — Pass 3: add subcategory market packages and 1-tap Base token checkout — https://github.com/way4out/Telephone/commit/2108d86211d50053b38885ee618cb3f93ac27d91
+- 2026-10-03T12:22:14Z — Pass 2/4: clean market pricing page markup — https://github.com/way4out/Telephone/commit/b24521c2e23befdc47eb7228214abb54320e5ee7
+- 2026-10-03T12:22:10Z — Pass 2/4: market-reference pricing for all StellarNet categories — https://github.com/way4out/Telephone/commit/e757e40313224bb7e070b77c40295d54a341538b
+- 2026-10-03T12:21:35Z — Pass 1/4: add StellarNet category acquisition catalog — https://github.com/way4out/Telephone/commit/9beb3e313e0e647c998ca243d8fcdcf9cdda3265
+- 2026-10-03T12:18:10Z — Add StellarNet 1-tap acquisition packages and Base token purchase UI — https://github.com/way4out/Telephone/commit/a5764225051292233100784330d209038b3c3ef8
+- 2026-10-03T12:18:08Z — Add StellarNet 1-tap acquisition packages and Base token purchase UI — https://github.com/way4out/Telephone/commit/31bbb0c85babad44358b6191e62dea6af1b4caad
+- 2026-10-03T12:18:06Z — Add StellarNet 1-tap acquisition packages and Base token purchase UI — https://github.com/way4out/Telephone/commit/0221f0396460cb43ba344b2f4900c843ecd66ef9
+- 2026-10-03T12:18:04Z — Add StellarNet 1-tap acquisition packages and Base token purchase UI — https://github.com/way4out/Telephone/commit/45f80d617d9e75145b3c7bf6049e4cecb067afa4
+- 2026-10-03T12:18:02Z — Add StellarNet 1-tap acquisition packages and Base token purchase UI — https://github.com/way4out/Telephone/commit/6513bdc220290388d6b42722bb5dc9911cf94f58
+- 2026-10-03T12:13:03Z — Add complete interface map to StellarNet home navigation — https://github.com/way4out/Telephone/commit/7666c03b0bd453a5467b8d8fcfd5736fe02774b2
+- 2026-10-03T12:13:01Z — Link executive sale page to complete interface map — https://github.com/way4out/Telephone/commit/389b0cfef86930861f46eb44d1f7801d251e91fa
+- 2026-10-03T12:12:59Z — Expand StellarNet sitemap to all public interfaces — https://github.com/way4out/Telephone/commit/39e19885acae89965b43a4dfd0708cdef9ad77a9
+- 2026-10-03T12:12:56Z — Add complete StellarNet public interface map — https://github.com/way4out/Telephone/commit/e5926a58687336e41926294bad9490030dc8df2b
+- 2026-10-03T12:09:17Z — Add StellarNet executive buyer room — https://github.com/way4out/Telephone/commit/a20650011cadc2aaeb1bbebcdc4f442fcb92f4a7
+- 2026-10-03T12:09:15Z — Clean executive sale page markup — https://github.com/way4out/Telephone/commit/10310bd921c890b372daeb3bd1f3319140e6b556
+- 2026-10-03T12:09:09Z — Upgrade StellarNet executive sale package to $1B asking price and verified asset dashboard — https://github.com/way4out/Telephone/commit/cac591ffa393a03620328fb6bd9e19544668af20
+- 2026-10-03T12:06:38Z — Add StellarNet public acquisition and discovery pages — https://github.com/way4out/Telephone/commit/41e0389f0dcfcbfec5aa74dd953b81cee85f3779
+- 2026-10-03T12:06:36Z — Add StellarNet public acquisition and discovery pages — https://github.com/way4out/Telephone/commit/3b2a10733d54286aaf784de11376a6ed857ceaeb
+- 2026-10-03T12:06:33Z — Add StellarNet public acquisition and discovery pages — https://github.com/way4out/Telephone/commit/998179497bebd366f0906e05b0f51dfd19202a7b
+- 2026-10-03T08:11:43Z — Further upgrade immersive visual clarity and luminous space render — https://github.com/way4out/Telephone/commit/4a88018e2b288ceb03792332f6149c61cb69149b
+- 2026-10-03T08:11:17Z — Upgrade immersive render with brighter dimensional color and visible structure — https://github.com/way4out/Telephone/commit/ff2e7a960d53aa0df14b474a15afb641ce5d92da
+- 2026-10-03T08:10:50Z — Brighten immersive simulator background for visible non-black startup — https://github.com/way4out/Telephone/commit/36c5ed9342c347dcd44b2ea1c88a4519c0bdea08
+- 2026-10-03T08:09:37Z — Add full StellarNet upgrade mode controls including Superhero mode — https://github.com/way4out/Telephone/commit/0d6f268aa29e97683bdbfdba41c57e0e077ee4d4
+- 2026-10-03T08:08:15Z — Enable user communication compute scan and control plane — https://github.com/way4out/Telephone/commit/d6c93858bcf450d3392d3e17716a8e3424ef49dc
+- 2026-10-03T08:06:47Z — Pass 2: finalize live simulator startup state and resilient animation — https://github.com/way4out/Telephone/commit/dece73ce1fc84ee58ff05277bb14009844267a7e
+- 2026-10-03T08:06:12Z — Pass 1: harden touch and pinch controls for live simulator — https://github.com/way4out/Telephone/commit/096cc22efc72d400921964cd93ee3ab6f2374742
+- 2026-10-03T08:03:28Z — Fix live layer controls and mobile fullscreen interaction — https://github.com/way4out/Telephone/commit/2e4a67e7d4ff55cffed4347604dda482687e2427
+- 2026-10-03T07:59:28Z — Add AOL-style live StellarNet intro with immediate simulator underneath — https://github.com/way4out/Telephone/commit/6154acd87c9db321df551604626b76698dcf4013
+- 2026-10-03T07:58:08Z — Launch StellarNet renderer immediately without loading gate — https://github.com/way4out/Telephone/commit/9ce85ac8f3aefd8082b6dd8e981bd5e146289126
+- 2026-10-03T07:57:02Z — Harden StellarNet startup with bounded loading gate and visible canvas — https://github.com/way4out/Telephone/commit/52bd62d182c232f25933a78e96d68d152f627d96
+- 2026-10-03T07:54:55Z — Fix user controls and strengthen visible renderer startup — https://github.com/way4out/Telephone/commit/ee6a985ed23811cb671f9263cc66c85700f51111
+- 2026-10-03T07:54:10Z — Add zero-blank-screen renderer bootstrap and runtime fallback — https://github.com/way4out/Telephone/commit/d9bcdc6775e5d0ea199d24e0fb666097e2c92281
+- 2026-10-03T07:51:14Z — Harden universal device rendering with safe canvas fallback — https://github.com/way4out/Telephone/commit/0f4c79f2fa3645b9666a21d2a920192c59b83604
+- 2026-10-03T07:49:22Z — Fix immersive renderer syntax before live deploy — https://github.com/way4out/Telephone/commit/4ce40c868c4abcb7757bcd979a144ced265d3f2c
+- 2026-10-03T07:49:15Z — Upgrade full-color immersive universe renderer and capacity — https://github.com/way4out/Telephone/commit/2021dce894fdf279cf014eab2e300326e6cd4315
+- 2026-10-03T07:46:21Z — Harden cross-device controls with pinch zoom keyboard reset and pointer safety — https://github.com/way4out/Telephone/commit/81959e6501706e964ffdf82e4383a284ce67f8ac
+- 2026-10-03T07:44:11Z — Make immersive Universe game fully user-operable with stable layers and live feed status — https://github.com/way4out/Telephone/commit/6fbe9aa053a148828aa2422eeb3e38c8cf6a16b3
+- 2026-10-03T07:42:42Z — Rebuild Universe game with reliable user-operable renderer and live data — https://github.com/way4out/Telephone/commit/c5dd0485e1b7fd1371950b8eae533c6e065123f6
+- 2026-10-03T07:41:45Z — Harden Universe renderer against black screens and removed HUD elements — https://github.com/way4out/Telephone/commit/51c32bc8c025aeab3c3a2571f20ee00778b574c7
+- 2026-10-03T07:38:26Z — Simplify immersive game HUD and remove payment telemetry from home view — https://github.com/way4out/Telephone/commit/7e31931d2057147afd59f2404b19dc1994697915
+- 2026-10-03T07:36:19Z — Add live scientific data stream center — https://github.com/way4out/Telephone/commit/8b906ce20c03b4f343c2a5380c6cf7f5293db997
+- 2026-10-03T07:35:10Z — Upgrade simulator with globe-first Earth experience — https://github.com/way4out/Telephone/commit/8f5aa12b3b095f6a61ccf82ad3a38681904da029
+- 2026-10-03T07:33:39Z — Add full community immersive simulator gameplay sync — https://github.com/way4out/Telephone/commit/08a5754f77137504980d144f6733d9dac0347ca6
+- 2026-10-03T07:32:30Z — Make root launch immediate immersive gameplay — https://github.com/way4out/Telephone/commit/bbf382e22f4556991a592b23a7350d86b5ec711a
+- 2026-10-03T07:31:02Z — Make main entry immediate immersive gameplay — https://github.com/way4out/Telephone/commit/b575d163da62595dbebe2bff434e9e0856960eb2
+- 2026-10-03T07:28:31Z — Expand immersive gameplay with labeled outlier and ice-wall model layers — https://github.com/way4out/Telephone/commit/cec21b8817a7ab0685846e52071a7a93d8d0c476
+- 2026-10-03T07:25:36Z — Add StellarNet stats levels community placement and 22 asset registry — https://github.com/way4out/Telephone/commit/3ebbb9b17789fddc3404052911679dfe61e7c42c
+- 2026-10-03T07:24:17Z — Fix Universe selector initialization for immediate startup — https://github.com/way4out/Telephone/commit/e0894cc57e3ae242532387c5036fa3069a74e874
+- 2026-10-03T07:24:07Z — Fix duplicate selector binding in Universe startup — https://github.com/way4out/Telephone/commit/74360e8874d28b8652dba98391aab4af7a172668
+- 2026-10-03T07:23:58Z — Fix simulator startup and launch immersive free mode — https://github.com/way4out/Telephone/commit/f6ce8cf60e87bac6e4dd768f69308262bd01f2da
+- 2026-10-03T07:22:03Z — Launch Free Simulator immediately with immersive fullscreen control — https://github.com/way4out/Telephone/commit/94eb5ceb2841ff190cb751a9087cdad7d2f10ccf
+- 2026-10-03T07:20:06Z — Make Free Simulator load first with optional paid access — https://github.com/way4out/Telephone/commit/5e2e0ab12abc05a6215e07c955f6624b3095ba30
+- 2026-10-03T07:18:06Z — Harden live Base payment flow and remove dead rail scripts — https://github.com/way4out/Telephone/commit/26b2b927836e77aaac97d7b87b10c1201bbb938e
+- 2026-10-03T07:13:38Z — Take 2 minute pass: harden independent Telecom and Simulator selection — https://github.com/way4out/Telephone/commit/810fe29b440a397def69e691c402d227298e36b9
+- 2026-10-03T07:12:32Z — Take 2: harden Base Telecom and Simulator payment UX — https://github.com/way4out/Telephone/commit/4687cb8786164a21458025ec9ce114c8adf7a273
+- 2026-10-03T07:11:18Z — Separate every Base payment rail for Telecom and Simulator — https://github.com/way4out/Telephone/commit/30b4460c3e6fae2d3fa20d6a20c10ff471c4046e
+- 2026-10-03T07:10:00Z — Fix Base buy redeem asset routing and token handoff — https://github.com/way4out/Telephone/commit/92cca1e1657d21c15f8217f6836c47bba2582cd2
+- 2026-10-03T07:09:53Z — Integrate Base buy and redeem asset flow for Telecom and Simulator — https://github.com/way4out/Telephone/commit/3bbdc4c61e0c001cef050fe25e2898c984f98dd0
+- 2026-10-03T07:08:29Z — Rebuild StellarNet LLC gateway around Base Telecom — https://github.com/way4out/Telephone/commit/ffef9c23f441135e897e913c5a5864fd478c9593
+- 2026-10-03T07:08:27Z — Rebrand Telecom as StellarNet Base Telecom — https://github.com/way4out/Telephone/commit/926294297983598da437ae64ded82b9c59c4b95d
+- 2026-10-03T07:07:01Z — Improve 1-tap Base token selection and discounted payment UI — https://github.com/way4out/Telephone/commit/c266d7a21546851987e42a65d90159da675285df
+- 2026-10-03T07:02:31Z — Upgrade Universe Explorer with live public data controls — https://github.com/way4out/Telephone/commit/a80c1f5952a46b24754069d0797ece7d104a6456
+- 2026-10-03T07:01:04Z — Upgrade StellarNet homepage for immediate user operation — https://github.com/way4out/Telephone/commit/1f300584cbba8e87f06a7d2902ef2d53d5bfa824
+- 2026-10-03T06:58:17Z — Make Base payment assets visible and user friendly — https://github.com/way4out/Telephone/commit/55059f41498aadaba7cb941f8189639827a1ddb3
+- 2026-10-03T06:58:10Z — Expand StellarNet Base token registry and payment discovery — https://github.com/way4out/Telephone/commit/d5a4e6b59325d97658d347e37d0e89cf527a3629
+- 2026-10-03T06:42:52Z — Add universal Free Base Mode gate with local live GPS — https://github.com/way4out/Telephone/commit/a33e3e084b7f43cc4b26397916142ac7855412d8
+- 2026-10-03T06:42:50Z — Set Free Base Mode as universal public entry gate — https://github.com/way4out/Telephone/commit/b72c6abc622336353353773968d362d342afdb4b
+- 2026-10-03T06:40:57Z — Make Free Base Edition the immediate public entry point — https://github.com/way4out/Telephone/commit/4b3630bac6ea176bc91b51e364b4d4924d40af31
+- 2026-10-03T06:39:33Z — Integrate free base edition across public hub and mobile flow — https://github.com/way4out/Telephone/commit/e750c8840091c1ccd477fd8a08eda664fff90423
+- 2026-10-03T06:14:00Z — Redesign StellarNet public hub and elevate Telecom experience — https://github.com/way4out/Telephone/commit/c28730a7ea5ef42fafc3be0932dc6028f20d4583
+- 2026-10-03T06:11:52Z — Harden StellarNet four-component navigation and public links — https://github.com/way4out/Telephone/commit/74db4b59cef5012964d1a2d585ae35bed08a4a40
+- 2026-10-03T06:11:06Z — Add StellarNet Gazette and legal publication boundary — https://github.com/way4out/Telephone/commit/497c7beef9b4877e4537f71ef1e8100afe2bb831
+- 2026-10-03T06:10:55Z — Reframe StellarNet as four co-equal main components — https://github.com/way4out/Telephone/commit/4a1a66f0bea5536e2248a22cc5c1582923dbbc71
+- 2026-10-03T06:08:56Z — Add 119-angle capacity scan and double-capacity StellarNet rebuild model — https://github.com/way4out/Telephone/commit/e04b8050612fcc2e74a522e4adccb7894f354536
+
+### way4out/AetherOS — 100 commits
+- 2026-09-29T23:15:44Z — Surpass North Star: transition to generational compounding enterprise-value baseline — https://github.com/way4out/AetherOS/commit/23e1fed84acb97000d58b9c095b3067f644336da
+- 2026-09-29T23:15:11Z — Full rollout: public business sale readiness and North Star ownership framework — https://github.com/way4out/AetherOS/commit/764722a745e7c05216e1b47dba35fafc5c23b1bb
+- 2026-09-29T23:12:46Z — AetherCore708 Passes 6-7: ecosystem-scale value and evidence-first execution framework — https://github.com/way4out/AetherOS/commit/67c71fc22ec8fd1a81d512ccd4522345a8b9f7b3
+- 2026-09-29T23:12:29Z — AetherCore708 Passes 3-5: establish $1T+ north-star valuation and measurable bull-case operating model — https://github.com/way4out/AetherOS/commit/44945b5903fca4028b83ea33f07faa431d6798d8
+- 2026-09-29T23:11:55Z — AetherCore708 Pass 2: add compounding exponential value architecture — https://github.com/way4out/AetherOS/commit/a1a6084eb0a093b9d527a035274e140c98ed65a7
+- 2026-09-29T23:11:28Z — AetherCore708 Pass 1: productize immediate value stack and commercial contract — https://github.com/way4out/AetherOS/commit/56d2a3d29250f8a0e674d89a2f95ba12a1f8ac31
+- 2026-09-29T23:10:16Z — AetherCore708: contract product layers and add non-custodial local BTC interface specification — https://github.com/way4out/AetherOS/commit/88818cdfd62150bcd28ac45e2527577d8a19c8bd
+- 2026-09-29T23:09:15Z — AetherCore708: align validation target with production artifact — https://github.com/way4out/AetherOS/commit/fdea803a4d686646abed25037239c2cdb109556b
+- 2026-09-29T23:09:12Z — AetherCore708: align CI artifact and workflow identity — https://github.com/way4out/AetherOS/commit/073d1b6164c35dca3dee9c0042c84f4c14e1a102
+- 2026-09-29T23:09:11Z — AetherCore708: align production Makefile artifact identity — https://github.com/way4out/AetherOS/commit/9fc2c5db69577d9de779331a81e4219abd784012
+- 2026-09-29T23:07:52Z — AetherCore708: expand DSi-first free phone and universal communications runtime — https://github.com/way4out/AetherOS/commit/5ee17d8ca5e14ee9c4897c5814d924ed2ebf0271
+- 2026-09-29T23:05:11Z — AetherCore707: correct ROM subtitle — https://github.com/way4out/AetherOS/commit/c25814782424fd0a330209d7440162eb0677f16b
+- 2026-09-29T23:05:08Z — AetherCore707: align validator artifact name — https://github.com/way4out/AetherOS/commit/ff0081cf68f92ea8877c9309ee2f284943878089
+- 2026-09-29T23:04:10Z — AetherCore707: remove duplicate media input case — https://github.com/way4out/AetherOS/commit/119b0d41d9e9060a91a22621f1fbb1e284be3985
+- 2026-09-29T23:03:32Z — AetherCore707: document media and current-information layer — https://github.com/way4out/AetherOS/commit/59734df1ae22a0eabf8fe16b2288c3ca319fdb83
+- 2026-09-29T23:03:26Z — AetherCore707: rename production artifact and workflow — https://github.com/way4out/AetherOS/commit/f3126611f0cd078dbb2e88f076c8f3a255cb9a24
+- 2026-09-29T23:02:58Z — AetherCore707: add media hub flaw gates — https://github.com/way4out/AetherOS/commit/9c3bd3c84850d036ea186f0f3deb2216cfb52c3a
+- 2026-09-29T23:02:55Z — AetherCore707: update production metadata — https://github.com/way4out/AetherOS/commit/9aaa221688366c2b5a250014a7615bbaed0c2163
+- 2026-09-29T23:02:51Z — AetherCore707: add media hub navigation controls — https://github.com/way4out/AetherOS/commit/b1f42bd99eb1efc38d8214a26708d5362033574c
+- 2026-09-29T23:02:46Z — AetherCore707: expand media global hub — https://github.com/way4out/AetherOS/commit/4e76342af8e1ca3f9893ee537b900c108200f51f
+- 2026-09-29T23:01:18Z — AetherCore7: document SD deployment and messaging architecture — https://github.com/way4out/AetherOS/commit/541f4f9b3b362377147d6db86fc26c7fe2c64913
+- 2026-09-29T23:00:16Z — AetherCore7: fix CI validation and artifact filenames — https://github.com/way4out/AetherOS/commit/85b4012bbe712b50ad589c8ada01b7400350ec5d
+- 2026-09-29T22:59:21Z — AetherCore7: fix messaging validation assertion — https://github.com/way4out/AetherOS/commit/707fdcd7bb94d80f52658463d416c8c22b7ac3b4
+- 2026-09-29T22:58:09Z — AetherCore7: correct CI validation targets — https://github.com/way4out/AetherOS/commit/1026091265742e36c31d27e73c204dd00f9b2044
+- 2026-09-29T22:58:06Z — AetherCore7: correct ROM title metadata — https://github.com/way4out/AetherOS/commit/bd6364988708779415e8780a021f230e08c83ec6
+- 2026-09-29T22:57:25Z — AetherCore7: fix draw forward declaration before touch input — https://github.com/way4out/AetherOS/commit/1b11798c7de966a5a04ed56f3bea4aca56e30c58
+- 2026-09-29T22:56:45Z — AetherCore7: restore module implementations and isolate messaging mode — https://github.com/way4out/AetherOS/commit/8a2e23fa11914202ffa1be770349266e7738479f
+- 2026-09-29T22:56:01Z — AetherCore7: document messaging subsystem and hardware limits — https://github.com/way4out/AetherOS/commit/cf360cb8fd4ff899ceffae076af0908f0e0fae74
+- 2026-09-29T22:55:52Z — AetherCore7: bound messaging keyboard safely — https://github.com/way4out/AetherOS/commit/94f7a7e13394638c1a3e9e5c6b905804ea547c6a
+- 2026-09-29T22:55:45Z — AetherCore7: validate messaging integration — https://github.com/way4out/AetherOS/commit/c822a6f956580b5dbb69a61f968e394b28240fc2
+- 2026-09-29T22:55:40Z — AetherCore7: update CI artifact naming — https://github.com/way4out/AetherOS/commit/14e96b742de1f65a9f57791da56a1c0bcc4d51e2
+- 2026-09-29T22:55:38Z — AetherCore7: update production target — https://github.com/way4out/AetherOS/commit/16329dc6397954ca39b84f11495aabcc0a3f28a7
+- 2026-09-29T22:55:31Z — AetherCore7: render full touch messaging keyboard — https://github.com/way4out/AetherOS/commit/5c4a029e70e1af40c90825a97f3ce1441a70fd60
+- 2026-09-29T22:55:25Z — AetherCore7: add touch virtual keyboard input — https://github.com/way4out/AetherOS/commit/13b19228969992d57eeaee9e6db44c2d6faed7c7
+- 2026-09-29T22:55:06Z — AetherCore7: integrate messaging subsystem — https://github.com/way4out/AetherOS/commit/9074e194fc823efa6ac7c4a071f78034990cb090
+- 2026-09-29T22:54:49Z — AetherCore7: add cross-platform messaging core — https://github.com/way4out/AetherOS/commit/2b665e6d91b3854f2b288819026121a9e95512ac
+- 2026-09-29T22:54:47Z — AetherCore7: add messaging subsystem interface — https://github.com/way4out/AetherOS/commit/26293922ed08db04bf7746a3adc1575f2a577bc7
+- 2026-09-29T22:51:41Z — Add public video publication package and release guidance — https://github.com/way4out/AetherOS/commit/cef79010dd387212929d9d4eeb0facbae6c88f3b
+- 2026-09-29T22:49:34Z — Add coherent 11+ minute AetherOS public video script — https://github.com/way4out/AetherOS/commit/596fa3199e4c9070af691d0bed477078a4abf75d
+- 2026-09-29T22:46:52Z — AetherCore5: strengthen frontend interaction validation — https://github.com/way4out/AetherOS/commit/27181e3432e0015317d719d51486928a7abb5bbc
+- 2026-09-29T22:46:45Z — AetherCore5: repair diagnostic production artifact path — https://github.com/way4out/AetherOS/commit/ab8244350ed7046fe5033c300e645fadfbf8a597
+- 2026-09-29T22:46:28Z — AetherCore5: fix home touchscreen hit targets and paging — https://github.com/way4out/AetherOS/commit/b3656b7faec712addda66029447f1f1308872951
+- 2026-09-29T22:31:09Z — AetherCore5: publish canonical NDS download names — https://github.com/way4out/AetherOS/commit/221698e835b097dfa4fb4b14bf62a14211ba6cd1
+- 2026-09-29T22:31:03Z — AetherCore5: correct production artifact documentation — https://github.com/way4out/AetherOS/commit/4391b2e624a38dbc7357e3e935f18eeb3e6adab5
+- 2026-09-29T22:30:54Z — AetherCore5: align public rollout documentation — https://github.com/way4out/AetherOS/commit/5ff22007f2b63568e78027751ed48633a463c983
+- 2026-09-29T22:26:44Z — AetherCore5: align build define with release identity — https://github.com/way4out/AetherOS/commit/9c6c52b755b0fe12c171d77153d087b93e509803
+- 2026-09-29T22:26:42Z — AetherCore5: remove automatic frame-2 hardware probe and harden boot UI — https://github.com/way4out/AetherOS/commit/b349626590ab359e905f30579187bd0ee557a9dd
+- 2026-09-29T22:20:21Z — Validate AetherCore5 binary — https://github.com/way4out/AetherOS/commit/0e9caf82cc63f241d524dd150c079d37c7ddc803
+- 2026-09-29T22:20:19Z — Publish AetherCore5 production artifact — https://github.com/way4out/AetherOS/commit/d419820aae599c22b02befbd9bf485d6129ab725
+- 2026-09-29T22:20:16Z — Promote runtime version to AetherCore5 — https://github.com/way4out/AetherOS/commit/7119894e1baf1e5d1e851774fc29e7f47b858da5
+- 2026-09-29T22:20:14Z — Promote production binary naming to AetherCore5 — https://github.com/way4out/AetherOS/commit/1f66691aa43b8af651a321281d898c2080d8cec8
+- 2026-09-29T22:19:18Z — Fix DSi blank-screen risk: render Home before optional hardware init — https://github.com/way4out/AetherOS/commit/d2887061f3d38e843d379f93a94f3772d744b0a9
+- 2026-09-29T22:10:27Z — CI: trigger canonical production build — https://github.com/way4out/AetherOS/commit/d73e13c4f11cc44d7e0ed6d22db0873a570dd6fa
+- 2026-09-29T22:10:23Z — CI: make production build workflow the canonical verified pipeline — https://github.com/way4out/AetherOS/commit/2aefc299572026d2de43d540b53d012718bbcc42
+- 2026-09-29T22:10:19Z — CI: remove superseded failing workflow — https://github.com/way4out/AetherOS/commit/1fcdea2ed73ee5732f22b9bb08e59841b8b3f465
+- 2026-09-29T22:10:17Z — CI: remove superseded failing workflow — https://github.com/way4out/AetherOS/commit/4a172353ff3d7147ef91c7aab0d7a700f515e5df
+- 2026-09-29T22:09:28Z — Release: trigger clean verified artifact workflow — https://github.com/way4out/AetherOS/commit/70f4e88c856a8977cc24441f9231848952acc17e
+- 2026-09-29T22:09:25Z — Release: use isolated validation and publish NDS artifact — https://github.com/way4out/AetherOS/commit/d1d6a5d2ea7a5d29e00233a2616c5979630ba1c3
+- 2026-09-29T22:09:21Z — CI: isolate AetherOS 5 NDS validation — https://github.com/way4out/AetherOS/commit/159f7bc471b4a7bcabdb01608cf5e3159c50a7dc
+- 2026-09-29T22:08:43Z — Release: trigger verified artifact build — https://github.com/way4out/AetherOS/commit/e9cf61f3bdef296e11fa6da73448725597da26f6
+- 2026-09-29T22:08:40Z — Release: validate DSi header and publish verified NDS artifact — https://github.com/way4out/AetherOS/commit/fec6e7bdfe59577eb21dd8884a53c2b7151f27aa
+- 2026-09-29T22:07:58Z — Build: trigger post-arcade-fix compile — https://github.com/way4out/AetherOS/commit/36678f148fa1b96c47c67ac10a590ee8303deaec
+- 2026-09-29T22:07:55Z — Fix: repair Space Snake arcade renderer syntax — https://github.com/way4out/AetherOS/commit/1ea99b431c4c790984c35f0810d3834bd2aba235
+- 2026-09-29T22:07:14Z — Build: trigger explicit ARM compiler path build — https://github.com/way4out/AetherOS/commit/dee28f091d1124c925318633eb017b420ad0208e
+- 2026-09-29T22:07:11Z — Build: locate ARM compiler explicitly in Wonderful toolchain — https://github.com/way4out/AetherOS/commit/4a51b2d70d3c592e909c61527250ca6c2869a366
+- 2026-09-29T22:06:33Z — Build: trigger bash toolchain initialization — https://github.com/way4out/AetherOS/commit/0d36acc7b2e97f5afe65e455a6d4406c31fd52d9
+- 2026-09-29T22:06:29Z — Build: use bash for Wonderful environment initialization — https://github.com/way4out/AetherOS/commit/b8db55d8002623ee23425be19f780d80b3c1d68b
+- 2026-09-29T22:05:51Z — Build: trigger supported BlocksDS shell build — https://github.com/way4out/AetherOS/commit/2385114468f0577a36d14d89ee0ae38cd1930117
+- 2026-09-29T22:05:48Z — Build: use supported shell invocation for BlocksDS environment — https://github.com/way4out/AetherOS/commit/c569c8228dc1ad4ad4013e9eae332cda7225aaa1
+- 2026-09-29T22:05:10Z — Build: retry with POSIX toolchain environment — https://github.com/way4out/AetherOS/commit/05d7f55d973c60106383647b8fa09d0a21ca8692
+- 2026-09-29T22:05:07Z — Build: source Wonderful environment with POSIX sh — https://github.com/way4out/AetherOS/commit/1b250bb3df3fd2f28b11b5168142149a41d0724a
+- 2026-09-29T22:04:27Z — Build: trigger toolchain environment fix — https://github.com/way4out/AetherOS/commit/225c702a899e34b33292f9bbc1feef328cd8580d
+- 2026-09-29T22:04:23Z — Build: initialize Wonderful toolchain environment before make — https://github.com/way4out/AetherOS/commit/8d209fd9098c7c415cdc1ad88264dba482db6c51
+- 2026-09-29T22:03:41Z — Build: trigger host Docker BlocksDS build — https://github.com/way4out/AetherOS/commit/18560bf84e72636ee7fd71607a9ed56f38838f4d
+- 2026-09-29T22:03:37Z — Build: use host Docker runner with BlocksDS entrypoint — https://github.com/way4out/AetherOS/commit/c22c77f087b1ee519fb249bca1db85d260fa049d
+- 2026-09-29T22:03:02Z — CI: trigger BlocksDS container build test — https://github.com/way4out/AetherOS/commit/65f9af62676c2f1118ec2b9c7e112c6432fd8bff
+- 2026-09-29T22:02:59Z — CI: test BlocksDS as GitHub job container — https://github.com/way4out/AetherOS/commit/f34f0335dcfe49ccb266c256e2ef5d86ed9fb6ce
+- 2026-09-29T22:02:34Z — Build: trigger isolated production build script — https://github.com/way4out/AetherOS/commit/03e80310a1545665838a5cf9126643af137a78d1
+- 2026-09-29T22:02:30Z — Build: invoke isolated AetherOS 5 build script — https://github.com/way4out/AetherOS/commit/12b153859ba30ca4a0ae28f2776837adab3c4429
+- 2026-09-29T22:02:26Z — CI: move BlocksDS build command into script — https://github.com/way4out/AetherOS/commit/0746d1552afb3d4e3bcb3472ac8e918583d0bb8e
+- 2026-09-29T22:02:08Z — Build: trigger final real AetherOS 5 NDS compile — https://github.com/way4out/AetherOS/commit/3c2eefecbadad69015604bbc5e6129db58983e60
+- 2026-09-29T22:02:05Z — Build: compile and validate real AetherOS 5 NDS — https://github.com/way4out/AetherOS/commit/fa105547d79d4afa6c2e2df7349f795af216eee5
+- 2026-09-29T22:01:23Z — CI: trigger BlocksDS image smoke — https://github.com/way4out/AetherOS/commit/451f440502aa676ec0aceba93791d30815a67d69
+- 2026-09-29T22:01:20Z — CI: verify official BlocksDS image startup — https://github.com/way4out/AetherOS/commit/14cbe90a8c55727f1bae1d89306107623da5bf36
+- 2026-09-29T22:01:06Z — CI: trigger Docker volume smoke — https://github.com/way4out/AetherOS/commit/b3b3915b410ecc0a463aa996b576a03fb5c72545
+- 2026-09-29T22:01:02Z — CI: isolate Docker volume build pattern — https://github.com/way4out/AetherOS/commit/65e192782aba2fb299e4345a24282b4e42fdd937
+- 2026-09-29T22:00:49Z — CI: trigger Docker smoke — https://github.com/way4out/AetherOS/commit/6ee52021cdaa95acc29997b79908bc0ccb929ffe
+- 2026-09-29T22:00:46Z — CI: isolate Docker execution on runner — https://github.com/way4out/AetherOS/commit/24d2662c2a2c32f5624d9eb6642554c5e8f2bffd
+- 2026-09-29T22:00:27Z — Build: trigger actual AetherOS 5 production compile — https://github.com/way4out/AetherOS/commit/42ed43d9790a4762665f5bd00035907d1646e5c3
+- 2026-09-29T22:00:23Z — Build: execute verified AetherOS 5 DSi build — https://github.com/way4out/AetherOS/commit/8fc7a5cc92687f3a79fbbb3384b374a32d71cfb1
+- 2026-09-29T22:00:03Z — CI: trigger build job scheduling test — https://github.com/way4out/AetherOS/commit/263f7c8cba7169e90d25054e52046e40d19ef32a
+- 2026-09-29T22:00:00Z — CI: isolate build job scheduling — https://github.com/way4out/AetherOS/commit/22152b61b867f2c46b57e565b9b8357ff5b7e1f0
+- 2026-09-29T21:59:45Z — Build: trigger production compile on proven workflow — https://github.com/way4out/AetherOS/commit/f5df056d69913fa0abf0733436341b4e28992403
+- 2026-09-29T21:59:42Z — Build: use proven Actions workflow for real AetherOS 5 compile — https://github.com/way4out/AetherOS/commit/88c7669fe89efef9f4b145891861dc3af5528080
+- 2026-09-29T21:59:22Z — CI: trigger Docker CLI test — https://github.com/way4out/AetherOS/commit/39a843445403967d74beb0334b1aed55672f1a3b
+- 2026-09-29T21:59:19Z — CI: confirm Docker CLI on proven runner workflow — https://github.com/way4out/AetherOS/commit/7138bb52b8209c4af3d63f54a351013bccd16b34
+- 2026-09-29T21:59:03Z — CI: test Docker command availability only — https://github.com/way4out/AetherOS/commit/86f61c2c901851353c8f6238327da73ea6fba051
+- 2026-09-29T21:58:41Z — CI: retry production build with read-only permissions — https://github.com/way4out/AetherOS/commit/de3e71df2ff9f71ed7ae6d266073ec05d85bd579
+- 2026-09-29T21:58:38Z — CI: use read-only permissions for production build — https://github.com/way4out/AetherOS/commit/5267c2c1770179c09222336324644859dc4c1b11
+- 2026-09-29T21:58:27Z — CI: trigger production AetherOS build on proven workflow — https://github.com/way4out/AetherOS/commit/33bc5e911dec06204b111183f737ff28bd7db3f8
+
+## Evidence rules
+- GitHub commit existence is source evidence; it is not proof that every feature is externally verified.
+- Render deployment status is the deployment authority for Render services.
+- On-chain state requires an actual transaction receipt and contract/token address.
+- Marketplace sale completion requires verified payment and order state.
+- Quantum/multiversal terms are represented as software/control-plane topology unless physical hardware evidence exists.
+
+## Master-source paths
+- OEQL POINHI triad directory: https://github.com/way4out/OEQL/tree/main/quantum-telecom/triad
+- OEQL quantum telecom: https://github.com/way4out/OEQL/tree/main/quantum-telecom
+- Rollin source: https://github.com/way4out/Rollin
+- Telephone/NFTQR source: https://github.com/way4out/Telephone
+- AetherOS source: https://github.com/way4out/AetherOS
