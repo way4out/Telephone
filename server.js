@@ -121,31 +121,36 @@ app.get("/v1/incentives/base",(req,res)=>{
   res.json({ok:true,network:"Base",chain_id:8453,pricing:TELECOM_CONFIG.pricing,offers:assets.map(tokenIncentiveOffer)});
 });
 
-async function exactTokenQuote(address){
+const SIMULATOR_PRICE_POINTS=[1,4,10,25,100];
+function normalizeSimulatorPrice(value){const n=Number(value);if(!Number.isFinite(n)||!SIMULATOR_PRICE_POINTS.includes(n))throw new Error("unsupported_price_point");return n;}
+async function exactTokenQuote(address,amountUsd=4){
+ const priceUsd=normalizeSimulatorPrice(amountUsd);
  const asset=tokenRegistry().find(t=>String(t.address).toLowerCase()===String(address).toLowerCase()&&t.enabled!==false);
  if(!asset)throw new Error("token_not_supported");
  const market=await liveBaseTokenQuote(asset.address);
  if(!market.verified||!Number.isFinite(Number(market.price_usdc))||Number(market.price_usdc)<=0)throw new Error("live_quote_unavailable");
  const decimals=await erc20Decimals(asset.address);
- const amountHuman=4/Number(market.price_usdc);
+ const amountHuman=priceUsd/Number(market.price_usdc);
  const units=BigInt(Math.ceil(amountHuman*Math.pow(10,decimals)));
- return {asset,market,decimals,amount_human:amountHuman,amount_base_units:units.toString(),quote_expires_at:new Date(Date.now()+60000).toISOString()};
+ return {asset,market,decimals,amount_usd:priceUsd,amount_human:amountHuman,amount_base_units:units.toString(),quote_expires_at:new Date(Date.now()+60000).toISOString()};
 }
 app.get("/v1/payments/quote",async(req,res)=>{
  try{
   if(!process.env.TOKEN_MERCHANT_ADDRESS)return res.status(503).json({ok:false,error:"merchant_address_not_configured"});
-  const q=await exactTokenQuote(String(req.query.tokenAddress||""));
+  const q=await exactTokenQuote(String(req.query.tokenAddress||""),req.query.amountUsd==null?4:req.query.amountUsd);
   res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*","X-Content-Type-Options":"nosniff"});
-  res.json({ok:true,network:"Base",chain_id:8453,merchant_address:process.env.TOKEN_MERCHANT_ADDRESS,token:{symbol:q.asset.symbol,address:q.asset.address,decimals:q.decimals},amount_usd:4,amount_human:q.amount_human,amount_base_units:q.amount_base_units,price_usdc:q.market.price_usdc,source:q.market.source,pair:q.market.pair,quote_expires_at:q.quote_expires_at,exact_transfer:true});
+  res.json({ok:true,network:"Base",chain_id:8453,merchant_address:process.env.TOKEN_MERCHANT_ADDRESS,token:{symbol:q.asset.symbol,address:q.asset.address,decimals:q.decimals},amount_usd:q.amount_usd,amount_human:q.amount_human,price_points_usd:SIMULATOR_PRICE_POINTS,amount_base_units:q.amount_base_units,price_usdc:q.market.price_usdc,source:q.market.source,pair:q.market.pair,quote_expires_at:q.quote_expires_at,exact_transfer:true});
  }catch(e){res.status(400).json({ok:false,error:e.message||"quote_unavailable"});}
 });
 app.post("/v1/payments/verify-transfer",async(req,res)=>{
  try{
-  const {txHash,tokenAddress,from,amountUnits}=req.body||{};
+  const {txHash,tokenAddress,from,amountUnits,amountUsd=4}=req.body||{};
   const merchantAddress=process.env.TOKEN_MERCHANT_ADDRESS||"";
   if(!merchantAddress)return res.status(503).json({ok:false,error:"merchant_address_not_configured"});
+  const quote=await exactTokenQuote(String(tokenAddress||""),amountUsd);
+  if(String(quote.amount_base_units)!==String(amountUnits||""""))return res.status(402).json({ok:false,confirmed:false,settled:false,error:"exact_amount_mismatch"});
   const result=await verifyExactBaseTransfer({txHash,tokenAddress,merchantAddress,amountUnits});
-  if(result.confirmed)return res.json({ok:true,confirmed:true,settled:true,network:"Base Mainnet",chain_id:8453,tx_hash:txHash,from:from||null,payment:result,amount_usd:4,receipt_url:publicApp+"/receipt/"+encodeURIComponent(txHash)});
+  if(result.confirmed)return res.json({ok:true,confirmed:true,settled:true,network:"Base Mainnet",chain_id:8453,tx_hash:txHash,from:from||null,payment:result,amount_usd:Number(amountUsd),receipt_url:publicApp+"/receipt/"+encodeURIComponent(txHash)});
   res.status(result.error==="transaction_pending"?202:402).json({ok:false,confirmed:false,settled:false,payment:result});
  }catch(e){res.status(502).json({ok:false,error:"verification_unavailable"});}
 });
