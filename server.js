@@ -172,6 +172,39 @@ app.post("/v1/payments/verify-transfer",async(req,res)=>{
 app.get("/v1/payments/usdc",(req,res)=>{const a=tokenRegistry().find(t=>String(t.address).toLowerCase()===USDC_BASE);res.json({ok:true,network:"Base",chain_id:8453,token:"USDC",token_address:USDC_BASE,merchant_address:process.env.TOKEN_MERCHANT_ADDRESS||null,price_points_usd:SIMULATOR_PRICE_POINTS,packages:SIMULATOR_PACKAGES,asset:a||null});});
 app.get("/v1/payments/price-points",(req,res)=>res.json({ok:true,network:"Base",chain_id:8453,merchant_address:process.env.TOKEN_MERCHANT_ADDRESS||null,price_points_usd:SIMULATOR_PRICE_POINTS,packages:SIMULATOR_PACKAGES,tokens:tokenRegistry().filter(t=>t.enabled!==false)}));
 app.get("/v1/payments/assets",(req,res)=>{res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*","X-Content-Type-Options":"nosniff"});res.json({ok:true,network:"Base",chain_id:8453,merchant_address_configured:Boolean(process.env.TOKEN_MERCHANT_ADDRESS),pricing:TELECOM_CONFIG.pricing,assets:tokenPaymentCapabilities(),note:"Wallet visibility does not imply Coinbase.com listing, liquidity, swap availability, or telecom payment acceptance."});});
+// --- Account + community control plane ---
+// Wallet-address identity is the canonical account key. No passwords or private keys are stored here.
+// State is process-local until durable database storage is configured.
+const profiles=new Map();
+const communityPosts=[];
+function walletAccount(v){const a=String(v||"").trim().toLowerCase();return /^0x[a-f0-9]{40}$/.test(a)?a:null;}
+app.post("/v1/accounts/profile",(req,res)=>{
+  const account=walletAccount(req.body?.account); if(!account)return res.status(400).json({ok:false,error:"wallet_account_required"});
+  const old=profiles.get(account)||{account,created_at:new Date().toISOString(),display_name:"",bio:"",avatar:"",updated_at:null};
+  const p={...old,display_name:String(req.body?.display_name||old.display_name).slice(0,80),bio:String(req.body?.bio||old.bio).slice(0,500),avatar:String(req.body?.avatar||old.avatar).slice(0,500),updated_at:new Date().toISOString()};
+  profiles.set(account,p); res.json({ok:true,profile:p});
+});
+app.get("/v1/accounts/profile",(req,res)=>{
+  const account=walletAccount(req.query.account); if(!account)return res.status(400).json({ok:false,error:"wallet_account_required"});
+  const p=profiles.get(account)||{account,created_at:new Date().toISOString(),display_name:"",bio:"",avatar:"",updated_at:null};
+  res.json({ok:true,profile:p});
+});
+app.get("/v1/accounts/summary",(req,res)=>{
+  const account=walletAccount(req.query.account); if(!account)return res.status(400).json({ok:false,error:"wallet_account_required"});
+  const s=gameplayAccount(account), state=gameplayState(s);
+  res.json({ok:true,account,profile:profiles.get(account)||null,access:state,community_posts:communityPosts.filter(x=>x.account===account).length,bankr:{network:"Base",enabled:Boolean(process.env.BANKR_API_KEY),merchant_configured:Boolean(process.env.TOKEN_MERCHANT_ADDRESS)}});
+});
+app.get("/v1/community/feed",(req,res)=>{
+  res.set("Cache-Control","no-store");
+  res.json({ok:true,network:"Base",posts:communityPosts.slice(-100).reverse(),count:communityPosts.length});
+});
+app.post("/v1/community/post",(req,res)=>{
+  const account=walletAccount(req.body?.account); if(!account)return res.status(400).json({ok:false,error:"wallet_account_required"});
+  const body=String(req.body?.body||"").trim().slice(0,1000); if(!body)return res.status(400).json({ok:false,error:"post_body_required"});
+  const p={id:crypto.randomUUID(),account,body,created_at:new Date().toISOString(),likes:0};
+  communityPosts.push(p); if(communityPosts.length>500)communityPosts.shift();
+  res.status(201).json({ok:true,post:p});
+});
 app.get("/v1/bankr/config",(req,res)=>{res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*"});res.json({ok:true,enabled:Boolean(process.env.BANKR_API_KEY),network:"Base",chain_id:8453,merchant_address:process.env.TOKEN_MERCHANT_ADDRESS||null,bankr_app:"https://bankr.bot",payment_mode:process.env.BANKR_API_KEY?"bankr_agent_or_wallet_api":"bankr_link_only"});});
 app.post("/v1/bankr/pay",async(req,res)=>{
   if(!process.env.BANKR_API_KEY)return res.status(503).json({ok:false,error:"bankr_api_key_not_configured"});
