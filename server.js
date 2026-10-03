@@ -122,20 +122,18 @@ app.get("/v1/incentives/base",(req,res)=>{
   res.json({ok:true,network:"Base",chain_id:8453,pricing:TELECOM_CONFIG.pricing,offers:assets.map(tokenIncentiveOffer)});
 });
 
-const SIMULATOR_PRICE_POINTS=[0.1,0.25,0.5,0.75,1,2,3,4,5,7.5,10,15,20,25,50,75,100,250,500,1000,2500,5000,10000];
-const SIMULATOR_PACKAGES=[{id:"micro",name:"Micro",usd:0.5},{id:"starter",name:"Starter",usd:1},{id:"standard",name:"Standard",usd:4},{id:"plus",name:"Plus",usd:10},{id:"pro",name:"Pro",usd:25},{id:"enterprise",name:"Enterprise",usd:100},{id:"scale",name:"Scale",usd:500},{id:"ultra",name:"Ultra",usd:1000}];
+const SIMULATOR_PRICE_POINTS=[0.1,0.25,0.5,0.75,1,2,3,4,5,7.5,10,15,20,25,50,75,100,250,500,1000,2500,5000,10000,441000000];
+const SIMULATOR_TIME_PACKAGES=[
+ {id:"minute",name:"1 Minute",duration_ms:60000,usd:0.1},
+ {id:"hour",name:"1 Hour",duration_ms:3600000,usd:4},
+ {id:"day",name:"1 Day",duration_ms:86400000,usd:25},
+ {id:"week",name:"1 Week",duration_ms:604800000,usd:100},
+ {id:"month",name:"1 Month",duration_ms:2592000000,usd:500},
+ {id:"year",name:"1 Year",duration_ms:31536000000,usd:5000},
+ {id:"forever",name:"Forever ∞",duration_ms:null,usd:441000000}
+];
+const SIMULATOR_PACKAGES=SIMULATOR_TIME_PACKAGES.map(x=>({id:x.id,name:x.name,usd:x.usd,duration_ms:x.duration_ms}));
 function normalizeSimulatorPrice(value){const n=Number(value);if(!Number.isFinite(n)||!SIMULATOR_PRICE_POINTS.includes(n))throw new Error("unsupported_price_point");return n;}
-async function exactTokenQuote(address,amountUsd=4){
- const priceUsd=normalizeSimulatorPrice(amountUsd);
- const asset=tokenRegistry().find(t=>String(t.address).toLowerCase()===String(address).toLowerCase()&&t.enabled!==false);
- if(!asset)throw new Error("token_not_supported");
- const market=await liveBaseTokenQuote(asset.address);
- if(!market.verified||!Number.isFinite(Number(market.price_usdc))||Number(market.price_usdc)<=0)throw new Error("live_quote_unavailable");
- const decimals=await erc20Decimals(asset.address);
- const amountHuman=priceUsd/Number(market.price_usdc);
- const units=BigInt(Math.ceil(amountHuman*Math.pow(10,decimals)));
- return {asset,market,decimals,amount_usd:priceUsd,amount_human:amountHuman,amount_base_units:units.toString(),quote_expires_at:new Date(Date.now()+60000).toISOString()};
-}
 const GAMEPLAY_FREE_MS=8*60*1000;const GAMEPLAY_FIRST_GRANT_MS=4*60*1000;const GAMEPLAY_SESSION_MAX_MS=2*60*1000;
 const gameplayAccounts=new Map();
 function gameplayAccount(account){let s=gameplayAccounts.get(account);if(!s){s={created_at:Date.now(),first_grant_claimed:false,free_started_at:null,paid:false,paid_at:null,paid_tx_hash:null,last_seen_at:0};gameplayAccounts.set(account,s);}return s;}
