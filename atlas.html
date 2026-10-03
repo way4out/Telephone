@@ -25,12 +25,19 @@ scene.add(new THREE.AmbientLight(0x668899,1.3));const sun=new THREE.DirectionalL
 let root=new THREE.Group();scene.add(root);let avatar=new THREE.Group();scene.add(avatar);let dragging=false,lastX=0,lastY=0,liveStars=[];let epoch=0,dimension=3;
 const HYG="https://cdn.jsdelivr.net/gh/astronexus/HYG-Database@master/hygdata_v41.csv";
 const SOURCES=[
-["JPL Horizons","Accurate time-dependent Solar System ephemerides / vectors","https://ssd.jpl.nasa.gov/horizons/"],
-["NASA Open APIs","Public NASA data/API catalog","https://api.nasa.gov/"],
-["NASA Earthdata GIBS","Earth imagery/data services","https://earthdata.nasa.gov/gibs"],
-["HYG Database","Downloadable stellar catalog used for star rendering",""+HYG],
-["ESA Gaia Archive","Authoritative Gaia mission archive / catalog queries","https://gea.esac.esa.int/archive/"]
-];
+["JPL Horizons","Authoritative time-dependent Solar System ephemerides / vectors","https://ssd.jpl.nasa.gov/horizons/"],
+["NASA Open Data","Public NASA science, mission, Earth and space datasets","https://data.nasa.gov/"],
+["NASA APIs","Public NASA developer APIs and imagery/data services","https://api.nasa.gov/"],
+["NASA Earthdata GIBS","Global satellite imagery and geospatial services","https://earthdata.nasa.gov/gibs"],
+["NASA Planetary Data System","Public planetary mission archives","https://pds.nasa.gov/"],
+["NASA OSDR","Public spaceflight experiments, missions, payloads and biospecimen datasets","https://osdr.nasa.gov/"],
+["ESA Gaia Archive","Gaia mission catalog and archive","https://gea.esac.esa.int/archive/"],
+["USGS National Map","Public elevation, hydrography, boundaries, transportation and terrain GIS","https://www.usgs.gov/programs/national-geospatial-program/national-map"],
+["NOAA Data","Public atmosphere, ocean, climate and space-weather observations","https://www.noaa.gov/data"],
+["CelesTrak","Public satellite catalog and orbital element data","https://celestrak.org/"],
+["OpenStreetMap","Public collaborative geographic map data; tile usage subject to policy","https://www.openstreetmap.org/"],
+["HYG Database","Downloadable stellar catalog used for star rendering",""+HYG]
+
 sources.innerHTML=SOURCES.map(s=>'<div class="source"><b>'+s[0]+'</b> — '+s[1]+' · <a class="muted" target="_blank" rel="noopener" href="'+s[2]+'">source</a></div>').join("");
 function clear(){while(root.children.length)root.remove(root.children[0]);liveStars=[]} function buildAvatar(){while(avatar.children.length)avatar.remove(avatar.children[0]);const col=document.getElementById("avatarColor").value,sc=+document.getElementById("avatarScale").value;const body=new THREE.Mesh(new THREE.CapsuleGeometry(.12,.35,8,16),new THREE.MeshStandardMaterial({color:col,metalness:.25,roughness:.6}));body.position.set(0,-.05,0);const head=new THREE.Mesh(new THREE.SphereGeometry(.11,16,12),new THREE.MeshStandardMaterial({color:col}));head.position.y=.25;avatar.add(body,head);avatar.scale.setScalar(sc);avatar.position.set(+document.getElementById("sx").value||0,+document.getElementById("sy").value||0,+document.getElementById("sz").value||0);status.textContent="Customizable simulation character: "+document.getElementById("character").value+"."}
 function stars(n=5000,r=80){const g=new THREE.BufferGeometry(),p=new Float32Array(n*3);for(let i=0;i<n;i++){const u=Math.random(),v=Math.random(),a=6.283185*u,z=2*v-1,s=Math.sqrt(1-z*z)*r;p[i*3]=Math.cos(a)*s;p[i*3+1]=z*r;p[i*3+2]=Math.sin(a)*s}g.setAttribute("position",new THREE.BufferAttribute(p,3));root.add(new THREE.Points(g,new THREE.PointsMaterial({color:0xd9f6ff,size:.07,sizeAttenuation:true})))}
