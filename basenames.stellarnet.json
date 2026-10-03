@@ -1,0 +1,155 @@
+{
+  "network": "Base Mainnet",
+  "chainId": 8453,
+  "parentIdentity": "StellarNet LLC",
+  "status": "READY_FOR_WALLET_REGISTRATION",
+  "ownership": "UNVERIFIED_UNTIL_SIGNED_ONCHAIN",
+  "names": [
+    {
+      "label": "stellarnet",
+      "name": "stellarnet.base.eth",
+      "targetPath": "/stellarnet",
+      "category": "stellarnet"
+    },
+    {
+      "label": "nftqr",
+      "name": "nftqr.base.eth",
+      "targetPath": "/nftqr",
+      "category": "nftqr"
+    },
+    {
+      "label": "bankr",
+      "name": "bankr.base.eth",
+      "targetPath": "/bankr",
+      "category": "bankr"
+    },
+    {
+      "label": "oeql",
+      "name": "oeql.base.eth",
+      "targetPath": "/oeql",
+      "category": "oeql"
+    },
+    {
+      "label": "4out",
+      "name": "4out.base.eth",
+      "targetPath": "/4out",
+      "category": "4out"
+    },
+    {
+      "label": "forever",
+      "name": "forever.base.eth",
+      "targetPath": "/forever",
+      "category": "forever"
+    },
+    {
+      "label": "identity",
+      "name": "identity.base.eth",
+      "targetPath": "/identity",
+      "category": "identity"
+    },
+    {
+      "label": "payments",
+      "name": "payments.base.eth",
+      "targetPath": "/payments",
+      "category": "payments"
+    },
+    {
+      "label": "commerce",
+      "name": "commerce.base.eth",
+      "targetPath": "/commerce",
+      "category": "commerce"
+    },
+    {
+      "label": "telecom",
+      "name": "telecom.base.eth",
+      "targetPath": "/telecom",
+      "category": "telecom"
+    },
+    {
+      "label": "quantum",
+      "name": "quantum.base.eth",
+      "targetPath": "/quantum",
+      "category": "quantum"
+    },
+    {
+      "label": "compute",
+      "name": "compute.base.eth",
+      "targetPath": "/compute",
+      "category": "compute"
+    },
+    {
+      "label": "ai",
+      "name": "ai.base.eth",
+      "targetPath": "/ai",
+      "category": "ai"
+    },
+    {
+      "label": "media",
+      "name": "media.base.eth",
+      "targetPath": "/media",
+      "category": "media"
+    },
+    {
+      "label": "devices",
+      "name": "devices.base.eth",
+      "targetPath": "/devices",
+      "category": "devices"
+    },
+    {
+      "label": "data",
+      "name": "data.base.eth",
+      "targetPath": "/data",
+      "category": "data"
+    },
+    {
+      "label": "security",
+      "name": "security.base.eth",
+      "targetPath": "/security",
+      "category": "security"
+    },
+    {
+      "label": "developer",
+      "name": "developer.base.eth",
+      "targetPath": "/developer",
+      "category": "developer"
+    },
+    {
+      "label": "marketplace",
+      "name": "marketplace.base.eth",
+      "targetPath": "/marketplace",
+      "category": "marketplace"
+    },
+    {
+      "label": "treasury",
+      "name": "treasury.base.eth",
+      "targetPath": "/treasury",
+      "category": "treasury"
+    },
+    {
+      "label": "access",
+      "name": "access.base.eth",
+      "targetPath": "/access",
+      "category": "access"
+    },
+    {
+      "label": "infrastructure",
+      "name": "infrastructure.base.eth",
+      "targetPath": "/infrastructure",
+      "category": "infrastructure"
+    }
+  ],
+  "routing": {
+    "stellarnet.base.eth": "/",
+    "nftqr.base.eth": "/nftqr",
+    "bankr.base.eth": "/bankr",
+    "oeql.base.eth": "/oeql",
+    "4out.base.eth": "/4out",
+    "forever.base.eth": "/forever"
+  },
+  "registrationPolicy": {
+    "oneOwnerWallet": true,
+    "noClaimWithoutTransaction": true,
+    "verifyAvailabilityBeforeRegistration": true,
+    "setResolverRecordsAfterRegistration": true
+  }
+}
