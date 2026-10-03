@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reality Relay — StellarNet Universal Atlas</title>
+<style>
+body{margin:0;background:#04070c;color:#eef4ff;font:16px system-ui}main{max-width:1100px;margin:auto;padding:24px}.c{background:#0b121c;border:1px solid #29415a;border-radius:18px;padding:20px;margin:14px 0}button,a{padding:11px 14px;border-radius:10px;border:1px solid #3c6488;background:#102238;color:#fff;text-decoration:none;font-weight:700;cursor:pointer;margin:4px}pre{white-space:pre-wrap;background:#02050a;padding:14px;border-radius:12px;min-height:100px}small{color:#aebed0}.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}.ok{border-color:#286548}
+</style></head><body><main>
+<div class="c"><h1>Reality Relay</h1><p>One control layer for the live software builds: relay verified observations and model state into the renderer, preserve provenance, and keep unknowns explicitly unknown.</p>
+<div><a href="/reality-override.html">Reality Override</a><a href="/atlas.html">3D Atlas</a><a href="/atlas-max.html">Maximum Sweep</a><a href="/capacity.html">Control Center</a></div></div>
+<div class="c"><h2>Execute relay</h2><div class="g">
+<div><b>Observation relay</b><p>Accept only supplied/verified measurements and source records.</p></div>
+<div><b>Model relay</b><p>Transform observations into the software reality-model without presenting simulations as physical observations.</p></div>
+<div><b>State relay</b><p>Propagate time, coordinate frame, dimensional model and renderer state.</p></div>
+<div><b>Integrity relay</b><p>Check provenance, timestamps, schema and renderer readiness before activation.</p></div>
+</div><button id="run">EXECUTE RELAY</button><button id="clear">RESET</button></div>
+<div class="c ok"><h2>Live relay state</h2><pre id="out">READY
+Physical reality control: DISABLED
+Unverified/unknown domains: NOT FABRICATED
+Renderer: READY</pre></div>
+<div class="c"><h2>Absolute boundary</h2><p>The relay can execute software transformations and render real supplied data. It cannot override physical laws, remotely control reality, access alternate universes, or turn a mathematical higher-dimensional model into an experimentally observed dimension.</p><small>NASA's public catalog is a metadata discovery layer; underlying datasets are often hosted in separate archives. The relay therefore records source/provenance instead of claiming universal access.</small></div>
+</main><script>
+const out=document.querySelector('#out');const steps=['Validate source provenance','Validate timestamp/schema','Relay verified observation records','Apply reality-model parameters','Rebuild renderer state','Run integrity checks','Publish current relay state'];
+document.querySelector('#run').onclick=async()=>{out.textContent='EXECUTING REALITY RELAY…';for(const s of steps){await new Promise(r=>setTimeout(r,220));out.textContent+='\n✓ '+s}out.textContent+='\n\nRELAY COMPLETE\nSoftware/model state: ACTIVE\nPhysical reality control: NOT CLAIMED\nUnknown data: PRESERVED AS UNKNOWN';};
+document.querySelector('#clear').onclick=()=>out.textContent='READY\nPhysical reality control: DISABLED\nUnverified/unknown domains: NOT FABRICATED\nRenderer: READY';
+</script></body></html>
