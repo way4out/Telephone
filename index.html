@@ -3,56 +3,100 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="theme-color" content="#071018"><meta name="description" content="StellarNet LLC public network: four co-equal components — Telecom, BANKRbot App, Universal & Gaia Simulator, and StellarNet Gazette."><meta name="referrer" content="strict-origin-when-cross-origin">
-<title>StellarNet LLC — Web Network</title>
+<meta name="theme-color" content="#061016">
+<meta name="description" content="StellarNet LLC — Telecom, BANKRbot, Universal & Gaia Simulator, and StellarNet Gazette.">
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>StellarNet LLC — Quantum Telecom & Network</title>
 <style>
-html{scroll-behavior:smooth}a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:3px}.status{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}.pill{border:1px solid var(--line);border-radius:999px;padding:7px 10px;color:var(--muted);font-size:12px}.primary-card{border-color:#2c8095;box-shadow:0 18px 55px #0006}.card a{min-height:24px}.nav{position:sticky;top:0;z-index:10;display:flex;gap:8px;flex-wrap:wrap;padding:10px 0;background:#071018ee;backdrop-filter:blur(10px)}.nav a{font-size:13px;border:1px solid var(--line);border-radius:999px;padding:8px 10px}.section{scroll-margin-top:70px}
-:root{color-scheme:dark;--bg:#071018;--panel:#0d1822;--line:#203342;--text:#edf7ff;--muted:#9db1c0;--accent:#67e8f9}
-*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 20% 0%,#123247 0,#071018 42%);font:16px system-ui,-apple-system,Segoe UI,sans-serif;color:var(--text)}
-main{max-width:1180px;margin:auto;padding:28px 18px 60px}header{padding:28px 0 20px}h1{font-size:clamp(32px,6vw,62px);margin:0 0 8px}h2{margin-top:0}.sub{color:var(--muted);max-width:800px;line-height:1.6}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}.card{background:rgba(13,24,34,.88);border:1px solid var(--line);border-radius:18px;padding:20px;min-height:170px;box-shadow:0 12px 40px #0004}.tag{font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent)}a{display:inline-block;color:var(--text);text-decoration:none;font-weight:700;font-size:18px;margin:8px 0}a:hover{text-decoration:underline}.url{display:block;color:#8fc7d7;font-size:12px;word-break:break-all;font-weight:400}.desc{color:var(--muted);line-height:1.5}.section{margin-top:34px}footer{margin-top:40px;padding-top:20px;border-top:1px solid var(--line);color:var(--muted);line-height:1.6}
+:root{color-scheme:dark;--bg:#050b10;--panel:#0b151d;--panel2:#0e1d27;--line:#1d3440;--text:#f4fbff;--muted:#9eb3bf;--cyan:#67e8f9;--green:#71f7b0;--gold:#f6d77a;--danger:#ff8f8f}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:radial-gradient(circle at 50% -10%,#164457 0,#071118 35%,#050b10 75%);font:16px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;color:var(--text)}a{text-decoration:none;color:inherit}a:focus-visible,button:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}.wrap{max-width:1240px;margin:auto;padding:0 18px 64px}
+.nav{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:12px 0;background:#050b10e8;backdrop-filter:blur(14px);border-bottom:1px solid #ffffff0d}.brand{font-weight:900;letter-spacing:.05em;margin-right:auto}.brand span{color:var(--cyan)}.nav a{font-size:13px;padding:8px 11px;border:1px solid var(--line);border-radius:999px;color:var(--muted)}.nav a:hover{color:var(--text);border-color:#376276}
+.hero{padding:54px 0 34px;display:grid;grid-template-columns:1.4fr .8fr;gap:20px;align-items:stretch}.eyebrow,.tag{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--cyan);font-weight:800}h1{font-size:clamp(40px,8vw,82px);line-height:.95;margin:12px 0 18px;letter-spacing:-.055em}h2{font-size:clamp(25px,4vw,40px);margin:0 0 8px;letter-spacing:-.03em}.lead{color:var(--muted);font-size:18px;max-width:780px}.hero-panel{border:1px solid var(--line);border-radius:24px;padding:24px;background:linear-gradient(145deg,#0d202a,#09131b);box-shadow:0 22px 70px #0008}.signal{display:flex;justify-content:space-between;padding:13px 0;border-bottom:1px solid var(--line);font-size:14px}.signal:last-child{border:0}.ok{color:var(--green)}.muted{color:var(--muted)}
+.cta{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}.btn{display:inline-flex;align-items:center;justify-content:center;padding:12px 16px;border-radius:12px;border:1px solid var(--line);font-weight:800}.btn.primary{background:var(--cyan);color:#031017;border-color:var(--cyan)}.btn:hover{transform:translateY(-1px)}
+.section{margin-top:46px;scroll-margin-top:75px}.section-head{display:flex;justify-content:space-between;gap:20px;align-items:end;margin-bottom:16px}.section-head p{margin:0;color:var(--muted);max-width:680px}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}.card{background:linear-gradient(160deg,#0c1922,#09131a);border:1px solid var(--line);border-radius:20px;padding:21px;min-height:205px;box-shadow:0 14px 45px #0005;transition:.18s}.card:hover{transform:translateY(-3px);border-color:#31596a}.card h3{margin:10px 0 8px;font-size:21px}.card p{color:var(--muted);margin:0 0 17px}.card .arrow{color:var(--cyan);font-weight:800}.featured{grid-column:span 2;background:linear-gradient(145deg,#0c2530,#0a151d);border-color:#2c6b7d;min-height:235px}
+.telecom{margin-top:18px;display:grid;grid-template-columns:1.1fr .9fr;gap:14px}.telecom-main{padding:28px;border-radius:24px;border:1px solid #2c6b7d;background:radial-gradient(circle at 80% 10%,#154b5b,#0a171f 55%)}.telecom-main h3{font-size:32px;margin:8px 0}.price{font-size:42px;font-weight:900;letter-spacing:-.04em}.price small{font-size:16px;color:var(--muted);font-weight:600}.plans{display:grid;grid-template-columns:1fr 1fr;gap:10px}.plan{padding:18px;border-radius:16px;background:#071219;border:1px solid var(--line)}.plan strong{display:block;font-size:19px}.plan span{color:var(--muted);font-size:13px}.note{margin-top:14px;color:#8fa7b3;font-size:12px}
+.list{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.list .card{min-height:150px}
+footer{margin-top:52px;padding-top:22px;border-top:1px solid var(--line);color:var(--muted);font-size:13px}
+@media(max-width:900px){.hero,.telecom{grid-template-columns:1fr}.grid{grid-template-columns:1fr 1fr}.featured{grid-column:span 2}}@media(max-width:600px){.wrap{padding:0 14px 45px}.nav{gap:5px}.nav a{font-size:12px;padding:7px 8px}.hero{padding-top:38px}h1{font-size:52px}.grid,.plans,.list{grid-template-columns:1fr}.featured{grid-column:span 1}.card{min-height:0}.section{margin-top:36px}}
 </style>
 </head>
-<body><main>
-<header>
-<div class="tag">StellarNet LLC · Public Web Network</div>
-<h1>StellarNet</h1>
-<p class="sub">StellarNet LLC is organized here as four co-equal main components. This hub provides hardened, purpose-specific navigation to each component, company/legal resources, and configured infrastructure.</p><div class="status"><span class="pill">4 CO-EQUAL COMPONENTS</span><span class="pill">HARDENED NAVIGATION</span><span class="pill">PUBLIC / SOURCE-LINKED</span></div></header><nav class="nav" aria-label="Primary"><a href="#components">Components</a><a href="#legal">Legal</a><a href="#infrastructure">Infrastructure</a><a href="#sources">Sources</a></nav>
+<body>
+<div class="wrap">
+<nav class="nav" aria-label="Primary">
+<a class="brand" href="#top">STELLAR<span>NET</span></a>
+<a href="#telecom">Telecom</a><a href="#components">Network</a><a href="#legal">Legal</a><a href="https://oeql-bank-forever.onrender.com/">BANKRbot</a>
+</nav>
+<header id="top" class="hero">
+<div>
+<div class="eyebrow">StellarNet LLC · Public Network</div>
+<h1>One network.<br>Four equal worlds.</h1>
+<p class="lead">A cleaner public gateway for StellarNet Telecom, BANKRbot App, the unified Universal & Gaia Simulator, and the StellarNet Gazette.</p>
+<div class="cta"><a class="btn primary" href="#telecom">Open Telecom</a><a class="btn" href="#components">Explore all components</a></div>
+</div>
+<div class="hero-panel" aria-label="Network status">
+<div class="tag">PUBLIC CONTROL SURFACE</div>
+<div class="signal"><span>Core navigation</span><span class="ok">READY</span></div>
+<div class="signal"><span>Telecom catalog</span><span class="ok">CONFIGURED</span></div>
+<div class="signal"><span>Universal & Gaia</span><span class="ok">AVAILABLE</span></div>
+<div class="signal"><span>Gazette</span><span class="ok">PUBLIC</span></div>
+<div class="signal"><span>Payment execution</span><span class="muted">USER-AUTHORIZED</span></div>
+</div>
 </header>
 
-<section id="components" class="section"><h2>StellarNet LLC — Four Equal Main Components</h2><p class="sub">Four co-equal public components of StellarNet LLC. No component is designated as superior to another.</p><div class="grid">
-<article class="card primary-card"><div class="tag">01 · Telecom</div><a href="/">StellarNet Telecom</a><span class="url">https://oeql-quantum-telecom-phone.onrender.com/</span><p class="desc">Telecom service surface for configured mobile, eSIM and physical-SIM workflows, plans and orders.</p></article>
-<article class="card primary-card"><div class="tag">02 · BANKRbot App</div><a href="https://oeql-bank-forever.onrender.com/">BANKRbot App</a><span class="url">https://oeql-bank-forever.onrender.com/</span><p class="desc">StellarNet's BANKRbot application surface for configured financial and automation workflows.</p></article>
-<article class="card primary-card"><div class="tag">03 · Universal & Gaia Simulator</div><a href="/universe.html">Universal & Gaia Simulator</a><span class="url">https://oeql-quantum-telecom-phone.onrender.com/universe.html</span><p class="desc">One unified simulator combining Universal and Gaia exploration, observed feeds and clearly labeled model layers.</p></article>
-<article class="card primary-card"><div class="tag">04 · StellarNet Gazette</div><a href="/gazette.html">StellarNet Gazette</a><span class="url">https://oeql-quantum-telecom-phone.onrender.com/gazette.html</span><p class="desc">Public publication and communications surface for StellarNet LLC announcements, releases and verified updates.</p></article>
-</div></section>
+<section id="telecom" class="section">
+<div class="section-head"><div><div class="eyebrow">01 · Telecom</div><h2>Quantum Telecom</h2></div><p>Fast access to the configured mobile service surface, plan catalog and SIM/eSIM workflows.</p></div>
+<div class="telecom">
+<div class="telecom-main">
+<div class="tag">7G+ CONCEPT · TELECOM</div><h3>Start simple.</h3>
+<div class="price">$4 <small>activation/start</small></div>
+<p class="muted">Configured recurring service: $4/month, cancellable. Select a plan and continue through the live service workflow.</p>
+<div class="cta"><a class="btn primary" href="/operate.html">Open Telecom Center</a><a class="btn" href="/legal.html">Service & legal details</a></div>
+<div class="note">Carrier activation, eSIM provisioning and physical-SIM fulfillment require authorized carrier/fulfillment infrastructure; this site does not imply those external approvals.</div>
+</div>
+<div class="hero-panel">
+<div class="tag">SIM OPTIONS</div>
+<div class="plans">
+<div class="plan"><strong>eSIM</strong><span>Digital provisioning workflow when authorized.</span></div>
+<div class="plan"><strong>Physical SIM</strong><span>Shipping workflow when fulfillment is configured.</span></div>
+<div class="plan"><strong>Mobile Plans</strong><span>View current configured offerings.</span></div>
+<div class="plan"><strong>Readiness</strong><span>Check service/provider readiness before purchase.</span></div>
+</div>
+<div class="cta"><a class="btn" href="/operate.html">Plans & readiness →</a></div>
+</div>
+</div>
+</section>
 
-<section id="legal" class="section"><h2>Company Control & Legal</h2><div class="grid">
-<article class="card"><div class="tag">Company</div><a href="https://www.stellarnetllc.com/">StellarNet LLC</a><span class="url">https://www.stellarnetllc.com/</span><p class="desc">Official company website.</p></article>
-<article class="card"><div class="tag">Legal</div><a href="/legal.html">StellarNet Legal Center</a><span class="url">https://oeql-quantum-telecom-phone.onrender.com/legal.html</span><p class="desc">Public legal, service-boundary and provider-disclosure center.</p></article>
-<article class="card"><div class="tag">Official Notice</div><a href="https://www.stellarnetllc.com/legal-notice/">Official Legal Notice</a><span class="url">https://www.stellarnetllc.com/legal-notice/</span><p class="desc">Official public legal notice for StellarNet LLC.</p></article>
-<article class="card"><div class="tag">Contact</div><a href="https://www.stellarnetllc.com/contact-us/">Official Contact</a><span class="url">https://www.stellarnetllc.com/contact-us/</span><p class="desc">Official public company contact surface.</p></article>
-</div></section>
+<section id="components" class="section">
+<div class="section-head"><div><div class="eyebrow">04 co-equal components</div><h2>StellarNet Network</h2></div><p>Each component is a first-class public surface. No component is designated as superior to another.</p></div>
+<div class="grid">
+<article class="card featured"><div class="tag">02 · BANKRbot App</div><h3>BANKRbot</h3><p>Configured application surface for supported financial and automation workflows, with user authorization required for payment actions.</p><a class="arrow" href="https://oeql-bank-forever.onrender.com/">Open BANKRbot →</a></article>
+<article class="card"><div class="tag">03 · Universal & Gaia</div><h3>Unified Simulator</h3><p>Explore Universe and Gaia models, published feeds and clearly labeled computational layers.</p><a class="arrow" href="/universe.html">Explore →</a></article>
+<article class="card"><div class="tag">04 · Gazette</div><h3>StellarNet Gazette</h3><p>Public announcements, releases and verified company updates.</p><a class="arrow" href="/gazette.html">Read Gazette →</a></article>
+</div>
+</section>
 
-<section id="infrastructure" class="section"><h2>Public APIs & Infrastructure</h2><div class="grid">
-<article class="card"><div class="tag">API</div><a href="https://oeql-quantum-telecom-api.onrender.com/">StellarNet Quantum API</a><span class="url">https://oeql-quantum-telecom-api.onrender.com/</span><p class="desc">Backend control plane for health, registry, pricing, universe feeds, payment verification and service readiness.</p></article>
-<article class="card"><div class="tag">OEQL API</div><a href="https://oeql-forever-api.onrender.com/">OEQL Forever API</a><span class="url">https://oeql-forever-api.onrender.com/</span><p class="desc">OEQL application backend service.</p></article>
-<article class="card"><div class="tag">Telecom Legacy Surface</div><a href="https://oeql-quantum-telecom-live.onrender.com/">Quantum Telecom Live</a><span class="url">https://oeql-quantum-telecom-live.onrender.com/</span><p class="desc">Separate configured Render deployment for the OEQL quantum-telecom directory.</p></article>
-<article class="card"><div class="tag">7G+ Surface</div><a href="https://oeql-quantum-telecom-7g-plus.onrender.com/">Quantum Telecom 7G+</a><span class="url">https://oeql-quantum-telecom-7g-plus.onrender.com/</span><p class="desc">Dedicated configured web surface for the 7G+ telecom concept; standards and carrier claims require real authorization and verification.</p></article>
-</div></section>
+<section id="infrastructure" class="section">
+<div class="section-head"><div><div class="eyebrow">Public infrastructure</div><h2>Connected surfaces</h2></div><p>Direct access to configured APIs and related public deployments.</p></div>
+<div class="list">
+<article class="card"><div class="tag">API</div><h3>Quantum API</h3><p>Health, registry, pricing, readiness and verification endpoints.</p><a class="arrow" href="https://oeql-quantum-telecom-api.onrender.com/">Open API →</a></article>
+<article class="card"><div class="tag">7G+ Surface</div><h3>Quantum Telecom 7G+</h3><p>Dedicated configured telecom web surface.</p><a class="arrow" href="https://oeql-quantum-telecom-7g-plus.onrender.com/">Open →</a></article>
+<article class="card"><div class="tag">Live Surface</div><h3>Quantum Telecom Live</h3><p>Separate configured OEQL telecom deployment.</p><a class="arrow" href="https://oeql-quantum-telecom-live.onrender.com/">Open →</a></article>
+</div>
+</section>
 
-<section id="sources" class="section"><h2>Official & Source</h2><div class="grid">
-<article class="card"><div class="tag">Company</div><a href="https://www.stellarnetllc.com/">StellarNet LLC</a><span class="url">https://www.stellarnetllc.com/</span><p class="desc">Official StellarNet LLC public website.</p></article>
-<article class="card"><div class="tag">Contact</div><a href="https://www.stellarnetllc.com/contact-us/">StellarNet Contact</a><span class="url">https://www.stellarnetllc.com/contact-us/</span><p class="desc">Official public contact page.</p></article>
-<article class="card"><div class="tag">Legal Notice</div><a href="https://www.stellarnetllc.com/legal-notice/">StellarNet Legal Notice</a><span class="url">https://www.stellarnetllc.com/legal-notice/</span><p class="desc">Official public legal notice.</p></article>
-<article class="card"><div class="tag">Source</div><a href="https://github.com/way4out/Telephone">Telephone / StellarNet Source</a><span class="url">https://github.com/way4out/Telephone</span><p class="desc">Source repository for the current StellarNet Quantum Telecom web/API deployment.</p></article>
-<article class="card"><div class="tag">Source</div><a href="https://github.com/way4out/OEQL">OEQL Source</a><span class="url">https://github.com/way4out/OEQL</span><p class="desc">Public OEQL source repository.</p></article>
-<article class="card"><div class="tag">Source</div><a href="https://github.com/way4out/Rollin">Rollin Source</a><span class="url">https://github.com/way4out/Rollin</span><p class="desc">Public Rollin marketplace source repository.</p></article>
-<article class="card"><div class="tag">Source</div><a href="https://github.com/way4out/AetherOS">AetherOS Source</a><span class="url">https://github.com/way4out/AetherOS</span><p class="desc">Public AetherOS project repository.</p></article>
-</div></section>
+<section id="legal" class="section">
+<div class="section-head"><div><div class="eyebrow">Trust & control</div><h2>Company & legal</h2></div></div>
+<div class="list">
+<article class="card"><div class="tag">Company</div><h3>StellarNet LLC</h3><p>Official company website.</p><a class="arrow" href="https://www.stellarnetllc.com/">Visit →</a></article>
+<article class="card"><div class="tag">Legal</div><h3>Legal Center</h3><p>Service boundaries, provider disclosures and public notices.</p><a class="arrow" href="/legal.html">Open →</a></article>
+<article class="card"><div class="tag">Contact</div><h3>Official Contact</h3><p>Public company contact surface.</p><a class="arrow" href="https://www.stellarnetllc.com/contact-us/">Contact →</a></article>
+</div>
+</section>
 
 <footer>
-<strong>StellarNet LLC</strong><br>
-This directory organizes public websites and project sources. It does not imply that every external provider, carrier, payment rail, token, SIM/eSIM service, physical fulfillment provider, or experimental feature is independently authorized or continuously available. Payment actions require explicit user authorization; simulated and speculative scientific layers are identified as models.
+<strong>StellarNet LLC</strong> · Public network gateway.<br>
+External carriers, payment rails, tokens, SIM/eSIM providers and fulfillment services are not represented as authorized or continuously available unless their status is actually configured and verified. Simulated or speculative scientific layers are identified as models. Payment actions require explicit user authorization.
 </footer>
-</main></body></html>
+</div>
+</body>
+</html>
