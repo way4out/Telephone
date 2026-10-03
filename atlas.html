@@ -117,4 +117,56 @@ if(navigator.xr?.isSessionSupported){navigator.xr.isSessionSupported("immersive-
 render();update();buildAvatar();renderer.setAnimationLoop(()=>{root.rotation.y+=.00035;renderer.render(scene,camera)});
 </script><script>
 document.getElementById("shareUniverse")?.addEventListener("click",async()=>{const data={title:"StellarNet Universal Atlas — Universe Simulator",text:"Explore the public software universe simulator: Earth, Solar System, stars, galaxies, cosmology and mathematical model layers.",url:location.origin+"/universal-reality-simulator.html"};try{if(navigator.share)await navigator.share(data);else{await navigator.clipboard.writeText(data.url);document.getElementById("shareUniverseStatus").textContent="Simulator link copied."}}catch(e){}});
-</script></body></html><section style="margin-top:18px;padding:18px;border:1px solid rgba(0,220,255,.35);border-radius:16px;background:rgba(0,20,35,.45)"><h2>🌌 Public Universe Simulator — Share & Explore</h2><p>Interactive software simulation using public science-data catalogs plus modeled Solar System, stellar, galactic, cosmological and mathematical layers. Observations are source-gated; modeled layers are simulations.</p><div style="display:flex;gap:10px;flex-wrap:wrap"><a href="/universal-reality-simulator.html" class="btn">Open Universal Simulator</a><a href="/atlas-max.html" class="btn">Open Atlas MAX</a><button id="shareUniverse" class="btn">Share</button></div><div id="shareUniverseStatus" style="margin-top:10px"></div></section>
+</script><section id="paidSimulator" style="position:fixed;z-index:7;right:10px;top:10px;width:min(430px,calc(100vw - 20px));max-height:calc(100vh - 20px);overflow:auto;padding:12px;border:1px solid #3d6170;border-radius:16px;background:#061019f2;backdrop-filter:blur(14px);box-sizing:border-box">
+<h2 style="font-size:16px;margin:0 0 5px">💠 Paid Simulator Functions</h2>
+<div style="font-size:10px;color:#9bb0bd;line-height:1.4">One $4 unlock grants this browser session access to premium simulator functions. Payment uses exact-contract Base ERC-20 transfers only; no unlimited approval.</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px">
+<button id="payUnlock">Unlock $4</button><button id="walletUnlock">Connect Wallet</button>
+</div>
+<select id="paidToken" style="width:100%;margin-top:7px">
+<option value="0xad4f3857808a7c3b420c87d7cfabfe3934c18ba3">BLZET — buy drunk stay high</option>
+<option value="0x494301facc434ca703239e3e1e5def31fdc20ba3">BALLOON — balloon app</option>
+<option value="0x4b89c4263e1dc7c843482b85bff12b142ac4aba3">EMRLD — emerald tablets</option>
+<option value="0x7811d40ec95015c4571663a2eaaeca58c4412ba3">WO — way out</option>
+<option value="0xe9bd329a1ff8c56c9f44a937863983ec5b81aba3">FLAW — flawless</option>
+<option value="0x05e4c8b357da5981496cc7b2b0b8ea3956212ba3">ZAi — zenostate ai</option>
+<option value="0x8c7cffbdd51be8c43300f38f052ccdaac59f0ba3">AETH — aether</option>
+<option value="0x622e4536a4b3d5a3acb99a70bdfc50a3255d3ba3">ROLLIN — rollin'</option>
+<option value="0xaf4721ead1b366b88d21d6a0bfec7b25cb118ba3">REV — revelations</option>
+<option value="0xa6700712d8dbba2005ecffd277cec2f14871aba3">AIU4 — aiuse</option>
+<option value="0x5a69d0cc5783bd15c437dc329d78319325d13ba3">CAFFEINE — coffee powered</option>
+<option value="0x0033cf7b0e3ab5c1baa3509e27e7015743bc1ba3">TWO — 2two</option>
+</select>
+<div id="paidStatus" style="margin-top:7px;color:#aeeeff;font-size:10px;line-height:1.35">Locked — select a Base token and unlock.</div>
+<div id="paidControls" style="display:none;margin-top:8px">
+<div style="font-size:10px;color:#bcefff;margin-bottom:5px">Premium controls</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
+<button data-paid="deep">Deep-time replay</button><button data-paid="multi">Multiverse lab</button>
+<button data-paid="mission">Mission replay</button><button data-paid="highres">High-res catalog</button>
+<button data-paid="export">Export session</button><button data-paid="source">Source audit</button>
+</div></div>
+</section>
+<script>
+(()=>{const API=location.origin.replace('oeql-quantum-telecom-phone.onrender.com','oeql-quantum-telecom-api.onrender.com');let paid=false,account=null;
+const $=id=>document.getElementById(id),status=$('paidStatus'),controls=$('paidControls');
+function setStatus(t){status.textContent=t}
+async function connect(){if(!window.ethereum)throw Error('Base-compatible wallet required');const a=await window.ethereum.request({method:'eth_requestAccounts'});account=a[0];return account}
+async function pay(){try{const token=$('paidToken').value;const from=account||await connect();await window.ethereum.request({method:'wallet_switchEthereumChain',params:[{chainId:'0x2105'}]}).catch(async e=>{if(e.code===4902)await window.ethereum.request({method:'wallet_addEthereumChain',params:[{chainId:'0x2105',chainName:'Base Mainnet',nativeCurrency:{name:'Ether',symbol:'ETH',decimals:18},rpcUrls:['https://mainnet.base.org'],blockExplorerUrls:['https://basescan.org']}]});else throw e});
+const q=await fetch(API+'/v1/payments/quote?tokenAddress='+encodeURIComponent(token),{cache:'no-store'}).then(r=>r.json());if(!q.ok)throw Error(q.error||'quote_unavailable');
+const data='0xa9059cbb'+token.slice(2).toLowerCase(); // replaced below with ABI encoding
+const to=q.merchant_address.toLowerCase(),amt=BigInt(q.amount_base_units).toString(16).padStart(64,'0'),recipient=to.slice(2).padStart(64,'0');
+const calldata='0xa9059cbb'+recipient+amt;
+const tx=await window.ethereum.request({method:'eth_sendTransaction',params:[{from,to:token,data:calldata}]});
+setStatus('Payment submitted: '+tx.slice(0,10)+'… verifying on Base…');
+for(let i=0;i<60;i++){await new Promise(r=>setTimeout(r,2000));const v=await fetch(API+'/v1/payments/verify-transfer',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({txHash:tx,tokenAddress:token,from,amountUnits:q.amount_base_units})}).then(r=>r.json());if(v.confirmed){paid=true;controls.style.display='block';setStatus('Unlocked — $4 payment confirmed on Base. Premium functions enabled for this session.');return}}
+throw Error('confirmation_timeout')}catch(e){setStatus('Unlock not completed: '+(e.message||e))}
+}
+$('walletUnlock').onclick=()=>connect().then(a=>setStatus('Wallet connected: '+a.slice(0,8)+'…')).catch(e=>setStatus(e.message||String(e)));
+$('payUnlock').onclick=pay;
+controls.querySelectorAll('[data-paid]').forEach(b=>b.onclick=()=>{if(!paid)return;const f=b.dataset.paid;if(f==='deep'){$('time').value=100000;update();status.textContent='Deep-time replay enabled: +100,000 epoch model.'}
+else if(f==='multi'){$('layer').value='multi';render();status.textContent='Multiverse lab enabled: parameterized branch model active.'}
+else if(f==='mission'){$('layer').value='missions';missionsLayer();status.textContent='Mission replay mode enabled.'}
+else if(f==='highres')loadCatalog().then(()=>status.textContent='High-resolution published stellar catalog loaded.')
+else if(f==='export'){const state={layer:$('layer').value,epoch:$('time').value,dimension:$('dim').value,space:[$('sx').value,$('sy').value,$('sz').value],character:$('character').value,paid:true,unlocked_at:new Date().toISOString()};const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([JSON.stringify(state,null,2)],{type:'application/json'}));a.download='stellarnet-universe-session.json';a.click();URL.revokeObjectURL(a.href)}
+else if(f==='source'){renderRegistry();status.textContent='Source audit enabled: public registry and provenance panel refreshed.'}});
+})();</script></body></html><section style="margin-top:18px;padding:18px;border:1px solid rgba(0,220,255,.35);border-radius:16px;background:rgba(0,20,35,.45)"><h2>🌌 Public Universe Simulator — Share & Explore</h2><p>Interactive software simulation using public science-data catalogs plus modeled Solar System, stellar, galactic, cosmological and mathematical layers. Observations are source-gated; modeled layers are simulations.</p><div style="display:flex;gap:10px;flex-wrap:wrap"><a href="/universal-reality-simulator.html" class="btn">Open Universal Simulator</a><a href="/atlas-max.html" class="btn">Open Atlas MAX</a><button id="shareUniverse" class="btn">Share</button></div><div id="shareUniverseStatus" style="margin-top:10px"></div></section>
