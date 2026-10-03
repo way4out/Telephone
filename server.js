@@ -98,8 +98,11 @@ app.get("/v1/bankr/config",(req,res)=>{res.set({"Cache-Control":"no-store","Acce
 app.post("/v1/bankr/pay",async(req,res)=>{
   if(!process.env.BANKR_API_KEY)return res.status(503).json({ok:false,error:"bankr_api_key_not_configured"});
   const {tokenAddress,tokenSymbol,amountUsd=4}=req.body||{};
-  if(!tokenAddress||!process.env.TOKEN_MERCHANT_ADDRESS)return res.status(400).json({ok:false,error:"tokenAddress_and_merchant_required"});
-  const prompt=`Send ${amountUsd} worth of token ${tokenAddress} on Base to ${process.env.TOKEN_MERCHANT_ADDRESS} for StellarNet Telecom activation; return the transaction hash.`;
+  const asset=tokenRegistry().find(t=>String(t.address||"").toLowerCase()===String(tokenAddress||"").toLowerCase()&&t.enabled!==false);
+  if(!asset)return res.status(400).json({ok:false,error:"token_not_supported_for_telecom_payment"});
+  if(Number(amountUsd)!==4)return res.status(400).json({ok:false,error:"telecom_activation_amount_fixed_at_4_usd"});
+  if(!process.env.TOKEN_MERCHANT_ADDRESS)return res.status(400).json({ok:false,error:"tokenAddress_and_merchant_required"});
+  const prompt=`Send exactly 4 USD worth of ${asset.symbol} (${asset.address}) on Base to ${process.env.TOKEN_MERCHANT_ADDRESS} for StellarNet Telecom activation; return the transaction hash.`;
   try{
     const r=await fetch("https://api.bankr.bot/agent/prompt",{method:"POST",headers:{"content-type":"application/json","X-API-Key":process.env.BANKR_API_KEY},body:JSON.stringify({prompt})});
     const data=await r.json().catch(()=>({}));
