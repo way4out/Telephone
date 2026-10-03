@@ -122,19 +122,25 @@ app.get("/v1/incentives/base",(req,res)=>{
   res.json({ok:true,network:"Base",chain_id:8453,pricing:TELECOM_CONFIG.pricing,offers:assets.map(tokenIncentiveOffer)});
 });
 
-const SIMULATOR_PRICE_POINTS=[0.99,1.49,2.49,3.99,4.99,12.99,39.99,299,9999];
+// Simulator access pricing: $0.04/minute baseline with larger-duration bundle discounts.
+// Discounts are applied server-side before quotes are generated, so UI and 1-tap payments use the same exact amount.
+const SIMULATOR_BASE_USD_PER_MINUTE=0.04;
+const SIMULATOR_DISCOUNTS={minute:0,five:0.05,fifteen:0.10,hour:0.15,day:0.25,week:0.35,month:0.50,year:0.60};
+const SIMULATOR_DURATION_MINUTES={minute:1,five:5,fifteen:15,hour:60,day:1440,week:10080,month:43200,year:525600};
+const simulatorBundlePrice=(id)=>Number((SIMULATOR_BASE_USD_PER_MINUTE*SIMULATOR_DURATION_MINUTES[id]*(1-(SIMULATOR_DISCOUNTS[id]||0))).toFixed(2));
 const SIMULATOR_TIME_PACKAGES=[
- {id:"minute",name:"1 Minute",duration_ms:60000,usd:0.99},
- {id:"five",name:"5 Minutes",duration_ms:300000,usd:1.49},
- {id:"fifteen",name:"15 Minutes",duration_ms:900000,usd:2.49},
- {id:"hour",name:"1 Hour",duration_ms:3600000,usd:3.99},
- {id:"day",name:"1 Day",duration_ms:86400000,usd:4.99},
- {id:"week",name:"1 Week",duration_ms:604800000,usd:12.99},
- {id:"month",name:"1 Month",duration_ms:2592000000,usd:39.99},
- {id:"year",name:"1 Year",duration_ms:31536000000,usd:299},
- {id:"forever",name:"Forever ∞",duration_ms:null,usd:9999}
+ {id:"minute",name:"1 Minute",duration_ms:60000,minutes:1,base_usd:0.04,discount_percent:0,usd:simulatorBundlePrice("minute")},
+ {id:"five",name:"5 Minutes",duration_ms:300000,minutes:5,base_usd:0.20,discount_percent:5,usd:simulatorBundlePrice("five")},
+ {id:"fifteen",name:"15 Minutes",duration_ms:900000,minutes:15,base_usd:0.60,discount_percent:10,usd:simulatorBundlePrice("fifteen")},
+ {id:"hour",name:"1 Hour",duration_ms:3600000,minutes:60,base_usd:2.40,discount_percent:15,usd:simulatorBundlePrice("hour")},
+ {id:"day",name:"1 Day",duration_ms:86400000,minutes:1440,base_usd:57.60,discount_percent:25,usd:simulatorBundlePrice("day")},
+ {id:"week",name:"1 Week",duration_ms:604800000,minutes:10080,base_usd:403.20,discount_percent:35,usd:simulatorBundlePrice("week")},
+ {id:"month",name:"1 Month",duration_ms:2592000000,minutes:43200,base_usd:1728.00,discount_percent:50,usd:simulatorBundlePrice("month")},
+ {id:"year",name:"1 Year",duration_ms:31536000000,minutes:525600,base_usd:21024.00,discount_percent:60,usd:simulatorBundlePrice("year")},
+ {id:"forever",name:"Forever ∞",duration_ms:null,minutes:null,base_usd:null,discount_percent:0,usd:9999}
 ];
-const SIMULATOR_PACKAGES=SIMULATOR_TIME_PACKAGES.map(x=>({id:x.id,name:x.name,usd:x.usd,duration_ms:x.duration_ms}));
+const SIMULATOR_PRICE_POINTS=SIMULATOR_TIME_PACKAGES.map(x=>x.usd);
+const SIMULATOR_PACKAGES=SIMULATOR_TIME_PACKAGES.map(x=>({id:x.id,name:x.name,usd:x.usd,duration_ms:x.duration_ms,minutes:x.minutes,base_usd:x.base_usd,discount_percent:x.discount_percent,pricing_basis:x.minutes==null?"lifetime_fixed":"$0.04_per_minute"}));
 function normalizeSimulatorPrice(value){const n=Number(value);if(!Number.isFinite(n)||!SIMULATOR_PRICE_POINTS.includes(n))throw new Error("unsupported_price_point");return n;}
 const GAMEPLAY_FREE_MS=8*60*1000;const GAMEPLAY_FIRST_GRANT_MS=4*60*1000;const GAMEPLAY_SESSION_MAX_MS=2*60*1000;
 const gameplayAccounts=new Map();
