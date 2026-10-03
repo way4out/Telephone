@@ -121,7 +121,8 @@ app.get("/v1/incentives/base",(req,res)=>{
   res.json({ok:true,network:"Base",chain_id:8453,pricing:TELECOM_CONFIG.pricing,offers:assets.map(tokenIncentiveOffer)});
 });
 
-const SIMULATOR_PRICE_POINTS=[1,4,10,25,100];
+const SIMULATOR_PRICE_POINTS=[0.25,0.5,1,2,4,5,10,15,20,25,50,75,100,250,500,1000];
+const SIMULATOR_PACKAGES=[{id:"starter",name:"Starter",usd:1},{id:"standard",name:"Standard",usd:4},{id:"plus",name:"Plus",usd:10},{id:"pro",name:"Pro",usd:25},{id:"enterprise",name:"Enterprise",usd:100},{id:"scale",name:"Scale",usd:500}];
 function normalizeSimulatorPrice(value){const n=Number(value);if(!Number.isFinite(n)||!SIMULATOR_PRICE_POINTS.includes(n))throw new Error("unsupported_price_point");return n;}
 async function exactTokenQuote(address,amountUsd=4){
  const priceUsd=normalizeSimulatorPrice(amountUsd);
@@ -139,7 +140,7 @@ app.get("/v1/payments/quote",async(req,res)=>{
   if(!process.env.TOKEN_MERCHANT_ADDRESS)return res.status(503).json({ok:false,error:"merchant_address_not_configured"});
   const q=await exactTokenQuote(String(req.query.tokenAddress||""),req.query.amountUsd==null?4:req.query.amountUsd);
   res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*","X-Content-Type-Options":"nosniff"});
-  res.json({ok:true,network:"Base",chain_id:8453,merchant_address:process.env.TOKEN_MERCHANT_ADDRESS,token:{symbol:q.asset.symbol,address:q.asset.address,decimals:q.decimals},amount_usd:q.amount_usd,amount_human:q.amount_human,price_points_usd:SIMULATOR_PRICE_POINTS,amount_base_units:q.amount_base_units,price_usdc:q.market.price_usdc,source:q.market.source,pair:q.market.pair,quote_expires_at:q.quote_expires_at,exact_transfer:true});
+  res.json({ok:true,network:"Base",chain_id:8453,merchant_address:process.env.TOKEN_MERCHANT_ADDRESS,token:{symbol:q.asset.symbol,address:q.asset.address,decimals:q.decimals},amount_usd:q.amount_usd,amount_human:q.amount_human,price_points_usd:SIMULATOR_PRICE_POINTS,packages:SIMULATOR_PACKAGES,amount_base_units:q.amount_base_units,price_usdc:q.market.price_usdc,source:q.market.source,pair:q.market.pair,quote_expires_at:q.quote_expires_at,exact_transfer:true});
  }catch(e){res.status(400).json({ok:false,error:e.message||"quote_unavailable"});}
 });
 app.post("/v1/payments/verify-transfer",async(req,res)=>{
@@ -154,21 +155,24 @@ app.post("/v1/payments/verify-transfer",async(req,res)=>{
   res.status(result.error==="transaction_pending"?202:402).json({ok:false,confirmed:false,settled:false,payment:result});
  }catch(e){res.status(502).json({ok:false,error:"verification_unavailable"});}
 });
+app.get("/v1/payments/price-points",(req,res)=>res.json({ok:true,network:"Base",chain_id:8453,merchant_address:process.env.TOKEN_MERCHANT_ADDRESS||null,price_points_usd:SIMULATOR_PRICE_POINTS,packages:SIMULATOR_PACKAGES,tokens:tokenRegistry().filter(t=>t.enabled!==false)}));
 app.get("/v1/payments/assets",(req,res)=>{res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*","X-Content-Type-Options":"nosniff"});res.json({ok:true,network:"Base",chain_id:8453,merchant_address_configured:Boolean(process.env.TOKEN_MERCHANT_ADDRESS),pricing:TELECOM_CONFIG.pricing,assets:tokenPaymentCapabilities(),note:"Wallet visibility does not imply Coinbase.com listing, liquidity, swap availability, or telecom payment acceptance."});});
 app.get("/v1/bankr/config",(req,res)=>{res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*"});res.json({ok:true,enabled:Boolean(process.env.BANKR_API_KEY),network:"Base",chain_id:8453,merchant_address:process.env.TOKEN_MERCHANT_ADDRESS||null,bankr_app:"https://bankr.bot",payment_mode:process.env.BANKR_API_KEY?"bankr_agent_or_wallet_api":"bankr_link_only"});});
 app.post("/v1/bankr/pay",async(req,res)=>{
   if(!process.env.BANKR_API_KEY)return res.status(503).json({ok:false,error:"bankr_api_key_not_configured"});
-  const {tokenAddress,tokenSymbol,amountUsd=4}=req.body||{};
+  const {tokenAddress,tokenSymbol,amountUsd=4,packageId}=req.body||{};
   const asset=tokenRegistry().find(t=>String(t.address||"").toLowerCase()===String(tokenAddress||"").toLowerCase()&&t.enabled!==false);
   if(!asset)return res.status(400).json({ok:false,error:"token_not_supported_for_telecom_payment"});
-  let quote; try{quote=await exactTokenQuote(asset.address,amountUsd)}catch(e){return res.status(400).json({ok:false,error:e.message||"quote_unavailable"});}
+  const pkg=packageId?SIMULATOR_PACKAGES.find(x=>x.id===packageId):null;
+  const selectedUsd=pkg?pkg.usd:amountUsd;
+  let quote; try{quote=await exactTokenQuote(asset.address,selectedUsd)}catch(e){return res.status(400).json({ok:false,error:e.message||"quote_unavailable"});}
   if(!process.env.TOKEN_MERCHANT_ADDRESS)return res.status(400).json({ok:false,error:"tokenAddress_and_merchant_required"});
   const prompt=`For StellarNet Universe Simulator on Base, pay exactly ${quote.amount_usd} using ${asset.symbol} (${asset.address}), exact amount ${quote.amount_base_units} base units, to merchant ${process.env.TOKEN_MERCHANT_ADDRESS}. Approve only this exact amount; never grant unlimited allowance; return approval and final transfer tx hashes.`;
   try{
     const r=await fetch("https://api.bankr.bot/agent/prompt",{method:"POST",headers:{"content-type":"application/json","X-API-Key":process.env.BANKR_API_KEY},body:JSON.stringify({prompt})});
     const data=await r.json().catch(()=>({}));
     if(!r.ok)return res.status(r.status).json({ok:false,error:"bankr_payment_request_failed",provider:data});
-    res.status(202).json({ok:true,provider:"Bankr",token:tokenSymbol||tokenAddress,amount_usd:Number(amountUsd),exact_amount_base_units:quote.amount_base_units,merchant_address:process.env.TOKEN_MERCHANT_ADDRESS,incentive:tokenIncentiveOffer(asset),jobId:data.jobId,threadId:data.threadId,note:"Payment is pending until Bankr reports a confirmed on-chain transaction. Service credit is earned only after confirmation and is subject to the displayed Telecom terms."});
+    res.status(202).json({ok:true,provider:"Bankr",token:tokenSymbol||tokenAddress,amount_usd:Number(quote.amount_usd),package_id:pkg?.id||null,exact_amount_base_units:quote.amount_base_units,merchant_address:process.env.TOKEN_MERCHANT_ADDRESS,incentive:tokenIncentiveOffer(asset),jobId:data.jobId,threadId:data.threadId,note:"Payment is pending until Bankr reports a confirmed on-chain transaction. Service credit is earned only after confirmation and is subject to the displayed Telecom terms."});
   }catch(e){res.status(502).json({ok:false,error:"bankr_connection_failed"});}
 });
 app.get("/v1/wallet/config",(req,res)=>{res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*"});res.json({ok:true,network:"Base",chain_id:8453,chain_name:"Base Mainnet",wallets:["Base App / Coinbase Wallet","Injected EVM wallet"],dapp_connection:"supported_by_wallet",merchant_address:process.env.TOKEN_MERCHANT_ADDRESS||null});});
