@@ -691,7 +691,7 @@ const NFTQR_TOTAL=4000;
 const nftqr=new Map();
 for(let i=1;i<=NFTQR_TOTAL;i++){
   const id="SNQR-V1-"+String(i).padStart(4,"0");
-  nftqr.set(id,{id,issued:false,used:false,label:"",destination:"",dark:"#02070b",light:"#ffffff",size:512,secret:crypto.randomBytes(24).toString("hex"),created_at:null,used_at:null});
+  nftqr.set(id,{id,issued:false,used:false,label:"",destination:"",dark:"#02070b",light:"#ffffff",size:512,cellStyle:"square",cellRadius:0,cellScale:0.92,accent:"#63eaff",watermark:"STELLARNET",secret:crypto.randomBytes(24).toString("hex"),created_at:null,used_at:null});
 }
 function nftqrPublic(x){
   return {id:x.id,issued:x.issued,used:x.used,label:x.label,redeem_url:x.issued?publicApp+"/v1/nftqr/redeem/"+encodeURIComponent(x.id)+"?k="+x.secret:null,metadata_url:x.issued?publicApp+"/v1/nftqr/metadata/"+encodeURIComponent(x.id):null,created_at:x.created_at,used_at:x.used_at,design:{cellStyle:x.cellStyle,cellRadius:x.cellRadius,cellScale:x.cellScale,dark:x.dark,light:x.light,accent:x.accent,watermark:x.watermark},rights:"Buyer receives the custom edition data/design license described by the purchase terms; StellarNet software, marks, QR standards and infrastructure remain separately owned unless a written agreement states otherwise."};
@@ -729,7 +729,15 @@ app.get("/v1/nftqr/render/:id",async(req,res)=>{
   try{
     const x=nftqr.get(String(req.params.id||""));if(!x||!x.issued)return res.status(404).send("nftqr_not_found");
     const payload=publicApp+"/v1/nftqr/redeem/"+encodeURIComponent(x.id)+"?k="+x.secret;
-    const png=await QRCode.toBuffer(payload,{type:"png",width:x.size,margin:2,errorCorrectionLevel:"H",color:{dark:x.dark,light:x.light}});
+    const qr=QRCode.create(payload,{errorCorrectionLevel:"H"}); const n=qr.modules.size, pad=8, cell=x.size/(n+pad*2), scale=x.cellScale||0.92, rr=Math.min(cell*0.45,Math.max(0,cell*(x.cellRadius||0)));
+    const shape=(x.cellStyle||"square")==="diamond"?"diamond":(x.cellStyle||"square")==="round"?"round":(x.cellStyle||"square")==="pill"?"pill":"square";
+    const rects=[]; for(let yy=0;yy<n;yy++)for(let xx=0;xx<n;xx++){if(!qr.modules.get(xx,yy))continue; const cx=(xx+pad+.5)*cell,cy=(yy+pad+.5)*cell,w=cell*scale; let tag="";
+      if(shape==="diamond") tag='<polygon points="'+cx+','+(cy-w/2)+' '+(cx+w/2)+','+cy+' '+cx+','+(cy+w/2)+' '+(cx-w/2)+','+cy+'" fill="'+x.dark+'"/>';
+      else { const rx=shape==="round"?w/2:(shape==="pill"?Math.min(w/2,rr):rr); tag='<rect x="'+(cx-w/2)+'" y="'+(cy-w/2)+'" width="'+w+'" height="'+w+'" rx="'+rx+'" fill="'+x.dark+'"/>'; }
+      rects.push(tag);
+    }
+    const svg='<svg xmlns="http://www.w3.org/2000/svg" width="'+x.size+'" height="'+x.size+'" viewBox="0 0 '+x.size+' '+x.size+'"><rect width="100%" height="100%" fill="'+x.light+'"/>'+rects.join("")+'<rect x="3" y="3" width="'+(x.size-6)+'" height="'+(x.size-6)+'" rx="12" fill="none" stroke="'+x.accent+'" stroke-width="3"/><text x="'+(x.size/2)+'" y="'+(x.size-10)+'" text-anchor="middle" font-family="system-ui,sans-serif" font-size="'+Math.max(9,Math.round(x.size/42))+'" font-weight="700" fill="'+x.accent+'" opacity=".9">'+String(x.watermark||"STELLARNET").replace(/[<>&"]/g,"")+'</text></svg>';
+    res.set({"Content-Type":"image/svg+xml","Cache-Control":"no-store","X-Content-Type-Options":"nosniff"}).send(svg); return;
     res.set({"Content-Type":"image/png","Cache-Control":"no-store","X-Content-Type-Options":"nosniff"}).send(png);
   }catch(e){res.status(500).send("qr_render_failed");}
 });
