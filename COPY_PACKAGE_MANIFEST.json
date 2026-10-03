@@ -1,0 +1,15 @@
+{
+  "schema": "stellarnet.copy-package.v1",
+  "package_id": "nftqr-copy",
+  "name": "NFTQR Reproduction Data Package",
+  "chain": "base",
+  "processor": "BANKR",
+  "rights": "single_download_copy_right",
+  "download_policy": "one verified paid entitlement -> one single-use download token",
+  "scope": [
+    "QR schema",
+    "edition metadata",
+    "issuance/recreation rules"
+  ],
+  "onchain_status": "integration-ready; broadcast requires server-side BANKR write credentials"
+}
