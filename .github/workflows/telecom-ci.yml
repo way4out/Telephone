@@ -1,0 +1,21 @@
+name: StellarNet Telecom CI
+on:
+  push:
+  pull_request:
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate 23-asset registry
+        run: |
+          python - <<'PY'
+          import json
+          d=json.load(open("config/base-assets.json"))
+          assert d["chain"]=="base"
+          assert d["chain_id"]==8453
+          assert len(d["assets"])==23
+          assert all(a["contract"].startswith("0x") and len(a["contract"])==42 for a in d["assets"])
+          assert all(a["tx"].startswith("0x") and len(a["tx"])==66 for a in d["assets"])
+          print("Registry OK: 23 Base assets")
+          PY
