@@ -675,13 +675,12 @@ app.get("/v1/universe/live",async(req,res)=>{
   out.latency_ms=Date.now()-started;
   res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*","X-Content-Type-Options":"nosniff"}).json(out);
 });
-const server=
 // Unified Quantum Earth OS control-plane registry and health surface.
 const QUANTUM_MODULES=[
   ["Core OS","routing, navigation, PWA shell"],["Earth / Gaia","globe, terrain, GIS and environment"],["Solar System","planetary and orbital models"],["Stars / Exoplanets","stellar catalogs and visualization"],["Galaxies / Cosmology","cosmic structure models"],["Space Weather","solar and geomagnetic feeds"],["Climate / Environment","source-aware Earth observations"],["Life / Biodiversity","catalog and model layer"],["3D / WebGL","hardware-accelerated rendering"],["WebXR / Immersion","VR/AR browser surfaces"],["Reality Matrix","time, space and dimension models"],["Universal Atlas","maps and camera controls"],["Pixel Render","paid render entitlement"],["Accounts","wallet identity and profiles"],["Community","feed and posts"],["Payments","exact Base transfer verification"],["Bankr Adapter","configurable payment bridge"],["Token Registry","enabled payment metadata"],["Telecom","plan/eSIM/physical-SIM control plane"],["Wholesale Routing","provider-dependent routing"],["GSMA/eSIM","authorized RSP boundary"],["Security","request IDs and idempotency"],["Diagnostics","health and telemetry"],["Accessibility","mobile and readable controls"],["Speculative Models","explicit simulation-only domains"],["User Data","session and preference state"]
 ];
 app.get("/v1/system/registry",(req,res)=>res.json({ok:true,version:"quantum-control-plane-2.0",generated_at:new Date().toISOString(),modules:QUANTUM_MODULES.length,categories:QUANTUM_MODULES.map(([name,scope])=>({name,scope,status:"registered"})),boundaries:{observed_data:"separate",authorized_services:"provider_required",payments:"exact_transfer_verified",physical_reality_override:false}}));
 app.get("/v1/system/health",(req,res)=>res.json({ok:true,status:"operational",version:"quantum-control-plane-2.0",modules:QUANTUM_MODULES.length,api_time:new Date().toISOString(),bankr_configured:Boolean(process.env.BANKR_API_KEY),merchant_configured:Boolean(process.env.TOKEN_MERCHANT_ADDRESS),stripe_configured:Boolean(process.env.STRIPE_SECRET_KEY),persistence:"process_local",boundaries:{observed_data:"separate",simulation_layers:"explicit",payment_settlement:"verification_required",physical_reality_override:false}}));
-app.listen(PORT,()=>console.log(`StellarNet Telecom API listening on ${PORT}`));
+const server=app.listen(PORT,()=>console.log(`StellarNet Telecom API listening on ${PORT}`));
 process.on("SIGTERM",()=>{console.log("SIGTERM received; draining HTTP server");server.close(()=>process.exit(0));setTimeout(()=>process.exit(1),25000);});
 process.on("SIGINT",()=>server.close(()=>process.exit(0)));
