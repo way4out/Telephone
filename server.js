@@ -527,20 +527,6 @@ function quantumScan(){
 app.get("/v1/quantum/scan",(req,res)=>{res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*","X-Content-Type-Options":"nosniff"});res.json({ok:true,scan:quantumScan()});});
 app.get("/v1/quantum/capabilities",(req,res)=>{res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*"});res.json({ok:true,software:["resonance simulation","vector execution model","2D/3D/4D/5D+ state modeling","deterministic scan manifests","PQC research integration point","IMT-2030 compatibility interface","instrument-validation state machine"],hardware_requirements:["RF/optical instrumentation","clock/oscillator references","ADC/DAC","FPGA/DSP","calibrated sensors","shielding where required","lawful test authorization"],state_machine:["UNCONFIGURED","SIMULATED","INSTRUMENT_CONNECTED","CALIBRATED","LAB_VALIDATED","AUTHORIZED_FIELD_TEST","PROVIDER_INTEGRATED"],physical_quantum_execution:false,quantum_radio:false,note:"Software exposes the control and validation plane; physical quantum execution requires real laboratory hardware, measurements, calibration and authorization."});});
 
-
-// --- Unified maximum-capacity control plane ---
-// Exposes software capacity and provider-gated readiness without inventing physical network capacity.
-app.get("/v1/capacity",(req,res)=>{
- const atlasLayers=["Earth/Gaia","Solar System","Stars","Cosmic Structure","Multiverse Model","Higher-Dimension Projection","Global/Intergalactic Maps","Missions/Spacecraft"];
- const telecom=["$4 activation","$4 monthly recurring","Base token registry","exact-contract payment verification","Bankr payment adapter","Stripe checkout","eSIM RSP adapters","physical-SIM fulfillment adapter","global capability APIs","live readiness APIs","subscriber/device control plane","post-quantum research boundary"];
- res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*","X-Content-Type-Options":"nosniff"});
- res.json({ok:true,generated_at:new Date().toISOString(),mode:"maximum_software_control_plane",telecom:{capacity_state:"maximum_configured_software_capacity",features:telecom,token_count:tokenRegistry().length,carrier_capacity:"provider-dependent",radio_capacity:"provider-dependent",physical_network_scaling:"operator-dependent"},atlas:{capacity_state:"maximum_configured_browser_simulation_capacity",layers:atlasLayers,public_data_registry:"expanded",live_catalog_adapter:true,webgl:true,webxr:true,simulation_domains:"parameterized",physical_reality_access:false},system:{api:true,frontend:true,pwa_ready:true,desktop:true,mobile_responsive:true,zero_downtime_deploys:"Render-managed",data_policy:"verified/public data separated from derived simulation"}});
-});
-app.get("/v1/control-plane/maximum",(req,res)=>{
- const q=quantumScan();
- res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*"});
- res.json({ok:true,control_plane:"maximum",timestamp:new Date().toISOString(),telecom:telecomStatusPayload(req.query.country||"US"),capacity_endpoint:"/v1/capacity",atlas_url:publicApp+"/atlas.html",quantum_scan:q,operator_gates:{carrier_authorization:process.env.CARRIER_MODE==="production_authorized",esim_rsp:Boolean(atomicKey||journeyKey),physical_sim_fulfillment:Boolean(process.env.CARRIER_FULFILLMENT_BASE_URL&&process.env.CARRIER_FULFILLMENT_API_KEY)}});
-});
-\nconst server=app.listen(PORT,()=>console.log(`StellarNet Telecom API listening on ${PORT}`));
+const server=app.listen(PORT,()=>console.log(`StellarNet Telecom API listening on ${PORT}`));
 process.on("SIGTERM",()=>{console.log("SIGTERM received; draining HTTP server");server.close(()=>process.exit(0));setTimeout(()=>process.exit(1),25000);});
 process.on("SIGINT",()=>server.close(()=>process.exit(0)));
