@@ -142,6 +142,34 @@ app.get("/api/telecom-config",(req,res)=>{res.set({"Cache-Control":"no-store","A
 
 app.get("/v1/sim/catalog",(req,res)=>{res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*","X-Content-Type-Options":"nosniff"});res.json({ok:true,brand:"StellarNet Telecom",activation_usd:4,monthly_usd:4,physical_sim:{format:"3FF/2FF/4FF punch-out",ship_ready_design:true,carrier_profile:"provider-issued",sku:"STN-PHY-001",inventory_source:process.env.CARRIER_FULFILLMENT_BASE_URL?"authorized_fulfillment_provider":"in-house_design_only",fulfillment_status:process.env.CARRIER_FULFILLMENT_BASE_URL&&process.env.CARRIER_FULFILLMENT_API_KEY?"provider_configured":"provider_required",shipping_label_fields:["recipient_name","shipping_address","country","order_id","sim_serial","tracking_number"],manufacturing:{artwork:"/physical-sim-design.svg",electrical_profile:"authorized_carrier_profile_required",iccid:"assigned_at_authorized_personalization",imsi:"assigned_by_authorized_operator",ki:"never exposed_to_application"}}});});
 app.get("/v1/sim/fulfillment-readiness",(req,res)=>{const configured=Boolean(process.env.CARRIER_FULFILLMENT_BASE_URL&&process.env.CARRIER_FULFILLMENT_API_KEY);res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*"});res.json({ok:true,in_house_design:true,ship_pipeline_ready:configured,inventory_proof:configured?"provider_api_configured":"not_available",physical_sim_provider:configured?"configured":"required",carrier_activation:process.env.CARRIER_MODE==="production_authorized"?"authorized":"required",note:"The application can prepare orders and shipping data; it cannot manufacture or activate carrier credentials without authorized SIM personalization and carrier infrastructure."});});
+
+// --- Telecom production control-plane upgrade ---
+const TELECOM_PLANS=[
+ {id:"standard-esim",name:"StellarNet eSIM",activation_usd:4,monthly_usd:4,delivery:"digital",checkout:TELECOM_CONFIG.checkout.esim},
+ {id:"standard-physical",name:"StellarNet Physical SIM",activation_usd:4,monthly_usd:4,delivery:"physical",checkout:TELECOM_CONFIG.checkout.physical_sim}
+];
+app.get("/v1/telecom/plans",(req,res)=>res.json({ok:true,plans:TELECOM_PLANS,network:"Base",updated_at:new Date().toISOString(),fulfillment:{esim:atomicKey||journeyKey?"provider_configured":"provider_required",physical_sim:process.env.CARRIER_FULFILLMENT_BASE_URL&&process.env.CARRIER_FULFILLMENT_API_KEY?"provider_configured":"provider_required"}}));
+app.get("/v1/telecom/readiness",(req,res)=>{
+ const checks={
+   api:true,pricing:true,checkout:Boolean(TELECOM_CONFIG.checkout.esim&&TELECOM_CONFIG.checkout.physical_sim),
+   bankr:Boolean(process.env.BANKR_API_KEY),merchant:Boolean(process.env.TOKEN_MERCHANT_ADDRESS),
+   stripe:Boolean(stripeKey),base_rpc:Boolean(process.env.BASE_RPC_URL||true),
+   esim_provider:Boolean(atomicKey||journeyKey),physical_fulfillment:Boolean(process.env.CARRIER_FULFILLMENT_BASE_URL&&process.env.CARRIER_FULFILLMENT_API_KEY),
+   carrier_authorization:process.env.CARRIER_MODE==="production_authorized"
+ };
+ const ready=Object.entries(checks).filter(([k])=>["api","pricing","checkout"].includes(k)).every(([,v])=>v);
+ res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*"});
+ res.json({ok:true,ready,checks,notes:{bankr:"Server-side Bankr rail requires BANKR_API_KEY",merchant:"Exact-token payments require TOKEN_MERCHANT_ADDRESS",carrier:"Live cellular activation remains provider/carrier authorized",esim:"Provider API is required for real profile provisioning",physical_sim:"Authorized fulfillment provider is required for physical shipment"}});
+});
+app.post("/v1/telecom/order",async(req,res)=>{
+ const {planId,customerCountry="US",delivery,source="web"}=req.body||{};
+ const plan=TELECOM_PLANS.find(x=>x.id===planId);
+ if(!plan)return res.status(400).json({ok:false,error:"plan_not_found"});
+ const orderId="stn_"+crypto.randomUUID();
+ const requestedDelivery=delivery||plan.delivery;
+ res.status(201).json({ok:true,order_id:orderId,status:"checkout_required",plan,customer_country:String(customerCountry).toUpperCase(),delivery:requestedDelivery,source,created_at:new Date().toISOString(),next:{checkout_url:plan.checkout,after_payment:"return to customer dashboard; provider activation remains dependent on authorized carrier/RSP"}});
+});
+
 app.get("/health",(_,res)=>res.status(200).json({ok:true,service:"stellarnet-telecom-api",payments:Boolean(stripe),journey:Boolean(journeyKey),atomic:Boolean(atomicKey),carrier_mode:process.env.CARRIER_MODE||"development",version:"2.3.0",health_check:"/health"}));
 app.get("/ready",(_,res)=>res.status(200).json({ok:true,ready:true,service:"stellarnet-telecom-api",control_plane:true,base_rpc_configured:Boolean(process.env.BASE_RPC_URL),stripe_configured:Boolean(stripe)}));
 // Deterministic receipt rail: creates a signed receipt payload after a verified checkout/tx reference.
