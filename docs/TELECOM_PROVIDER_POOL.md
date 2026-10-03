@@ -25,10 +25,15 @@ These are retail offerings. They are NOT evidence that StellarNet is the carrier
 
 Wholesale prices are quote/volume dependent. Never invent a sub-$4 wholesale rate.
 
+## StellarNet customer pricing rule
+- Public StellarNet plan: **$12 one-time setup + $4/month**.
+- Customer may cancel the $4/month service at any time; “forever” means the displayed plan remains cancellable, not a guarantee that third-party wholesale costs, taxes, regulations, coverage, or provider terms can never change.
+- The $12 setup is the StellarNet customer charge; provider wholesale/eSIM costs remain separate internal economics.
+
 ## $4 pricing rule
 - A $4/month StellarNet-branded global full mobile service is NOT currently verified from public pricing.
 - Under $4 is achievable today only for selected low-cost retail or travel-data offers, not as a universal global voice/SMS carrier plan.
-- The StellarNet $4/month product must remain pricing_pending_wholesale_quote until an authorized wholesale provider contract proves the cost, coverage, voice/SMS/data scope, taxes/fees, and permitted resale model.
+- The StellarNet $4/month recurring service remains pricing_pending_wholesale_quote until an authorized wholesale provider contract proves the cost, coverage, voice/SMS/data scope, taxes/fees, and permitted resale model.
 - Do not represent a travel-data eSIM as full carrier service.
 
 ## Activation routing
