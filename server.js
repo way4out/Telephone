@@ -694,7 +694,7 @@ for(let i=1;i<=NFTQR_TOTAL;i++){
   nftqr.set(id,{id,issued:false,used:false,label:"",destination:"",dark:"#02070b",light:"#ffffff",size:512,secret:crypto.randomBytes(24).toString("hex"),created_at:null,used_at:null});
 }
 function nftqrPublic(x){
-  return {id:x.id,issued:x.issued,used:x.used,label:x.label,redeem_url:x.issued?publicApp+"/v1/nftqr/redeem/"+encodeURIComponent(x.id)+"?k="+x.secret:null,metadata_url:x.issued?publicApp+"/v1/nftqr/metadata/"+encodeURIComponent(x.id):null,created_at:x.created_at,used_at:x.used_at};
+  return {id:x.id,issued:x.issued,used:x.used,label:x.label,redeem_url:x.issued?publicApp+"/v1/nftqr/redeem/"+encodeURIComponent(x.id)+"?k="+x.secret:null,metadata_url:x.issued?publicApp+"/v1/nftqr/metadata/"+encodeURIComponent(x.id):null,created_at:x.created_at,used_at:x.used_at,design:{cellStyle:x.cellStyle,cellRadius:x.cellRadius,cellScale:x.cellScale,dark:x.dark,light:x.light,accent:x.accent,watermark:x.watermark},rights:"Buyer receives the custom edition data/design license described by the purchase terms; StellarNet software, marks, QR standards and infrastructure remain separately owned unless a written agreement states otherwise."};
 }
 function validUrl(v){try{const u=new URL(String(v));return ["http:","https:"].includes(u.protocol)?u.toString():null}catch{return null}}
 function validHex(v,fallback){return /^#[0-9a-fA-F]{6}$/.test(String(v||""))?String(v):fallback}
@@ -711,19 +711,25 @@ app.post("/v1/nftqr/create",(req,res)=>{
     if(!slot)return res.status(409).json({ok:false,error:"inventory_exhausted"});
     slot.issued=true;slot.label=String(req.body?.label||"StellarNet NFTQR v1.0").slice(0,120);
     slot.destination=destination;slot.dark=validHex(req.body?.dark,"#02070b");slot.light=validHex(req.body?.light,"#ffffff");
-    slot.size=Math.min(2048,Math.max(256,Number(req.body?.size)||512));slot.created_at=new Date().toISOString();
+    slot.size=Math.min(2048,Math.max(256,Number(req.body?.size)||512));
+    slot.cellStyle=String(req.body?.cellStyle||"square").slice(0,24);
+    slot.cellRadius=Math.min(0.45,Math.max(0,Number(req.body?.cellRadius)||0));
+    slot.cellScale=Math.min(1,Math.max(0.55,Number(req.body?.cellScale)||0.92));
+    slot.accent=validHex(req.body?.accent,"#63eaff");
+    slot.watermark=String(req.body?.watermark||"STELLARNET").slice(0,32);
+    slot.created_at=new Date().toISOString();
     res.status(201).json({ok:true,...nftqrPublic(slot),application:"one_time_qr",network:"Base"});
   }catch(e){res.status(500).json({ok:false,error:"nftqr_create_failed"});}
 });
 app.get("/v1/nftqr/metadata/:id",(req,res)=>{
   const x=nftqr.get(String(req.params.id||""));if(!x||!x.issued)return res.status(404).json({ok:false,error:"nftqr_not_found"});
-  res.json({name:x.label+" · "+x.id,description:"StellarNet NFTQR v1.0 one-time digital edition.",external_url:publicApp+"/nftqr-v1.html",image:publicApp+"/v1/nftqr/render/"+encodeURIComponent(x.id),attributes:[{trait_type:"Edition",value:x.id},{trait_type:"One-Time",value:true},{trait_type:"Network",value:"Base"},{trait_type:"Used",value:Boolean(x.used)}]});
+  res.json({name:x.label+" · "+x.id,description:"StellarNet NFTQR v1.0 one-time digital edition with a uniquely generated credential and customizable design parameters.",external_url:publicApp+"/nftqr-v1.html",image:publicApp+"/v1/nftqr/render/"+encodeURIComponent(x.id),attributes:[{trait_type:"Edition",value:x.id},{trait_type:"One-Time",value:true},{trait_type:"Network",value:"Base"},{trait_type:"Used",value:Boolean(x.used)},{trait_type:"Cell Style",value:x.cellStyle},{trait_type:"Cell Scale",value:x.cellScale},{trait_type:"Cell Radius",value:x.cellRadius},{trait_type:"Watermark",value:x.watermark}],rights:"Buyer-facing rights are limited to the purchased custom edition and its supplied data/design license unless separately documented in writing."});
 });
 app.get("/v1/nftqr/render/:id",async(req,res)=>{
   try{
     const x=nftqr.get(String(req.params.id||""));if(!x||!x.issued)return res.status(404).send("nftqr_not_found");
     const payload=publicApp+"/v1/nftqr/redeem/"+encodeURIComponent(x.id)+"?k="+x.secret;
-    const png=await QRCode.toBuffer(payload,{type:"png",width:x.size,margin:2,color:{dark:x.dark,light:x.light}});
+    const png=await QRCode.toBuffer(payload,{type:"png",width:x.size,margin:2,errorCorrectionLevel:"H",color:{dark:x.dark,light:x.light}});
     res.set({"Content-Type":"image/png","Cache-Control":"no-store","X-Content-Type-Options":"nosniff"}).send(png);
   }catch(e){res.status(500).send("qr_render_failed");}
 });
