@@ -262,7 +262,7 @@ g.innerHTML=tokens.map(t=>"<div class='card feature'><span class='pill'>BASE · 
  }catch(e){}
 }
 renderTokenIncentives();
-renderLiveTokenPrices();\nsetInterval(renderLiveTokenPrices,5000);\n</script>\n<script>
+renderLiveTokenPrices();\nsetInterval(renderLiveTokenPrices,1000);\n</script>\n<script>
 const walletState={provider:null,address:null,assets:[]};
 const walletMsg=document.getElementById("walletMsg");
 function walletNotice(m){show(walletMsg,m)}
