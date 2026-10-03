@@ -688,20 +688,22 @@ app.get("/v1/system/health",(req,res)=>res.json({ok:true,status:"operational",ve
    Storage is process-local unless a durable database is added. This deliberately does not claim
    blockchain minting; minting is a separate authorized Bankr/contract operation. */
 const NFTQR_TOTAL=4000;
+// Each edition is a one-time customization slot: once issued, its customization is locked forever for that process lifetime. No edit endpoint exists.
+const NFTQR_POLICY={inventory:4000,customizations_per_edition:1,reissue:false,edit_after_issue:false};
 const nftqr=new Map();
 for(let i=1;i<=NFTQR_TOTAL;i++){
   const id="SNQR-V1-"+String(i).padStart(4,"0");
-  nftqr.set(id,{id,issued:false,used:false,label:"",destination:"",dark:"#02070b",light:"#ffffff",size:512,cellStyle:"square",cellRadius:0,cellScale:0.92,accent:"#63eaff",watermark:"STELLARNET",secret:crypto.randomBytes(24).toString("hex"),created_at:null,used_at:null});
+  nftqr.set(id,{id,issued:false,used:false,label:"",destination:"",dark:"#02070b",light:"#ffffff",size:512,cellStyle:"square",cellRadius:0,cellScale:0.92,accent:"#63eaff",watermark:"STELLARNET",secret:crypto.randomBytes(24).toString("hex"),created_at:null,customized_at:null,used_at:null});
 }
 function nftqrPublic(x){
-  return {id:x.id,issued:x.issued,used:x.used,label:x.label,redeem_url:x.issued?publicApp+"/v1/nftqr/redeem/"+encodeURIComponent(x.id)+"?k="+x.secret:null,metadata_url:x.issued?publicApp+"/v1/nftqr/metadata/"+encodeURIComponent(x.id):null,created_at:x.created_at,used_at:x.used_at,design:{cellStyle:x.cellStyle,cellRadius:x.cellRadius,cellScale:x.cellScale,dark:x.dark,light:x.light,accent:x.accent,watermark:x.watermark,artData:x.artData||"",cellMap:x.cellMap||""},rights:"Buyer receives the custom edition data/design license described by the purchase terms; StellarNet software, marks, QR standards and infrastructure remain separately owned unless a written agreement states otherwise."};
+  return {id:x.id,issued:x.issued,used:x.used,label:x.label,redeem_url:x.issued?publicApp+"/v1/nftqr/redeem/"+encodeURIComponent(x.id)+"?k="+x.secret:null,metadata_url:x.issued?publicApp+"/v1/nftqr/metadata/"+encodeURIComponent(x.id):null,created_at:x.created_at,customized_at:x.customized_at,customization_locked:Boolean(x.customized_at),used_at:x.used_at,design:{cellStyle:x.cellStyle,cellRadius:x.cellRadius,cellScale:x.cellScale,dark:x.dark,light:x.light,accent:x.accent,watermark:x.watermark,artData:x.artData||"",cellMap:x.cellMap||""},rights:"Buyer receives the custom edition data/design license described by the purchase terms; StellarNet software, marks, QR standards and infrastructure remain separately owned unless a written agreement states otherwise."};
 }
 function validUrl(v){try{const u=new URL(String(v));return ["http:","https:"].includes(u.protocol)?u.toString():null}catch{return null}}
 function validHex(v,fallback){return /^#[0-9a-fA-F]{6}$/.test(String(v||""))?String(v):fallback}
 app.get("/v1/nftqr/catalog",(req,res)=>{
   const all=[...nftqr.values()];
   res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*","X-Content-Type-Options":"nosniff"})
-    .json({ok:true,version:"1.0.0",network:"Base",total:NFTQR_TOTAL,issued:all.filter(x=>x.issued).length,used:all.filter(x=>x.used).length,available:all.filter(x=>!x.issued).length});
+    .json({ok:true,version:"1.0.0",network:"Base",total:NFTQR_TOTAL,issued:all.filter(x=>x.issued).length,used:all.filter(x=>x.used).length,available:all.filter(x=>!x.issued).length,policy:NFTQR_POLICY});
 });
 app.post("/v1/nftqr/create",(req,res)=>{
   try{
@@ -709,7 +711,7 @@ app.post("/v1/nftqr/create",(req,res)=>{
     if(!destination)return res.status(400).json({ok:false,error:"valid_http_destination_required"});
     const slot=[...nftqr.values()].find(x=>!x.issued);
     if(!slot)return res.status(409).json({ok:false,error:"inventory_exhausted"});
-    slot.issued=true;slot.label=String(req.body?.label||"StellarNet NFTQR v1.0").slice(0,120);
+    slot.issued=true;slot.customized_at=new Date().toISOString();slot.label=String(req.body?.label||"StellarNet NFTQR v1.0").slice(0,120);
     slot.destination=destination;slot.dark=validHex(req.body?.dark,"#02070b");slot.light=validHex(req.body?.light,"#ffffff");
     slot.size=Math.min(2048,Math.max(256,Number(req.body?.size)||512));
     slot.cellStyle=String(req.body?.cellStyle||"square").slice(0,24);
@@ -720,12 +722,12 @@ app.post("/v1/nftqr/create",(req,res)=>{
     slot.accent=validHex(req.body?.accent,"#63eaff");
     slot.watermark=String(req.body?.watermark||"STELLARNET").slice(0,32);
     slot.created_at=new Date().toISOString();
-    res.status(201).json({ok:true,...nftqrPublic(slot),application:"one_time_qr",network:"Base"});
+    res.status(201).json({ok:true,...nftqrPublic(slot),application:"one_time_qr",network:"Base",customization:"1x_ever_locked"});
   }catch(e){res.status(500).json({ok:false,error:"nftqr_create_failed"});}
 });
 app.get("/v1/nftqr/metadata/:id",(req,res)=>{
   const x=nftqr.get(String(req.params.id||""));if(!x||!x.issued)return res.status(404).json({ok:false,error:"nftqr_not_found"});
-  res.json({name:x.label+" · "+x.id,description:"StellarNet NFTQR v1.0 one-time digital edition with a uniquely generated credential and customizable design parameters.",external_url:publicApp+"/nftqr-v1.html",image:publicApp+"/v1/nftqr/render/"+encodeURIComponent(x.id),attributes:[{trait_type:"Edition",value:x.id},{trait_type:"One-Time",value:true},{trait_type:"Network",value:"Base"},{trait_type:"Used",value:Boolean(x.used)},{trait_type:"Cell Style",value:x.cellStyle},{trait_type:"Cell Scale",value:x.cellScale},{trait_type:"Cell Radius",value:x.cellRadius},{trait_type:"Watermark",value:x.watermark},{trait_type:"Hand Art",value:Boolean(x.artData||x.cellMap)}],rights:"Buyer-facing rights are limited to the purchased custom edition and its supplied data/design license unless separately documented in writing."});
+  res.json({name:x.label+" · "+x.id,description:"StellarNet NFTQR v1.0 one-time digital edition with a uniquely generated credential and a single locked customization; no post-issue customization or reissue is permitted.",external_url:publicApp+"/nftqr-v1.html",image:publicApp+"/v1/nftqr/render/"+encodeURIComponent(x.id),attributes:[{trait_type:"Edition",value:x.id},{trait_type:"One-Time",value:true},{trait_type:"Network",value:"Base"},{trait_type:"Used",value:Boolean(x.used)},{trait_type:"Cell Style",value:x.cellStyle},{trait_type:"Cell Scale",value:x.cellScale},{trait_type:"Cell Radius",value:x.cellRadius},{trait_type:"Watermark",value:x.watermark},{trait_type:"Hand Art",value:Boolean(x.artData||x.cellMap)}],rights:"Buyer-facing rights are limited to the purchased custom edition and its supplied data/design license unless separately documented in writing."});
 });
 app.get("/v1/nftqr/render/:id",async(req,res)=>{
   try{
