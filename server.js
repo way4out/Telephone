@@ -120,6 +120,66 @@ app.get("/v1/incentives/base",(req,res)=>{
   res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*","X-Content-Type-Options":"nosniff"});
   res.json({ok:true,network:"Base",chain_id:8453,pricing:TELECOM_CONFIG.pricing,offers:assets.map(tokenIncentiveOffer)});
 });
+
+const ERC20_TRANSFER_TOPIC="0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a7e0d4e6d5c";
+async function baseRpc(method,params=[]){
+ const url=process.env.BASE_RPC_URL||"https://mainnet.base.org";
+ const r=await fetch(url,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({jsonrpc:"2.0",id:1,method,params})});
+ if(!r.ok)throw new Error("base_rpc_"+r.status);
+ const j=await r.json(); if(j.error)throw new Error(j.error.message||"base_rpc_error"); return j.result;
+}
+function padAddress(a){return "0x"+"0".repeat(24)+String(a).replace(/^0x/,"").toLowerCase();}
+function hexToBigInt(h){return BigInt(h||"0x0")}
+async function tokenDecimals(address){
+ const data=await baseRpc("eth_call",[{to:address,data:"0x313ce567"},"latest"]);
+ return Number(hexToBigInt(data));
+}
+async function exactTokenQuote(address){
+ const asset=tokenRegistry().find(t=>String(t.address).toLowerCase()===String(address).toLowerCase()&&t.enabled!==false);
+ if(!asset)throw new Error("token_not_supported");
+ const market=await liveBaseTokenQuote(asset.address);
+ if(!market.verified||!Number.isFinite(Number(market.price_usdc))||Number(market.price_usdc)<=0)throw new Error("live_quote_unavailable");
+ const decimals=await tokenDecimals(asset.address);
+ const amountHuman=4/Number(market.price_usdc);
+ const units=BigInt(Math.ceil(amountHuman*Math.pow(10,decimals)));
+ return {asset,market,decimals,amount_human:amountHuman,amount_base_units:units.toString(),quote_expires_at:new Date(Date.now()+60000).toISOString()};
+}
+app.get("/v1/payments/quote",async(req,res)=>{
+ try{
+  if(!process.env.TOKEN_MERCHANT_ADDRESS)return res.status(503).json({ok:false,error:"merchant_address_not_configured"});
+  const q=await exactTokenQuote(String(req.query.tokenAddress||""));
+  res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*"});
+  res.json({ok:true,network:"Base",chain_id:8453,merchant_address:process.env.TOKEN_MERCHANT_ADDRESS,token:{symbol:q.asset.symbol,address:q.asset.address,decimals:q.decimals},amount_usd:4,amount_human:q.amount_human,amount_base_units:q.amount_base_units,price_usdc:q.market.price_usdc,source:q.market.source,pair:q.market.pair,quote_expires_at:q.quote_expires_at,exact_transfer:true});
+ }catch(e){res.status(400).json({ok:false,error:e.message||"quote_unavailable"});}
+});
+app.post("/v1/payments/verify-transfer",async(req,res)=>{
+ try{
+  const {txHash,tokenAddress,from}=req.body||{};
+  if(!process.env.TOKEN_MERCHANT_ADDRESS)return res.status(503).json({ok:false,error:"merchant_address_not_configured"});
+  if(!/^0x[a-fA-F0-9]{64}$/.test(String(txHash||"")))return res.status(400).json({ok:false,error:"invalid_tx_hash"});
+  const asset=tokenRegistry().find(t=>String(t.address).toLowerCase()===String(tokenAddress||"").toLowerCase()&&t.enabled!==false);
+  if(!asset)return res.status(400).json({ok:false,error:"token_not_supported"});
+  const [tx,receipt,q]=await Promise.all([baseRpc("eth_getTransactionByHash",[txHash]),baseRpc("eth_getTransactionReceipt",[txHash]),exactTokenQuote(asset.address)]);
+  if(!tx||!receipt)return res.status(202).json({ok:false,pending:true,error:"transaction_not_mined"});
+  if(String(receipt.status).toLowerCase()!=="0x1")return res.status(400).json({ok:false,error:"transaction_failed"});
+  const merchant=process.env.TOKEN_MERCHANT_ADDRESS.toLowerCase();
+  const sender=String(from||tx.from||"").toLowerCase();
+  const expectedUnits=BigInt(q.amount_base_units);
+  let received=0n;
+  let matched=false;
+  for(const log of (receipt.logs||[])){
+   if(String(log.address).toLowerCase()!==asset.address.toLowerCase())continue;
+   if(String(log.topics?.[0]).toLowerCase()!==ERC20_TRANSFER_TOPIC)continue;
+   const to="0x"+String(log.topics[2]||"").slice(-40).toLowerCase();
+   const fromLog="0x"+String(log.topics[1]||"").slice(-40).toLowerCase();
+   if(to===merchant&&(!sender||fromLog===sender)){received+=hexToBigInt(log.data);matched=true;}
+  }
+  if(!matched)return res.status(400).json({ok:false,error:"merchant_transfer_not_found"});
+  if(received!==expectedUnits)return res.status(400).json({ok:false,error:"exact_payment_amount_mismatch",expected_base_units:expectedUnits.toString(),received_base_units:received.toString()});
+  res.json({ok:true,confirmed:true,network:"Base",chain_id:8453,tx_hash:txHash,token:asset.symbol,token_address:asset.address,merchant_address:merchant,amount_usd:4,amount_base_units:received.toString(),confirmed_at:new Date().toISOString(),next:"fulfillment_may_begin_after normal provider checks"});
+ }catch(e){res.status(502).json({ok:false,error:e.message||"verification_unavailable"});}
+});
+
 app.get("/v1/payments/assets",(req,res)=>{res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*","X-Content-Type-Options":"nosniff"});res.json({ok:true,network:"Base",chain_id:8453,merchant_address_configured:Boolean(process.env.TOKEN_MERCHANT_ADDRESS),pricing:TELECOM_CONFIG.pricing,assets:tokenPaymentCapabilities(),note:"Wallet visibility does not imply Coinbase.com listing, liquidity, swap availability, or telecom payment acceptance."});});
 app.get("/v1/bankr/config",(req,res)=>{res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*"});res.json({ok:true,enabled:Boolean(process.env.BANKR_API_KEY),network:"Base",chain_id:8453,merchant_address:process.env.TOKEN_MERCHANT_ADDRESS||null,bankr_app:"https://bankr.bot",payment_mode:process.env.BANKR_API_KEY?"bankr_agent_or_wallet_api":"bankr_link_only"});});
 app.post("/v1/bankr/pay",async(req,res)=>{
