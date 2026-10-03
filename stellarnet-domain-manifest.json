@@ -1,0 +1,51 @@
+{
+  "version": "1.0",
+  "network": "Base Mainnet",
+  "chainId": 8453,
+  "identity": "StellarNet LLC",
+  "nftqr": {
+    "editions": 4000,
+    "customizationsPerEdition": 1,
+    "reissue": false,
+    "metadataPath": "/v1/nftqr/metadata/{id}"
+  },
+  "hosting": {
+    "renderFreeStatic": true,
+    "renderSubdomains": true
+  },
+  "onchainDomainPolicy": {
+    "preferred": "Base Basenames",
+    "status": "registration-required",
+    "note": "Do not claim a domain is onchain-owned until the wallet completes registration and the name resolves onchain."
+  },
+  "tokenGates": {
+    "count": 22,
+    "mode": "category-gated",
+    "paymentRail": "Base ERC-20",
+    "allocation": "one or more tokens may gate each category; exact enabled registry remains the backend source of truth"
+  },
+  "categories": [
+    "Identity",
+    "NFTQR",
+    "Payments",
+    "Commerce",
+    "Telecom",
+    "Quantum Compute",
+    "AI",
+    "Media",
+    "Devices",
+    "Data",
+    "Security",
+    "Developer",
+    "Marketplace",
+    "Treasury",
+    "Rewards",
+    "Access",
+    "Communications",
+    "Automation",
+    "Analytics",
+    "Governance",
+    "Infrastructure",
+    "StellarNet Core"
+  ]
+}
