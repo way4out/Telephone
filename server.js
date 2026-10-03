@@ -604,19 +604,35 @@ app.get("/v1/quantum/capabilities",(req,res)=>{res.set({"Cache-Control":"no-stor
 
 
 // --- Universal Atlas live-data gateway ---
+// Continuously aggregates public scientific feeds. Each feed is timestamped and marked
+// live/unavailable; missing feeds are never replaced with invented observations.
+async function liveJson(url,timeoutMs=7000){
+  const ctl=new AbortController(); const t=setTimeout(()=>ctl.abort(),timeoutMs);
+  try{const r=await fetch(url,{headers:{accept:"application/json"},signal:ctl.signal}); if(!r.ok)throw new Error("http_"+r.status); return await r.json();}
+  finally{clearTimeout(t);}
+}
 app.get("/v1/universe/live",async(req,res)=>{
   const started=Date.now();
-  const out={ok:true,server_time:new Date().toISOString(),sources:[],render_policy:"real published observations are separated from procedural/model geometry"};
-  try{
-    const r=await fetch("https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY",{headers:{accept:"application/json"}});
-    if(r.ok){const j=await r.json();out.apod={date:j.date,title:j.title,media_type:j.media_type,url:j.url,source:"NASA APOD"};out.sources.push({name:"NASA APOD",status:"live"});}
-    else out.sources.push({name:"NASA APOD",status:"unavailable",http_status:r.status});
-  }catch(e){out.sources.push({name:"NASA APOD",status:"unavailable"});}
-  try{
-    const r=await fetch("https://celestrak.org/GP.php?GROUP=STATIONS&FORMAT=json",{headers:{accept:"application/json"}});
-    if(r.ok){const j=await r.json();out.satellites={source:"CelesTrak",group:"STATIONS",count:Array.isArray(j)?j.length:0,updated_at:new Date().toISOString()};out.sources.push({name:"CelesTrak",status:"live"});}
-    else out.sources.push({name:"CelesTrak",status:"unavailable",http_status:r.status});
-  }catch(e){out.sources.push({name:"CelesTrak",status:"unavailable"});}
+  const out={
+    ok:true,server_time:new Date().toISOString(),refresh_hint_ms:5000,
+    sources:[],
+    render_policy:"real published observations are separated from procedural/model geometry",
+    model_layers:{higher_dimensions:"simulation",multiverse_branches:"simulation",unobserved_domains:"simulation"},
+    note:"No public feed provides literal real-time observations of all universes; the live layer uses currently published scientific observations and labels modeled domains."
+  };
+  const feed=async(name,url,transform)=>{
+    try{const j=await liveJson(url); out[name]=transform?transform(j):j; out.sources.push({name,status:"live",updated_at:new Date().toISOString()});}
+    catch(e){out.sources.push({name,status:"unavailable",reason:String(e.message||"feed_error")});}
+  };
+  await Promise.all([
+    feed("apod","https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY",j=>({date:j.date,title:j.title,media_type:j.media_type,url:j.url,source:"NASA APOD"})),
+    feed("satellites","https://celestrak.org/GP.php?GROUP=STATIONS&FORMAT=json",j=>({source:"CelesTrak",group:"STATIONS",count:Array.isArray(j)?j.length:0})),
+    feed("active_satellites","https://celestrak.org/GP.php?GROUP=ACTIVE&FORMAT=json",j=>({source:"CelesTrak",group:"ACTIVE",count:Array.isArray(j)?j.length:0})),
+    feed("space_weather","https://services.swpc.noaa.gov/products/noaa-planetary-k-index.json",j=>({source:"NOAA SWPC",latest:Array.isArray(j)&&j.length>1?j[j.length-1]:null})),
+    feed("earthquakes","https://earthquake.usgs.gov/earthquakes/feed/v1.0/summary/all_hour.geojson",j=>({source:"USGS",count:Number(j.metadata?.count||j.features?.length||0),generated:j.metadata?.generated||null})),
+    feed("near_earth_objects","https://api.nasa.gov/neo/rest/v1/feed?api_key=DEMO_KEY",j=>({source:"NASA NEO",element_count:j.element_count||0,dates:Object.keys(j.near_earth_objects||{})})),
+    feed("jpl_horizons","https://ssd.jpl.nasa.gov/api/horizons.api?format=json&COMMAND=%27599%27&OBJ_DATA=YES&MAKE_EPHEM=NO",j=>({source:"JPL Horizons",object:"Jupiter",signature:String(j.result||"").slice(0,4000)}))
+  ]);
   out.latency_ms=Date.now()-started;
   res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*","X-Content-Type-Options":"nosniff"}).json(out);
 });
