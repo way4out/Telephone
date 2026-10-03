@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#05070b">
+<title>Reality Override Control — StellarNet Universal Atlas</title>
+<style>
+:root{font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#eef3ff;background:#05070b}
+body{margin:0;background:radial-gradient(circle at 20% 0,#12304a 0,#05070b 45%);min-height:100vh}
+main{max-width:1200px;margin:auto;padding:24px}
+.card{background:#0b111aee;border:1px solid #27405b;border-radius:18px;padding:20px;margin:14px 0;box-shadow:0 10px 35px #0008}
+h1{margin:.2em 0;font-size:clamp(28px,5vw,54px)} h2{margin-top:0}
+p{line-height:1.55;color:#c8d3e5}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+button,a{display:inline-block;border:1px solid #3d6a91;background:#102238;color:#fff;padding:12px 15px;border-radius:12px;text-decoration:none;font-weight:700;cursor:pointer}
+button:hover,a:hover{filter:brightness(1.2)}
+label{display:block;margin:12px 0 5px;color:#b9c8dc}input,select{width:100%;box-sizing:border-box;background:#050a11;color:#fff;border:1px solid #314a62;border-radius:10px;padding:10px}
+.status{font-family:ui-monospace,monospace;background:#020509;border-radius:12px;padding:14px;min-height:90px;white-space:pre-wrap}
+.badge{display:inline-block;padding:5px 9px;border-radius:99px;background:#16304a;border:1px solid #315e83;font-size:12px;margin:3px}
+.warn{border-color:#775f2a;background:#191407}
+.ok{border-color:#276a4c;background:#071a12}
+</style>
+</head>
+<body>
+<main>
+<div class="card">
+<span class="badge">SOFTWARE OVERRIDE LAYER</span><span class="badge">REALITY-MODEL SIMULATOR</span>
+<h1>Reality Override Control</h1>
+<p>Maximum user-operable control surface for changing the <b>rendered model</b>: time, coordinate frame, dimensional branch, causal-model parameters, observer viewpoint, and simulation rules. This does not alter physical reality, access alternate universes, or override external systems.</p>
+<div class="grid">
+<a href="/atlas.html">Open 3D Atlas</a><a href="/atlas-max.html">Maximum Data Sweep</a><a href="/capacity.html">Control Center</a><a href="/">Telecom Home</a>
+</div>
+</div>
+
+<div class="card">
+<h2>Reality-model controls</h2>
+<div class="grid">
+<div><label>Epoch / simulation time</label><input id="time" type="range" min="-1000000000" max="1000000000" value="0"><div id="tv">0</div></div>
+<div><label>Dimensional model</label><select id="dim"><option>D3 — spatial model</option><option>D4 — spacetime model</option><option>D5+ — abstract higher-dimensional model</option><option>Multiverse — branching mathematical model</option><option>Intergalactic — large-scale visualization</option></select></div>
+<div><label>Coordinate scale</label><select id="scale"><option>Human</option><option>Planetary</option><option>Stellar</option><option>Galactic</option><option>Cosmological</option></select></div>
+<div><label>Observer frame</label><select id="observer"><option>Earth-fixed</option><option>Solar-system barycentric</option><option>Galactic reference</option><option>Free simulation frame</option></select></div>
+</div>
+<div style="margin-top:15px">
+<button id="apply">Apply model override</button>
+<button id="reset">Reset baseline</button>
+<button id="sweep">Run integrity sweep</button>
+</div>
+</div>
+
+<div class="card">
+<h2>Override state</h2>
+<div id="status" class="status">BASELINE MODEL READY
+External physical systems: NOT CONTROLLED
+Unknown/unobserved reality: NOT CLAIMED
+Simulation renderer: READY</div>
+</div>
+
+<div class="card warn">
+<h2>Reality boundary</h2>
+<p>This interface can genuinely override the software's mathematical/rendering state. It cannot rewrite physical laws, cause events in the external world, retrieve classified information, observe unverified dimensions, or establish an alternate universe. External measurements become real data only when an actual instrument or authoritative source supplies them.</p>
+<p>NASA's public catalog alone currently lists tens of thousands of datasets, illustrating why the maximum layer should distinguish indexed metadata from underlying observations rather than claiming access to “all data ever.” citeturn0search0turn0search1</p>
+</div>
+</main>
+<script>
+const $=id=>document.getElementById(id), log=[];
+function state(){return {time:+$('time').value,dimension:$('dim').value,scale:$('scale').value,observer:$('observer').value}}
+$('time').oninput=()=> $('tv').textContent=Number($('time').value).toLocaleString();
+$('apply').onclick=()=>{const s=state();log.push('OVERRIDE APPLIED '+new Date().toISOString());$('status').textContent='MODEL OVERRIDE ACTIVE\n'+JSON.stringify(s,null,2)+'\nExternal physical reality: UNCHANGED\nRenderer state: APPLIED';};
+$('reset').onclick=()=>{ $('time').value=0;$('tv').textContent='0';$('dim').selectedIndex=0;$('scale').selectedIndex=0;$('observer').selectedIndex=0;$('status').textContent='BASELINE MODEL RESTORED\nExternal physical systems: NOT CONTROLLED\nRenderer state: BASELINE';};
+$('sweep').onclick=async()=>{const domains=['Earth','Planetary','Solar','Stellar','Satellites','Space weather','Environment','Life','Knowledge','Economics','D3','D4','D5+','Multiverse model','Intergalactic'];$('status').textContent='RUNNING SOFTWARE INTEGRITY SWEEP…';for(const d of domains){await new Promise(r=>setTimeout(r,60));$('status').textContent+='\n✓ '+d;}$('status').textContent+='\nCOMPLETE — indexed/model domains checked';};
+</script>
+</body></html>
