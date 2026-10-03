@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#050a0f">
+<link rel="manifest" href="/manifest.webmanifest">
+<title>StellarNet Universal Atlas</title>
+<style>
+:root{--bg:#050a0f;--panel:#0b141d;--line:#203545;--text:#f7fbff;--muted:#9ab0c0;--cyan:#25dcff;--green:#39e7a5;--amber:#ffd166}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(900px 500px at 50% -10%,#123b50,transparent 65%),var(--bg);color:var(--text);font:14px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+a{color:inherit;text-decoration:none}.wrap{max-width:1400px;margin:auto;padding:14px}.top{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}.brand{font-weight:900;font-size:17px}.pill{display:inline-flex;align-items:center;gap:6px;border:1px solid #285a6d;background:#071c27;color:#b6f1ff;border-radius:999px;padding:5px 9px;font-size:10px;font-weight:850;letter-spacing:.06em}.dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
+.grid{display:grid;grid-template-columns:300px minmax(0,1fr);gap:10px;margin-top:12px}.card{background:linear-gradient(180deg,#0d1721f5,#080f16f5);border:1px solid var(--line);border-radius:18px;padding:14px}.controls{display:grid;gap:9px}.control{display:grid;gap:5px}.control label{color:var(--muted);font-size:11px}.btn,select,input{font:inherit}.btn{min-height:42px;padding:9px 12px;border-radius:10px;border:1px solid #2b4354;background:#101b25;color:#f4fbff;font-weight:800;cursor:pointer}.primary{background:linear-gradient(135deg,#19c9ec,#096c86);border-color:#52e3ff}.btn:disabled{opacity:.55;cursor:not-allowed}.select,.range{width:100%;background:#09131c;color:#fff;border:1px solid #2a4758;border-radius:10px;padding:10px}.map{position:relative;min-height:620px;overflow:hidden}.map svg{display:block;width:100%;height:auto;min-height:620px;background:#040a10;border-radius:12px}.hud{position:absolute;left:12px;top:12px;display:grid;gap:6px;pointer-events:none}.hud .card{padding:8px 10px;background:#061019dd}.legend{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}.legend span{font-size:10px;padding:4px 7px;border:1px solid #294252;border-radius:8px;color:var(--muted)}.status{margin-top:8px;color:var(--muted);font-size:11px}.source{margin-top:12px;font-size:11px;color:var(--muted)}.source a{color:#9feeff;text-decoration:underline}.dataRows{display:grid;gap:6px;margin-top:9px}.dataRow{padding:8px;border:1px solid #1d3443;border-radius:10px}.dataRow b{display:block}.footer{color:#667d8d;font-size:11px;text-align:center;padding:18px}
+@media(max-width:900px){.grid{grid-template-columns:1fr}.map,.map svg{min-height:500px}}@media(max-width:560px){.wrap{padding:8px}.map,.map svg{min-height:430px}.card{border-radius:14px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+<div><div class="brand">✦ StellarNet Universal Atlas</div><div style="color:var(--muted);font-size:11px">Free browser/PWA geospatial + astronomical reference simulator</div></div>
+<div class="legend"><span>OBSERVED / PUBLISHED DATA</span><span>CATALOG-DERIVED</span><span>SIMULATION</span></div>
+</header>
+<div class="grid">
+<aside class="card">
+<div class="controls">
+<div class="control"><label for="mode">Atlas layer</label><select id="mode" class="select"><option value="earth">Earth / Gaia</option><option value="stars">Star catalog</option><option value="solar">Solar System reference</option><option value="universe">Cosmic-scale reference</option><option value="multiverse">Multiverse simulation</option></select></div>
+<div class="control"><label for="time">Time / epoch</label><input id="time" class="range" type="range" min="0" max="1000" value="500"><div id="epoch" class="status">Epoch position 50.0%</div></div>
+<button class="btn primary" id="loadData">Load live catalog data</button>
+<button class="btn" id="reset">Reset view</button>
+<a class="btn" href="/">← Telecom home</a>
+<a class="btn" href="https://github.com/way4out/Telephone/archive/refs/heads/main.zip" target="_blank" rel="noopener">Download free source ZIP</a>
+<div id="status" class="status">Earth layer is ready from a published world boundary dataset.</div>
+<div class="dataRows">
+<div class="dataRow"><b>Earth</b>Natural Earth/world-atlas geometry</div>
+<div class="dataRow"><b>Stars</b>Catalog-derived sky positions when loaded</div>
+<div class="dataRow"><b>Solar System</b>Reference layer; live JPL API is linked, not embedded</div>
+<div class="dataRow"><b>Multiverse</b>Parameterized simulation only; not an observation</div>
+</div>
+<div class="source">Primary references: <a href="https://gea.esac.esa.int/archive/" target="_blank" rel="noopener">ESA Gaia Archive</a> · <a href="https://ssd-api.jpl.nasa.gov/" target="_blank" rel="noopener">JPL SSD/CNEOS</a> · <a href="https://github.com/nvkelso/natural-earth-vector" target="_blank" rel="noopener">Natural Earth</a></div>
+</div>
+</aside>
+<section class="card map">
+<svg id="viz" viewBox="0 0 1200 680" role="img" aria-label="Interactive atlas visualization"></svg>
+<div class="hud"><div class="card"><b id="title">Earth / Gaia</b><div id="subtitle" class="status">Published geographic boundaries</div></div><div class="card"><span id="count">Loading geometry…</span></div></div>
+</section>
+</div>
+<div class="footer">Digital atlas only. “Multiverse” and retrocausal views are simulations/models, not verified access to alternate universes, past/future observation, or physical dimensions.</div>
+</div>
+<script type="module">
+const [d3,topo,{default:world}]=await Promise.all([
+ import("https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm"),
+ import("https://cdn.jsdelivr.net/npm/topojson-client@3.1.0/+esm"),
+ import("https://cdn.jsdelivr.net/npm/world-atlas@2.0.2/countries-50m.json/+esm")
+]);
+const svg=d3.select("#viz"), modeEl=document.getElementById("mode"), timeEl=document.getElementById("time"), epochEl=document.getElementById("epoch"), statusEl=document.getElementById("status"), titleEl=document.getElementById("title"), subtitleEl=document.getElementById("subtitle"), countEl=document.getElementById("count");
+const countries=topo.feature(world,world.objects.countries).features;
+const projection=d3.geoNaturalEarth1().fitExtent([[28,25],[1172,655]],{type:"FeatureCollection",features:countries});
+const path=d3.geoPath(projection);
+let stars=[];
+const starUrl="https://cdn.jsdelivr.net/gh/astronexus/HYG-Database@master/hygdata_v41.csv";
+function clear(){svg.selectAll("*").remove();}
+function drawEarth(){clear();svg.append("rect").attr("width",1200).attr("height",680).attr("fill","#040a10");svg.append("g").selectAll("path").data(countries).join("path").attr("d",path).attr("fill","#10222c").attr("stroke","#397083").attr("stroke-width",.7);svg.append("path").datum(d3.geoGraticule()()).attr("d",path).attr("fill","none").attr("stroke","#1b3a47").attr("stroke-width",.5);titleEl.textContent="Earth / Gaia";subtitleEl.textContent="Published world boundaries + graticule";countEl.textContent=countries.length+" country/territory geometries";statusEl.textContent="Earth map rendered from world-atlas / Natural Earth-derived public geography.";}
+function drawStars(){clear();svg.append("rect").attr("width",1200).attr("height",680).attr("fill","#02050a");const pts=stars.filter(s=>Number.isFinite(+s.ra)&&Number.isFinite(+s.dec)).slice(0,12000);const x=d3.scaleLinear().domain([0,360]).range([25,1175]), y=d3.scaleLinear().domain([90,-90]).range([25,655]);svg.append("g").selectAll("circle").data(pts).join("circle").attr("cx",d=>x(+d.ra)).attr("cy",d=>y(+d.dec)).attr("r",d=>Math.max(.6,Math.min(3.2,4-(+(d.mag||8))/3))).attr("fill","#dff8ff").attr("opacity",.75);titleEl.textContent="Star Catalog";subtitleEl.textContent="Catalog-derived sky positions";countEl.textContent=pts.length.toLocaleString()+" catalog stars rendered";statusEl.textContent=stars.length?"Loaded public HYG catalog positions; use ESA Gaia Archive for authoritative Gaia DR3 queries.":"Load catalog data to render stars.";}
+function drawSolar(){clear();svg.append("rect").attr("width",1200).attr("height",680).attr("fill","#02050a");const cx=600,cy=340;const scales=[35,65,100,140,185,240,305,375];svg.append("g").selectAll("circle").data(scales).join("circle").attr("cx",cx).attr("cy",cy).attr("r",d=>d).attr("fill","none").attr("stroke","#183744").attr("stroke-width",1);const bodies=[["Sun",0,"#ffd166"],["Mercury",35,"#aaa"],["Venus",65,"#d8b37c"],["Earth",100,"#4fd5ff"],["Mars",140,"#d66a45"],["Jupiter",185,"#c9a57a"],["Saturn",240,"#d6c58d"],["Uranus",305,"#79e1e1"],["Neptune",375,"#557cff"]];svg.append("g").selectAll("g").data(bodies).join("g").attr("transform",(d,i)=>"translate("+(cx+d[1])+" "+cy+")").each(function(d){const g=d3.select(this);g.append("circle").attr("r",d[1]===0?12:Math.max(3,9-d[1]/60)).attr("fill",d[2]);g.append("text").attr("x",8).attr("y",-8).attr("fill","#dceaf2").attr("font-size",11).text(d[0]);});titleEl.textContent="Solar System Reference";subtitleEl.textContent="Orbital-distance reference visualization";countEl.textContent="Sun + 8 planets";statusEl.textContent="Reference geometry; precise ephemerides should be sourced from JPL Horizons/SSD.";}
+function drawUniverse(){clear();svg.append("rect").attr("width",1200).attr("height",680).attr("fill","#02050a");const g=svg.append("g");let seed=42;function rnd(){seed=(seed*1664525+1013904223)>>>0;return seed/4294967296}const pts=d3.range(4500).map(()=>({x:rnd()*1200,y:rnd()*680,r:.3+rnd()*1.8}));g.selectAll("circle").data(pts).join("circle").attr("cx",d=>d.x).attr("cy",d=>d.y).attr("r",d=>d.r).attr("fill","#b9ecff").attr("opacity",.45+rnd()*.45);g.append("ellipse").attr("cx",600).attr("cy",340).attr("rx",330).attr("ry",95).attr("fill","none").attr("stroke","#286070").attr("stroke-width",1);titleEl.textContent="Cosmic-scale Reference";subtitleEl.textContent="Procedural visualization anchored to observational concepts";countEl.textContent="4,500 rendered reference points";statusEl.textContent="Large-scale cosmic structure is not a literal complete map of the universe; this layer is a visualization model.";}
+function drawMultiverse(){clear();svg.append("rect").attr("width",1200).attr("height",680).attr("fill","#02050a");const g=svg.append("g"),nodes=[];for(let i=0;i<15;i++){const a=i*Math.PI*2/15,r=110+(i%4)*65;nodes.push({x:600+Math.cos(a)*r*2,y:340+Math.sin(a)*r,level:i%3});}g.selectAll("line").data(nodes).join("line").attr("x1",600).attr("y1",340).attr("x2",d=>d.x).attr("y2",d=>d.y).attr("stroke","#274b59").attr("stroke-width",1);g.selectAll("circle").data(nodes).join("circle").attr("cx",d=>d.x).attr("cy",d=>d.y).attr("r",d=>8+d.level*3).attr("fill","none").attr("stroke","#6fd9ed").attr("stroke-width",1.5);g.append("circle").attr("cx",600).attr("cy",340).attr("r",22).attr("fill","none").attr("stroke","#39e7a5").attr("stroke-width",2);titleEl.textContent="Multiverse Simulation";subtitleEl.textContent="Parameterized branching model — not an observation";countEl.textContent="15 simulated branches";statusEl.textContent="This layer is deliberately labeled simulation. No verified instrument or dataset establishes physical maps of other universes.";}
+function render(){const m=modeEl.value;if(m==="earth")drawEarth();else if(m==="stars")drawStars();else if(m==="solar")drawSolar();else if(m==="universe")drawUniverse();else drawMultiverse();}
+async function loadStars(){statusEl.textContent="Loading public catalog…";try{const r=await fetch(starUrl);if(!r.ok)throw Error("catalog");const text=await r.text();const rows=d3.csvParse(text);stars=rows;render();statusEl.textContent="Loaded "+stars.length.toLocaleString()+" catalog records. For Gaia DR3, use the linked ESA archive for authoritative Gaia data queries.";}catch(e){statusEl.textContent="Catalog download unavailable in this browser/network. Earth and simulation layers remain operational.";}}
+modeEl.addEventListener("change",render);timeEl.addEventListener("input",()=>epochEl.textContent="Epoch position "+(Number(timeEl.value)/10).toFixed(1)+"%");document.getElementById("loadData").addEventListener("click",loadStars);document.getElementById("reset").addEventListener("click",()=>{timeEl.value=500;epochEl.textContent="Epoch position 50.0%";modeEl.value="earth";render();});
+render();
+</script>
+</body>
+</html>
