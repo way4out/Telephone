@@ -3,6 +3,11 @@
 ## Public applicant / operator
 **Entity:** StellarNet LLC
 **Public ZIP:** 85210
+**Public business contact phone:** +1 (623) 764-5641
+**Public business contact email:** t@stellarnetllc.com
+**Public website:** https://www.stellarnetllc.com/
+**Public business contact name:** Tucker Martin
+**Business ID shown on the public legal notice:** 25004333
 **Jurisdiction/location supplied for this project:** Mesa, Arizona, United States
 
 ## Routing rule
