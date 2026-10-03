@@ -1,3 +1,4 @@
+const USDC_BASE="0x833589fcd6edb6e08f4c7c32d4f71b54bda02913";
 import express from "express";
 import cors from "cors";
 import Stripe from "stripe";
@@ -121,8 +122,8 @@ app.get("/v1/incentives/base",(req,res)=>{
   res.json({ok:true,network:"Base",chain_id:8453,pricing:TELECOM_CONFIG.pricing,offers:assets.map(tokenIncentiveOffer)});
 });
 
-const SIMULATOR_PRICE_POINTS=[0.25,0.5,1,2,4,5,10,15,20,25,50,75,100,250,500,1000];
-const SIMULATOR_PACKAGES=[{id:"starter",name:"Starter",usd:1},{id:"standard",name:"Standard",usd:4},{id:"plus",name:"Plus",usd:10},{id:"pro",name:"Pro",usd:25},{id:"enterprise",name:"Enterprise",usd:100},{id:"scale",name:"Scale",usd:500}];
+const SIMULATOR_PRICE_POINTS=[0.1,0.25,0.5,0.75,1,2,3,4,5,7.5,10,15,20,25,50,75,100,250,500,1000,2500,5000,10000];
+const SIMULATOR_PACKAGES=[{id:"micro",name:"Micro",usd:0.5},{id:"starter",name:"Starter",usd:1},{id:"standard",name:"Standard",usd:4},{id:"plus",name:"Plus",usd:10},{id:"pro",name:"Pro",usd:25},{id:"enterprise",name:"Enterprise",usd:100},{id:"scale",name:"Scale",usd:500},{id:"ultra",name:"Ultra",usd:1000}];
 function normalizeSimulatorPrice(value){const n=Number(value);if(!Number.isFinite(n)||!SIMULATOR_PRICE_POINTS.includes(n))throw new Error("unsupported_price_point");return n;}
 async function exactTokenQuote(address,amountUsd=4){
  const priceUsd=normalizeSimulatorPrice(amountUsd);
@@ -155,6 +156,7 @@ app.post("/v1/payments/verify-transfer",async(req,res)=>{
   res.status(result.error==="transaction_pending"?202:402).json({ok:false,confirmed:false,settled:false,payment:result});
  }catch(e){res.status(502).json({ok:false,error:"verification_unavailable"});}
 });
+app.get("/v1/payments/usdc",(req,res)=>{const a=tokenRegistry().find(t=>String(t.address).toLowerCase()===USDC_BASE);res.json({ok:true,network:"Base",chain_id:8453,token:"USDC",token_address:USDC_BASE,merchant_address:process.env.TOKEN_MERCHANT_ADDRESS||null,price_points_usd:SIMULATOR_PRICE_POINTS,packages:SIMULATOR_PACKAGES,asset:a||null});});
 app.get("/v1/payments/price-points",(req,res)=>res.json({ok:true,network:"Base",chain_id:8453,merchant_address:process.env.TOKEN_MERCHANT_ADDRESS||null,price_points_usd:SIMULATOR_PRICE_POINTS,packages:SIMULATOR_PACKAGES,tokens:tokenRegistry().filter(t=>t.enabled!==false)}));
 app.get("/v1/payments/assets",(req,res)=>{res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*","X-Content-Type-Options":"nosniff"});res.json({ok:true,network:"Base",chain_id:8453,merchant_address_configured:Boolean(process.env.TOKEN_MERCHANT_ADDRESS),pricing:TELECOM_CONFIG.pricing,assets:tokenPaymentCapabilities(),note:"Wallet visibility does not imply Coinbase.com listing, liquidity, swap availability, or telecom payment acceptance."});});
 app.get("/v1/bankr/config",(req,res)=>{res.set({"Cache-Control":"no-store","Access-Control-Allow-Origin":"*"});res.json({ok:true,enabled:Boolean(process.env.BANKR_API_KEY),network:"Base",chain_id:8453,merchant_address:process.env.TOKEN_MERCHANT_ADDRESS||null,bankr_app:"https://bankr.bot",payment_mode:process.env.BANKR_API_KEY?"bankr_agent_or_wallet_api":"bankr_link_only"});});
