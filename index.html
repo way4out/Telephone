@@ -313,7 +313,7 @@ async function directOnchainPay(tokenAddress,tokenSymbol){
   show(msg,"Onchain transaction submitted. Waiting for Base confirmation…");
   for(let n=0;n<60;n++){
    await new Promise(r=>setTimeout(r,2000));
-   const v=await fetch(API+"/v1/payments/verify-transfer",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({txHash,tokenAddress,from})}).then(x=>x.json());
+   const v=await fetch(API+"/v1/payments/verify-transfer",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({txHash,tokenAddress,from,amountUnits:amount})}).then(x=>x.json());
    if(v.confirmed){msg.innerHTML="<strong>✓ Onchain payment confirmed</strong><br>Tx: "+txHash+"<br>Exact $4 "+tokenSymbol+" received by merchant.";return}
    if(v.error==="transaction_failed"||v.error==="merchant_transfer_not_found"||v.error==="exact_payment_amount_mismatch"){show(msg,"Onchain verification failed: "+v.error);return}
   }
