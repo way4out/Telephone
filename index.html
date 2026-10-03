@@ -6,8 +6,6 @@
 <meta name="theme-color" content="#061016"><meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><link rel="manifest" href="/manifest.webmanifest">
 <meta name="description" content="StellarNet LLC — Telecom, BANKRbot, Universal & Gaia Simulator, and StellarNet Gazette.">
 <meta name="referrer" content="strict-origin-when-cross-origin">
-<meta http-equiv="refresh" content="0;url=/limited-free/">
-<script>location.replace("/limited-free/");</script>
 <title>StellarNet LLC — Quantum Telecom & Network</title>
 <style>
 :root{color-scheme:dark;--bg:#050b10;--panel:#0b151d;--panel2:#0e1d27;--line:#1d3440;--text:#f4fbff;--muted:#9eb3bf;--cyan:#67e8f9;--green:#71f7b0;--gold:#f6d77a;--danger:#ff8f8f}
@@ -26,14 +24,14 @@ footer{margin-top:52px;padding-top:22px;border-top:1px solid var(--line);color:v
 <div class="wrap">
 <nav class="nav" aria-label="Primary">
 <a class="brand" href="#top">STELLAR<span>NET</span></a>
-<a href="#telecom">Telecom</a><a href="/limited-free/">Free</a><a href="#components">Network</a><a href="#legal">Legal</a><a href="https://oeql-bank-forever.onrender.com/">BANKRbot</a>
+<a href="/operate.html">Operate</a><a href="/limited-free/">Free</a><a href="/universe.html">Universe</a><a href="/gazette.html">Gazette</a><a href="https://oeql-bank-forever.onrender.com/">BANKRbot</a>
 </nav>
 <header id="top" class="hero">
 <div>
 <div class="eyebrow">StellarNet LLC · Public Network</div>
 <h1>One network.<br>Four equal worlds.</h1>
 <p class="lead">A cleaner public gateway for StellarNet Telecom, BANKRbot App, the unified Universal & Gaia Simulator, and the StellarNet Gazette.</p>
-<div class="cta"><a class="btn primary" href="#telecom">Open Telecom</a><a class="btn" href="/limited-free/">Free Base Edition</a><a class="btn" href="#components">Explore all components</a></div>
+<div class="cta"><a class="btn primary" href="/limited-free/">Start Free</a><a class="btn" href="/operate.html">Operate Now</a><a class="btn" href="/universe.html">Explore Universe</a></div><div id="livebar" class="note" style="margin-top:14px">Checking live network status…</div>
 </div>
 <div class="hero-panel" aria-label="Network status">
 <div class="tag">PUBLIC CONTROL SURFACE · MOBILE READY</div>
@@ -44,6 +42,8 @@ footer{margin-top:52px;padding-top:22px;border-top:1px solid var(--line);color:v
 <div class="signal"><span>Payment execution</span><span class="muted">USER-AUTHORIZED</span></div>
 </div>
 </header>
+
+<section class="section"><div class="section-head"><div><div class="eyebrow">Quick launch</div><h2>Everything important in one tap</h2></div><p>Start free, operate, explore, read, or manage services without hunting through the site.</p></div><div class="grid"><a class="card" href="/limited-free/"><div class="tag">FREE</div><h3>Base Mode</h3><p>Immediate no-payment entry for core features.</p><span class="arrow">Launch →</span></a><a class="card" href="/operate.html"><div class="tag">PAY & UNLOCK</div><h3>Operate</h3><p>Select access time and continue with explicit wallet authorization.</p><span class="arrow">Open →</span></a><a class="card" href="/universe.html"><div class="tag">SIMULATOR</div><h3>Universal & Gaia</h3><p>Open the unified interactive simulation surface.</p><span class="arrow">Explore →</span></a><a class="card" href="/gazette.html"><div class="tag">PUBLIC</div><h3>Gazette</h3><p>Read public releases and company updates.</p><span class="arrow">Read →</span></a></div></section>
 
 <section id="telecom" class="section"><div class="card" style="margin-bottom:14px;background:linear-gradient(145deg,#102a34,#09131b);border-color:#2c6b7d"><div class="tag">FREE · IMMERSIVE BASE MODE</div><h3 style="margin:8px 0">Play, explore, then upgrade when you choose.</h3><p class="muted">The limited free edition is available to every user on web and mobile. Paid access stays explicit: select time, connect a Base wallet, authorize the transaction, then unlock after verified settlement.</p><div class="cta"><a class="btn primary" href="/limited-free/">Launch Free Edition</a><a class="btn" href="/operate.html">1-Tap Pay & Unlock</a></div></div>
 <div class="section-head"><div><div class="eyebrow">01 · Telecom</div><h2>Quantum Telecom</h2></div><p>Fast access to the configured mobile service surface, plan catalog and SIM/eSIM workflows.</p></div>
@@ -100,5 +100,6 @@ footer{margin-top:52px;padding-top:22px;border-top:1px solid var(--line);color:v
 External carriers, payment rails, tokens, SIM/eSIM providers and fulfillment services are not represented as authorized or continuously available unless their status is actually configured and verified. Simulated or speculative scientific layers are identified as models. Payment actions require explicit user authorization.
 </footer>
 </div>
+<script>const API="https://oeql-quantum-telecom-api.onrender.com";(async()=>{try{const r=await fetch(API+"/v1/stellarnet/status",{cache:"no-store"});const j=await r.json();document.querySelector("#livebar").textContent=j.ok?"● Live control plane reachable · payments remain user-authorized":"Control plane responded unavailable";document.querySelector("#livebar").className="note ok"}catch(e){document.querySelector("#livebar").textContent="Offline-safe mode · core pages remain available";}})();</script>
 </body>
 </html>
