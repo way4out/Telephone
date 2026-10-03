@@ -294,32 +294,49 @@ async function renderWalletAssets(){
 }
 document.getElementById("connectWallet")?.addEventListener("click",walletConnect);
 document.getElementById("refreshWallet")?.addEventListener("click",renderWalletAssets);
+async function directOnchainPay(tokenAddress,tokenSymbol){
+ const msg=document.getElementById("bankrState");
+ try{
+  if(!window.ethereum){show(msg,"Open this page in a Base-compatible wallet to sign the onchain payment.");return}
+  const accounts=await window.ethereum.request({method:"eth_requestAccounts"}); const from=accounts?.[0];
+  if(!from){show(msg,"Wallet connection cancelled.");return}
+  try{await window.ethereum.request({method:"wallet_switchEthereumChain",params:[{chainId:"0x2105"}]})}catch(e){show(msg,"Switch your wallet to Base Mainnet (8453) and retry.");return}
+  show(msg,"Fetching exact $4 live onchain quote…");
+  const q=await fetch(API+"/v1/payments/quote?tokenAddress="+encodeURIComponent(tokenAddress),{cache:"no-store"}).then(r=>r.json());
+  if(!q.ok){show(msg,"No verified live Base quote is available for "+tokenSymbol+"; payment remains gated.");return}
+  if(Date.parse(q.quote_expires_at)<=Date.now()){show(msg,"Quote expired; refresh and retry.");return}
+  const amount=q.amount_base_units;
+  const to=q.token.address;
+  const transferData="0xa9059cbb"+q.merchant_address.slice(2).padStart(64,"0")+BigInt(amount).toString(16).padStart(64,"0");
+  show(msg,"Sign exact $4 "+tokenSymbol+" transfer. No unlimited approval is requested.");
+  const txHash=await window.ethereum.request({method:"eth_sendTransaction",params:[{from,to,data:transferData,value:"0x0"}]});
+  show(msg,"Onchain transaction submitted. Waiting for Base confirmation…");
+  for(let n=0;n<60;n++){
+   await new Promise(r=>setTimeout(r,2000));
+   const v=await fetch(API+"/v1/payments/verify-transfer",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({txHash,tokenAddress,from})}).then(x=>x.json());
+   if(v.confirmed){msg.innerHTML="<strong>✓ Onchain payment confirmed</strong><br>Tx: "+txHash+"<br>Exact $4 "+tokenSymbol+" received by merchant.";return}
+   if(v.error==="transaction_failed"||v.error==="merchant_transfer_not_found"||v.error==="exact_payment_amount_mismatch"){show(msg,"Onchain verification failed: "+v.error);return}
+  }
+  show(msg,"Transaction submitted but confirmation is still pending. It is not marked paid until Base confirms it.");
+ }catch(e){show(msg,"Onchain payment cancelled or unavailable. No payment is marked settled.");}
+}
 async function bankrPay(tokenAddress,tokenSymbol){
  const msg=document.getElementById("bankrState");
  try{
   const r=await fetch(API+"/v1/bankr/pay",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({tokenAddress,tokenSymbol,amountUsd:4})});
   const j=await r.json().catch(()=>({}));
-  if(!r.ok){
-   if(j.error==="bankr_api_key_not_configured"){show(msg,"Bankr server rail is not connected. Open Bankr and approve the Base payment there.");window.open("https://bankr.bot","_blank","noopener");}
-   else show(msg,j.error||"Bankr payment unavailable.");
-   return;
-  }
-  show(msg,"Payment submitted. Verifying Base settlement…");
+  if(r.status===503&&j.error==="bankr_api_key_not_configured"){return directOnchainPay(tokenAddress,tokenSymbol)}
+  if(!r.ok){show(msg,j.error||"Bankr payment unavailable; trying direct onchain wallet payment.");return directOnchainPay(tokenAddress,tokenSymbol)}
+  show(msg,"Bankr payment submitted. Verifying Base settlement…");
   for(let n=0;n<75;n++){
    await new Promise(r=>setTimeout(r,2000));
    const q=await fetch(API+"/v1/bankr/payment/"+encodeURIComponent(j.jobId)+"?tokenAddress="+encodeURIComponent(tokenAddress),{cache:"no-store"});
    const s=await q.json().catch(()=>({}));
-   if(s.onchain?.confirmed){
-    const ref=j.jobId;
-    show(msg,"✓ Paid and confirmed on Base. "+(j?.incentive?.credit_usd||0.25).toFixed(2)+" US$ Telecom service credit earned.");
-    const panel=document.getElementById("bankrState");
-    panel.innerHTML="<strong>✓ Payment confirmed</strong><br><span>Tx: "+s.txHash+"</span><br><img alt='Scannable receipt QR' style='max-width:220px;margin-top:12px;border-radius:12px' src='"+API+"/v1/receipt/"+encodeURIComponent(ref)+"/qr'><br><a class='btn primary' target='_blank' rel='noopener' href='"+window.location.origin+"/receipt/"+encodeURIComponent(ref)+"'>Open receipt</a>";
-    return;
-   }
-   if(s.status==="failed"||s.status==="cancelled"){show(msg,"Bankr payment did not complete: "+s.status);return;}
+   if(s.onchain?.confirmed){show(msg,"✓ Bankr payment confirmed on Base. "+(j?.incentive?.credit_usd||0.25).toFixed(2)+" US$ Telecom service credit earned.");return}
+   if(s.status==="failed"||s.status==="cancelled"){show(msg,"Bankr payment did not complete: "+s.status);return}
   }
-  show(msg,"Payment is still processing. Keep this page open; settlement is not marked paid until Base confirms the transfer.");
- }catch(e){show(msg,"Payment verification connection unavailable. No payment is marked settled.");}
+  show(msg,"Bankr transaction is still processing; not marked paid until Base confirms settlement.");
+ }catch(e){return directOnchainPay(tokenAddress,tokenSymbol)}
 }
 document.addEventListener("click",e=>{const b=e.target.closest(".tokenQuickPay");if(b)bankrPay(b.dataset.token,b.dataset.symbol);});
 renderWalletAssets();
