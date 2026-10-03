@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#061016">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="description" content="StellarNet LLC Free Base Mode — base features only, with optional device GPS shown locally.">
+<title>StellarNet — Free Base Mode</title>
+<style>
+:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;font:16px/1.5 system-ui,-apple-system,Segoe UI,sans-serif;background:#061016;color:#f5fbff}main{max-width:980px;margin:auto;padding:18px 16px 60px}header,.card{border:1px solid #1d3440;border-radius:22px;background:#0b151d;padding:22px;box-shadow:0 16px 50px #0006}header{background:linear-gradient(145deg,#0e2834,#09131b);margin-bottom:16px}h1{font-size:clamp(38px,8vw,68px);line-height:.95;letter-spacing:-.05em;margin:10px 0 16px}.tag{color:#67e8f9;font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase}.muted{color:#9eb3bf}.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-top:16px}.btn{display:inline-block;padding:12px 15px;border-radius:12px;border:1px solid #2c5261;text-decoration:none;color:#f5fbff;font-weight:800;margin:6px 6px 0 0;background:#09161d}.primary{background:#67e8f9;color:#031017;border-color:#67e8f9}.free{font-size:28px;font-weight:900}.item{padding:16px;border:1px solid #1d3440;border-radius:15px;background:#081219}.item strong{display:block;margin-bottom:4px}.warning{border-color:#665a28;background:#17150b}.gps{border-color:#24546a;background:#07161e}.gpsdata{font:13px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace;white-space:pre-wrap;word-break:break-word;margin:12px 0 0}.status{color:#71f7b0;font-weight:800}@media(max-width:650px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body><main>
+<header>
+<div class="tag">StellarNet LLC · Free Public Entry</div>
+<h1>Free Base Mode.</h1>
+<p class="muted">This is the default free experience for web and mobile. Base features only. No payment is required to use this mode.</p>
+<div class="free">$0</div>
+<p class="muted">No subscription · No automatic financial action</p>
+<div><a class="btn primary" href="/operate.html">Open Base Telecom</a><a class="btn" href="/universe.html">Explore Simulator</a><a class="btn" href="/gazette.html">Gazette</a></div>
+</header>
+
+<section class="card warning">
+<div class="tag">FREE-MODE WARNING</div>
+<h2>You're using the free base edition</h2>
+<p class="muted">Paid features are not required. If you choose a paid plan, SIM/eSIM order, advanced compute/render mode, or other paid service, the app will show the price before payment and require your explicit authorization. No payment or wallet signing occurs just because you are browsing free mode.</p>
+</section>
+
+<section class="card gps" style="margin-top:16px">
+<div class="tag">OPTIONAL · LIVE DEVICE GPS</div>
+<h2>Live location data</h2>
+<p class="muted">If you enable it, your browser can provide live GPS/location readings. Location permission is requested by your device; readings are displayed locally on this page and are not sent anywhere by this feature.</p>
+<button id="gps" class="btn primary" type="button">Enable live GPS</button>
+<span id="gpsStatus" class="status" aria-live="polite">OFF</span>
+<div id="gpsData" class="gpsdata">No location requested.</div>
+</section>
+
+<section class="card" style="margin-top:16px">
+<div class="tag">BASE FEATURES</div>
+<h2>Included everywhere in Free Mode</h2>
+<div class="grid">
+<div class="item"><strong>Telecom Base</strong><span class="muted">Public service information and readiness surfaces.</span></div>
+<div class="item"><strong>Universal & Gaia</strong><span class="muted">Base simulator viewing and exploration.</span></div>
+<div class="item"><strong>StellarNet Gazette</strong><span class="muted">Public announcements and releases.</span></div>
+<div class="item"><strong>Public Status</strong><span class="muted">Configured status, legal and service boundaries.</span></div>
+</div>
+</section>
+
+<section class="card" style="margin-top:16px">
+<div class="tag">PAID GATE</div>
+<h2>Upgrade only when you choose</h2>
+<p class="muted">Paid access remains behind an explicit user-authorized payment flow. Provider authorization, carrier activation, eSIM provisioning and physical-SIM fulfillment are only represented as available when actually configured and verified.</p>
+<a class="btn" href="/operate.html">View paid options & readiness</a><a class="btn" href="/legal.html">Legal & service details</a>
+</section>
+<footer class="muted" style="padding:22px 4px">StellarNet LLC · Free Base Edition · Base features only · Payment actions require explicit user authorization.</footer>
+</main>
+<script>
+let watch=null;
+const btn=document.getElementById('gps'),status=document.getElementById('gpsStatus'),data=document.getElementById('gpsData');
+function show(p){const c=p.coords;data.textContent='Latitude: '+c.latitude.toFixed(6)+'\nLongitude: '+c.longitude.toFixed(6)+'\nAccuracy: ±'+Math.round(c.accuracy)+' m'+(c.altitude==null?'':'\nAltitude: '+Math.round(c.altitude)+' m')+'\nSpeed: '+(c.speed==null?'n/a':Math.round(c.speed*3.6*10)/10+' km/h')+'\nHeading: '+(c.heading==null?'n/a':Math.round(c.heading)+'°')+'\nUpdated: '+new Date(p.timestamp).toLocaleString();status.textContent='LIVE';}
+function err(e){status.textContent='UNAVAILABLE';data.textContent='Location permission/error: '+e.message;}
+btn.onclick=()=>{if(!navigator.geolocation){err({message:'Geolocation is not supported on this device/browser.'});return}status.textContent='REQUESTING…';watch=navigator.geolocation.watchPosition(show,err,{enableHighAccuracy:true,maximumAge:5000,timeout:15000});btn.textContent='GPS enabled';};
+</script>
+</body></html>
