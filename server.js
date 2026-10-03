@@ -725,6 +725,53 @@ app.post("/v1/nftqr/create",(req,res)=>{
     res.status(201).json({ok:true,...nftqrPublic(slot),application:"one_time_qr",network:"Base",customization:"1x_ever_locked"});
   }catch(e){res.status(500).json({ok:false,error:"nftqr_create_failed"});}
 });
+const nftqrMintJobs=new Map();
+function nftqrMintPrompt(x){return [
+  "Mint exactly ONE ERC-721 NFT on Base Mainnet for StellarNet NFTQR v1.0.",
+  "Edition ID: "+x.id+".",
+  "Use this exact metadata URL as tokenURI: "+publicApp+"/v1/nftqr/metadata/"+encodeURIComponent(x.id)+".",
+  "Use this edition render URL: "+publicApp+"/v1/nftqr/render/"+encodeURIComponent(x.id)+".",
+  "This edition is permanently 1x-customized. Never duplicate, reissue, or remint it.",
+  "Execute the transaction now from the authorized Bankr wallet and return the collection contract, token ID, transaction hash, and Base explorer URL."
+].join(" ");}
+
+app.post("/v1/nftqr/deploy",async(req,res)=>{
+  const {id,txHash,tokenAddress,amountUnits}=req.body||{};
+  const x=nftqr.get(String(id||""));
+  if(!x||!x.issued)return res.status(404).json({ok:false,error:"nftqr_not_found"});
+  if(!process.env.BANKR_API_KEY)return res.status(503).json({ok:false,error:"bankr_api_key_not_configured"});
+  if(!process.env.TOKEN_MERCHANT_ADDRESS)return res.status(503).json({ok:false,error:"merchant_address_not_configured"});
+  if(!txHash||!tokenAddress||amountUnits==null)return res.status(400).json({ok:false,error:"verified_purchase_required"});
+  if(x.nft_minted)return res.status(409).json({ok:false,error:"edition_already_minted"});
+  if(nftqrMintJobs.has(x.id))return res.status(202).json({ok:true,edition:x.id,job:nftqrMintJobs.get(x.id),duplicate_request:true});
+  try{
+    const payment=await verifyExactBaseTransfer({txHash,tokenAddress,merchantAddress:process.env.TOKEN_MERCHANT_ADDRESS,amountUnits});
+    if(!payment.confirmed)return res.status(402).json({ok:false,error:"purchase_not_verified",payment});
+    const r=await fetch("https://api.bankr.bot/agent/prompt",{method:"POST",headers:{"content-type":"application/json","X-API-Key":process.env.BANKR_API_KEY},body:JSON.stringify({prompt:nftqrMintPrompt(x)})});
+    const j=await r.json().catch(()=>({}));
+    if(!r.ok)return res.status(502).json({ok:false,error:"bankr_mint_submission_failed",provider_status:r.status,provider:j});
+    const job={jobId:j.jobId,threadId:j.threadId,status:"submitted",submitted_at:new Date().toISOString(),payment_tx:txHash};
+    nftqrMintJobs.set(x.id,job);
+    res.status(202).json({ok:true,edition:x.id,network:"Base Mainnet",chain_id:8453,job});
+  }catch(e){res.status(502).json({ok:false,error:"nftqr_mint_failed"});}
+});
+
+app.get("/v1/nftqr/deploy-status/:id",async(req,res)=>{
+  const id=String(req.params.id||""); const x=nftqr.get(id); const job=nftqrMintJobs.get(id);
+  if(!x||!job)return res.status(404).json({ok:false,error:"mint_job_not_found"});
+  if(!process.env.BANKR_API_KEY)return res.status(503).json({ok:false,error:"bankr_api_key_not_configured"});
+  try{
+    const r=await fetch("https://api.bankr.bot/agent/job/"+encodeURIComponent(job.jobId),{headers:{"X-API-Key":process.env.BANKR_API_KEY}});
+    const j=await r.json().catch(()=>({})); if(!r.ok)return res.status(502).json({ok:false,error:"bankr_job_lookup_failed"});
+    const tx=extractTxHash(j); const status=String(j.status||job.status);
+    job.status=status; job.response=j.response||null;
+    if(tx){job.txHash=tx;job.explorer_url="https://basescan.org/tx/"+tx;}
+    if(status==="completed"&&tx){x.nft_minted=true;x.nft_tx_hash=tx;x.nft_minted_at=new Date().toISOString();}
+    nftqrMintJobs.set(id,job);
+    res.json({ok:true,edition:id,network:"Base Mainnet",chain_id:8453,status,txHash:tx||null,explorer_url:tx?"https://basescan.org/tx/"+tx:null,response:j.response||null});
+  }catch(e){res.status(502).json({ok:false,error:"bankr_job_connection_failed"});}
+});
+
 app.get("/v1/nftqr/metadata/:id",(req,res)=>{
   const x=nftqr.get(String(req.params.id||""));if(!x||!x.issued)return res.status(404).json({ok:false,error:"nftqr_not_found"});
   res.json({name:x.label+" · "+x.id,description:"StellarNet NFTQR v1.0 one-time digital edition with a uniquely generated credential and a single locked customization; no post-issue customization or reissue is permitted.",external_url:publicApp+"/nftqr-v1.html",image:publicApp+"/v1/nftqr/render/"+encodeURIComponent(x.id),attributes:[{trait_type:"Edition",value:x.id},{trait_type:"One-Time",value:true},{trait_type:"Network",value:"Base"},{trait_type:"Used",value:Boolean(x.used)},{trait_type:"Cell Style",value:x.cellStyle},{trait_type:"Cell Scale",value:x.cellScale},{trait_type:"Cell Radius",value:x.cellRadius},{trait_type:"Watermark",value:x.watermark},{trait_type:"Hand Art",value:Boolean(x.artData||x.cellMap)}],rights:"Buyer-facing rights are limited to the purchased custom edition and its supplied data/design license unless separately documented in writing."});
