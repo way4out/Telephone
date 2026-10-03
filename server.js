@@ -102,7 +102,7 @@ app.post("/v1/bankr/pay",async(req,res)=>{
   if(!asset)return res.status(400).json({ok:false,error:"token_not_supported_for_telecom_payment"});
   if(Number(amountUsd)!==4)return res.status(400).json({ok:false,error:"telecom_activation_amount_fixed_at_4_usd"});
   if(!process.env.TOKEN_MERCHANT_ADDRESS)return res.status(400).json({ok:false,error:"tokenAddress_and_merchant_required"});
-  const prompt=`Send exactly 4 USD worth of ${asset.symbol} (${asset.address}) on Base to ${process.env.TOKEN_MERCHANT_ADDRESS} for StellarNet Telecom activation; return the transaction hash.`;
+  const prompt=`For StellarNet Telecom on Base, first approve only the exact token amount required for the $4 activation for this transaction, then transfer that exact amount of ${asset.symbol} (${asset.address}) to merchant ${process.env.TOKEN_MERCHANT_ADDRESS}; never grant unlimited allowance; return the approval and final transfer transaction hashes.`;
   try{
     const r=await fetch("https://api.bankr.bot/agent/prompt",{method:"POST",headers:{"content-type":"application/json","X-API-Key":process.env.BANKR_API_KEY},body:JSON.stringify({prompt})});
     const data=await r.json().catch(()=>({}));
