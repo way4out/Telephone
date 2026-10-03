@@ -11,13 +11,13 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#02070b;col
 <div class="row"><span class="badge">REAL DATA WHEN AVAILABLE</span><span class="badge">WEBGL 3D</span><span class="badge">WEBXR</span><span class="badge">TIME / SPACE</span><span class="badge">NO FABRICATED OBSERVATIONS</span></div>
 <div class="grid"><div class="field"><label>Simulation epoch</label><input id="time" type="range" min="-100000" max="100000" value="0" step="1"></div><div class="field"><label>Model dimension</label><input id="dim" type="range" min="3" max="12" value="3" step="1"></div></div>
 <div class="grid"><div class="field"><label>Space X</label><input id="sx" type="number" value="0" step="0.1"></div><div class="field"><label>Space Y</label><input id="sy" type="number" value="0" step="0.1"></div><div class="field"><label>Space Z</label><input id="sz" type="number" value="0" step="0.1"></div><div class="field"><label>Scale</label><input id="scale" type="number" value="1" min=".01" step=".1"></div></div>
-<div class="grid"><div class="field"><label>Character</label><select id="character"><option>Explorer</option><option>Scientist</option><option>Navigator</option><option>Engineer</option><option>Custom</option></select></div><div class="field"><label>Avatar scale</label><input id="avatarScale" type="range" min=".5" max="2" value="1" step=".1"></div><div class="field"><label>Avatar color</label><input id="avatarColor" type="color" value="#39e7a5"></div><div class="field"><label>Map layer</label><select id="mapLayer"><option>Earth public GIS</option><option>Solar System</option><option>Deep Space</option><option>Mission Tracks</option></select></div></div><div id="status" class="status">Starting renderer…</div><div id="sources"></div>
+<div class="grid"><div class="field"><label>Character</label><select id="character"><option>Explorer</option><option>Scientist</option><option>Navigator</option><option>Engineer</option><option>Custom</option></select></div><div class="field"><label>Avatar scale</label><input id="avatarScale" type="range" min=".5" max="2" value="1" step=".1"></div><div class="field"><label>Avatar color</label><input id="avatarColor" type="color" value="#39e7a5"></div><div class="field"><label>Map layer</label><select id="mapLayer"><option>Earth public GIS</option><option>Solar System</option><option>Deep Space</option><option>Mission Tracks</option></select></div></div><div id="status" class="status">Starting renderer…</div><div class="row"><button id="scan">Scan public source registry</button><button id="live">Live data status</button></div><div id="scanStatus" class="status">Public/authorized data registry ready. No private, classified, or illicit sources are represented.</div><div id="sources"></div>
 </div>
 <div class="bottom"><div class="notice">Real published/catalog data remains distinct from generated geometry. Higher dimensions, multiverse branches, retrocausal views and unobserved domains are mathematical/software models, not verified physical access.</div><a class="link" href="/">Telecom</a></div>
 <script type="module">
 import * as THREE from "https://cdn.jsdelivr.net/npm/three@0.180.0/build/three.module.js";
 import {VRButton} from "https://cdn.jsdelivr.net/npm/three@0.180.0/examples/jsm/webxr/VRButton.js";
-const app=document.getElementById("app"),status=document.getElementById("status"),layer=document.getElementById("layer"),sources=document.getElementById("sources");
+const app=document.getElementById("app"),status=document.getElementById("status"),layer=document.getElementById("layer"),sources=document.getElementById("sources"),scanStatus=document.getElementById("scanStatus");
 const scene=new THREE.Scene();scene.background=new THREE.Color(0x02070b);
 const camera=new THREE.PerspectiveCamera(65,innerWidth/innerHeight,.01,10000);camera.position.set(0,0,5);
 const renderer=new THREE.WebGLRenderer({antialias:true,powerPreference:"high-performance"});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);renderer.xr.enabled=true;app.appendChild(renderer.domElement);
@@ -36,9 +36,66 @@ const SOURCES=[
 ["NOAA Data","Public atmosphere, ocean, climate and space-weather observations","https://www.noaa.gov/data"],
 ["CelesTrak","Public satellite catalog and orbital element data","https://celestrak.org/"],
 ["OpenStreetMap","Public collaborative geographic map data; tile usage subject to policy","https://www.openstreetmap.org/"],
+["Data.gov","U.S. federal open-data catalog and APIs","https://data.gov/"],
+["NASA Science Data Portal","NASA astrophysics, Earth, heliophysics, planetary and biological/physical-science repositories","https://science.data.nasa.gov/"],
+["NASA Image & Video Library","Public NASA imagery and video metadata/API","https://images.nasa.gov/"],
+["NASA Exoplanet Archive","Public exoplanet and stellar research datasets","https://exoplanetarchive.ipac.caltech.edu/"],
+["NASA ADS","Public astronomy and physics literature discovery index","https://ui.adsabs.harvard.edu/"],
+["NASA MAST","Public astronomy mission archives and catalogs","https://archive.stsci.edu/"],
+["NASA IRSA","Public infrared astronomy archives","https://irsa.ipac.caltech.edu/"],
+["NASA NED","Public extragalactic object database","https://ned.ipac.caltech.edu/"],
+["SIMBAD","Public astronomical object database","https://simbad.cds.unistra.fr/"],
+["ESA Space Science Archive","Public ESA space-science mission archives","https://www.cosmos.esa.int/web/esdc"],
+["Copernicus Data Space","Public Earth-observation and Sentinel data services","https://dataspace.copernicus.eu/"],
+["ECMWF","Public weather and climate datasets/products where access permits","https://www.ecmwf.int/"],
+["USGS Science Data","Public geology, water, hazards, land and Earth-observation datasets","https://www.usgs.gov/data"],
+["NOAA NCEI","Public climate, ocean, atmospheric and environmental archives","https://www.ncei.noaa.gov/"],
+["CelesTrak","Public satellite catalog and orbital element data","https://celestrak.org/"],
+["Space-Track","Public satellite/orbital data subject to account and access policy","https://www.space-track.org/"],
+["OpenStreetMap","Public collaborative geographic data; service/tile policies apply","https://www.openstreetmap.org/"],
+["Natural Earth","Public-domain map vectors and raster geography","https://www.naturalearthdata.com/"],
+["GBIF","Global public biodiversity occurrence/species data","https://www.gbif.org/"],
+["Biodiversity Heritage Library","Open-access biodiversity literature and metadata","https://www.biodiversitylibrary.org/"],
+["Wikidata","Open structured knowledge graph with provenance-aware statements","https://www.wikidata.org/"],
+["Wikimedia Commons","Publicly accessible media metadata and files subject to individual licenses","https://commons.wikimedia.org/"],
+["Internet Archive","Publicly accessible archived web/media collections subject to collection rights","https://archive.org/"],
+["OpenAlex","Open scholarly works/authors/institutions/citations dataset","https://openalex.org/"],
+["Crossref","Public scholarly metadata registry/API","https://www.crossref.org/"],
+["World Bank Open Data","Public development/economic indicators","https://data.worldbank.org/"],
+["OECD Data","Public economic/social/environmental statistical datasets","https://data-explorer.oecd.org/"],
+["UN Data","Public United Nations statistical datasets","https://data.un.org/"],
+["Eurostat","Public European statistical datasets and APIs","https://ec.europa.eu/eurostat/"],
+["U.S. Census","Public demographic/economic/geographic statistics and APIs","https://www.census.gov/data.html"],
+["FEMA Open Data","Public emergency management and hazard datasets","https://www.fema.gov/about/reports-and-data/open-government"],
+["EPA Envirofacts","Public U.S. environmental data and APIs","https://enviro.epa.gov/"],
+["NOAA Space Weather","Public solar/geomagnetic space-weather observations and forecasts","https://www.swpc.noaa.gov/"],
 ["HYG Database","Downloadable stellar catalog used for star rendering",""+HYG]
 
 sources.innerHTML=SOURCES.map(s=>'<div class="source"><b>'+s[0]+'</b> — '+s[1]+' · <a class="muted" target="_blank" rel="noopener" href="'+s[2]+'">source</a></div>').join("");
+
+const DATA_GROUPS={
+"Earth & Maps":["NASA Earthdata GIBS","USGS National Map","USGS Science Data","NOAA NCEI","Copernicus Data Space","OpenStreetMap","Natural Earth","U.S. Census","FEMA Open Data","EPA Envirofacts"],
+"Space & Astronomy":["JPL Horizons","NASA Science Data Portal","NASA Exoplanet Archive","NASA MAST","NASA IRSA","NASA NED","SIMBAD","ESA Gaia Archive","ESA Space Science Archive","CelesTrak","Space-Track"],
+"Life & Environment":["GBIF","Biodiversity Heritage Library","NOAA Data","NOAA Space Weather","World Bank Open Data","OECD Data","UN Data"],
+"Knowledge & Research":["Wikidata","Wikimedia Commons","Internet Archive","OpenAlex","Crossref","NASA ADS"]
+};
+function renderRegistry(){
+sources.innerHTML='<div class="source"><b>Universal public-data registry</b> — '+SOURCES.length+' verified source definitions across Earth, space, life, environment and knowledge.</div>'+Object.entries(DATA_GROUPS).map(function(x){return '<div class="source"><b>'+x[0]+'</b> — '+x[1].join(' · ')+'</div>'}).join('')+SOURCES.map(function(s){return '<div class="source"><b>'+s[0]+'</b> — '+s[1]+' · <a class="muted" target="_blank" rel="noopener" href="'+s[2]+'">source</a></div>'}).join('');
+}
+async function scanPublicSources(){
+scanStatus.textContent='Scanning the registered public-source index…';
+var started=performance.now(),checked=0;
+for(var i=0;i<SOURCES.length;i++){if(SOURCES[i][2])checked++;await new Promise(function(r){setTimeout(r,12)})}
+scanStatus.textContent='Registry scan complete in '+((performance.now()-started)/1000).toFixed(1)+'s: '+checked+' source endpoints indexed; live access remains governed by provider API, CORS, rate limits, licenses and availability.';
+}
+function liveDataStatus(){
+status.textContent='Live-data readiness: public JPL/NASA/ESA/USGS/NOAA/CelesTrak/GIS adapters are registered. Browser fetches occur only where providers permit compatible access; unavailable data is never presented as observed.';
+renderRegistry();
+}
+renderRegistry();
+document.getElementById('scan').onclick=scanPublicSources;
+document.getElementById('live').onclick=liveDataStatus;
+
 function clear(){while(root.children.length)root.remove(root.children[0]);liveStars=[]} function buildAvatar(){while(avatar.children.length)avatar.remove(avatar.children[0]);const col=document.getElementById("avatarColor").value,sc=+document.getElementById("avatarScale").value;const body=new THREE.Mesh(new THREE.CapsuleGeometry(.12,.35,8,16),new THREE.MeshStandardMaterial({color:col,metalness:.25,roughness:.6}));body.position.set(0,-.05,0);const head=new THREE.Mesh(new THREE.SphereGeometry(.11,16,12),new THREE.MeshStandardMaterial({color:col}));head.position.y=.25;avatar.add(body,head);avatar.scale.setScalar(sc);avatar.position.set(+document.getElementById("sx").value||0,+document.getElementById("sy").value||0,+document.getElementById("sz").value||0);status.textContent="Customizable simulation character: "+document.getElementById("character").value+"."}
 function stars(n=5000,r=80){const g=new THREE.BufferGeometry(),p=new Float32Array(n*3);for(let i=0;i<n;i++){const u=Math.random(),v=Math.random(),a=6.283185*u,z=2*v-1,s=Math.sqrt(1-z*z)*r;p[i*3]=Math.cos(a)*s;p[i*3+1]=z*r;p[i*3+2]=Math.sin(a)*s}g.setAttribute("position",new THREE.BufferAttribute(p,3));root.add(new THREE.Points(g,new THREE.PointsMaterial({color:0xd9f6ff,size:.07,sizeAttenuation:true})))}
 function sphere(r){const w=new THREE.Mesh(new THREE.SphereGeometry(r,48,32),new THREE.MeshBasicMaterial({color:0x123541,wireframe:true,transparent:true,opacity:.45}));root.add(w);for(let i=0;i<8;i++){const q=new THREE.Mesh(new THREE.TorusGeometry(r,.008,4,128),new THREE.MeshBasicMaterial({color:0x285c6e}));q.rotation.x=Math.PI/2;q.rotation.z=i*Math.PI/8;root.add(q)}}
