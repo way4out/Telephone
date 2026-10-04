@@ -1,0 +1,129 @@
+{
+  "chain": "Base",
+  "wallet": "0x13653b6b8bd4b274da565faf6fa894e3418a6d10",
+  "assets": [
+    {
+      "name": "NFTQRX",
+      "address": "0x7b609a9389097a7d06daebc818a41651fe01bba3"
+    },
+    {
+      "name": "HIR",
+      "address": "0x542165dafde4242939415b8f2ec8686a4f43cba3"
+    },
+    {
+      "name": "OEQL Quantum Telecom",
+      "symbol": "OEQL",
+      "address": "0x5490c75dfe7b790351dea6736c742e5e3c4c4ba3"
+    },
+    {
+      "name": "Node",
+      "symbol": "NODE",
+      "address": "0x27610a648e32176cf1ccd11e501bc3f900dbdba3"
+    },
+    {
+      "name": "upgrade",
+      "symbol": "OEQL",
+      "address": "0x90e59e7ca1f2e4b2404342af3e5e0578880ddba3"
+    },
+    {
+      "name": "OEQL",
+      "symbol": "OEQL",
+      "address": "0x2d76de6c499d0011999395ed5e437eb604635ba3"
+    },
+    {
+      "name": "Rollin'",
+      "symbol": "ROLLIN",
+      "address": "0x622e4536a4b3d5a3acb99a70bdfc50a3255d3ba3"
+    },
+    {
+      "name": "Balloon",
+      "symbol": "BALLOON",
+      "address": "0x494301facc434ca703239e3e1e5def31fdc20ba3"
+    },
+    {
+      "name": "Caffeine",
+      "symbol": "CAFFEINE",
+      "address": "0x5a69d0cc5783bd15c437dc329d78319325d13ba3"
+    },
+    {
+      "name": "Zai",
+      "symbol": "ZAI",
+      "address": "0x05e4c8b357da5981496cc7b2b0b8ea3956212ba3"
+    },
+    {
+      "name": "Telp",
+      "symbol": "TELP",
+      "address": "0x22ffa503e90c651cb53e3f88deafc80160c9fba3"
+    },
+    {
+      "name": "Auto",
+      "symbol": "AUTO",
+      "address": "0x910cb6ce72a2ee7b1c9d093d5b09aed7f19f8ba3"
+    },
+    {
+      "name": "Aeth",
+      "symbol": "AETH",
+      "address": "0x8c7cffbdd51be8c43300f38f052ccdaac59f0ba3"
+    },
+    {
+      "name": "AI Use Token",
+      "symbol": "AIUSE",
+      "address": "0xe512509731c33632d3048948bc8471fba1ad4ba3"
+    },
+    {
+      "name": "ZenoState AI",
+      "symbol": "ZAi",
+      "address": "0x05e4c8b357da5981496cc7b2b0b8ea3956212ba3"
+    },
+    {
+      "name": "3tree",
+      "symbol": "TREE",
+      "address": "0xb628f3f2aab853a95602dd45aeed48c807f93ba3"
+    },
+    {
+      "name": "1one",
+      "symbol": "ONE",
+      "address": "0xc0d3b63dac80270379c87fa9dcab3421a5b2aba3"
+    },
+    {
+      "name": "hahahaha4",
+      "symbol": "HAHA",
+      "address": "0x7d9eeaf34246adf90b0ac9ae1525049249347ba3"
+    },
+    {
+      "name": "2two",
+      "symbol": "TWO",
+      "address": "0x0033cf7b0e3ab5c1baa3509e27e7015743bc1ba3"
+    },
+    {
+      "name": "AIUSE",
+      "symbol": "AIU4",
+      "address": "0xa6700712d8dbba2005ecffd277cec2f14871aba3"
+    },
+    {
+      "name": "Buy Drunk Stay High",
+      "symbol": "BLZET",
+      "address": "0xad4f3857808a7c3b420c87d7cfabfe3934c18ba3"
+    },
+    {
+      "name": "Revelations",
+      "symbol": "REV",
+      "address": "0xaf4721ead1b366b88d21d6a0bfec7b25cb118ba3"
+    },
+    {
+      "name": "Emerald Tablets",
+      "symbol": "EMRLD",
+      "address": "0x4b89c4263e1dc7c843482b85bff12b142ac4aba3"
+    },
+    {
+      "name": "Way Out",
+      "symbol": "WO",
+      "address": "0x7811d40ec95015c4571663a2eaaeca58c4412ba3"
+    },
+    {
+      "name": "Flawless",
+      "symbol": "FLAW",
+      "address": "0xe9bd329a1ff8c56c9f44a937863983ec5b81aba3"
+    }
+  ]
+}
