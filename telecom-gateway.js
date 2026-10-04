@@ -1,4 +1,4 @@
-import http from "node:http";import fs from "node:fs";import path from "node:path";import {fileURLToPath} from "node:url";
+import http from "node:http";import crypto from "node:crypto";import fs from "node:fs";import path from "node:path";import {fileURLToPath} from "node:url";
 const __dirname=path.dirname(fileURLToPath(import.meta.url));const PORT=process.env.PORT||10000;
 import {createRequire} from "node:module";const require=createRequire(import.meta.url);
 const {detectDevice,readiness:createEsimReadiness}=require("./carrier/esim-capacity.cjs");
@@ -9,12 +9,43 @@ const CAPACITY={profiles:"unlimited-software-orchestrated",simultaneousProvision
 const PRICING={setupUsd:12,monthlyPlatformUsd:4,dataMarkupPct:Number(process.env.DATA_MARKUP_PCT||25),includedDataCreditUsd:0,minimumDataTopupUsd:Number(process.env.MINIMUM_DATA_TOPUP_USD||5),globalCoverage:"220+ destinations via Citrus"};
 const html=fs.readFileSync(path.join(__dirname,"telecom-live","index.html"),"utf8");
 const envBool=k=>String(process.env[k]||"").toLowerCase()==="true";
+const founderPhoneHash=p=>crypto.createHash("sha256").update(String(p||"").replace(/[^0-9]/g,"")).digest("hex");
+const founderMatch=p=>envBool("FOUNDER_FREE_ENABLED")&&founderPhoneHash(p)===String(process.env.FOUNDER_PHONE_SHA256||"");
 const json=(res,code,obj)=>{res.writeHead(code,{"content-type":"application/json","cache-control":"no-store","access-control-allow-origin":"*"});res.end(JSON.stringify(obj));};
 async function body(req){let s="";for await(const c of req){s+=c;if(s.length>20000)throw Error("request_too_large")}try{return JSON.parse(s||"{}")}catch{throw Error("invalid_json")}}
 async function bankr(prompt){if(!process.env.BANKR_API_KEY)throw Error("bankr_api_key_not_configured");const r=await fetch("https://api.bankr.bot/agent/prompt",{method:"POST",headers:{"content-type":"application/json","X-API-Key":process.env.BANKR_API_KEY},body:JSON.stringify({prompt})});const j=await r.json().catch(()=>({}));if(!r.ok)throw Error("bankr_request_failed");return j}
 function authority(){return{carrierMode:process.env.CARRIER_MODE||"sandbox",carrierAuthorized:process.env.CARRIER_MODE==="production_authorized",spectrumEvidence:Boolean(process.env.SPECTRUM_AUTHORITY_EVIDENCE_HASH),spectrumExpiresAt:process.env.SPECTRUM_AUTHORITY_EXPIRES_AT||null,interconnectAuthorized:envBool("INTERCONNECT_AUTHORIZED"),equipmentCertified:envBool("EQUIPMENT_CERTIFIED"),rspProductionAuthorized:envBool("RSP_PRODUCTION_AUTHORIZED"),gsmaProductionCert:envBool("GSMA_PRODUCTION_CERT"),sasSmAccredited:envBool("SAS_SM_ACCREDITED"),regulatoryReviewComplete:envBool("REGULATORY_REVIEW_COMPLETE")}}
 function transmissionGate(d){const a=authority();const frequency=Number(d.frequencyHz);const right={id:"runtime",status:"AUTHORIZED",startHz:Number(process.env.AUTHORIZED_START_HZ||0),endHz:Number(process.env.AUTHORIZED_END_HZ||0),evidenceHash:process.env.SPECTRUM_AUTHORITY_EVIDENCE_HASH||"",expiresAt:process.env.SPECTRUM_AUTHORITY_EXPIRES_AT||null};const frequencyCovered=Number.isFinite(frequency)&&authorizeTransmission([right],frequency);const allowed=a.carrierAuthorized&&a.interconnectAuthorized&&a.equipmentCertified&&a.regulatoryReviewComplete&&frequencyCovered&&a.rspProductionAuthorized&&a.gsmaProductionCert&&a.sasSmAccredited;return{allowed,checks:{carrier:a.carrierAuthorized,interconnect:a.interconnectAuthorized,equipment:a.equipmentCertified,regulatory:a.regulatoryReviewComplete,spectrum:frequencyCovered,rsp:a.rspProductionAuthorized,gsma:a.gsmaProductionCert,sasSm:a.sasSmAccredited}}}
 async function citrus(path,method="GET",payload){const key=process.env.ESIM_PROVIDER_API_KEY||"";const base=(process.env.ESIM_PROVIDER_BASE_URL||"https://citrusmobile.com/api/v2/reseller").replace(/\/$/,"");const r=await fetch(base+path,{method,headers:{"content-type":"application/json",authorization:"Bearer "+key},body:payload?JSON.stringify(payload):undefined});return{status:r.status,data:await r.json().catch(()=>({}))};}
+async function founderProvision(data){
+  if((process.env.ESIM_PROVIDER_TYPE||"")!=="citrus")return{status:"provider_required",error:"founder_requires_citrus"};
+  const existing=await citrus("/esim/list?limit=100&offset=0");
+  if(existing.status!==200)return{status:502,error:"founder_lookup_failed",provider_response:existing.data};
+  const esims=Array.isArray(existing.data?.esims)?existing.data.esims:[];
+  let item=esims.find(x=>x.end_user_reference==="stellarnet-founder-free");
+  let provisioned=null;
+  if(!item){
+    const p=await citrus("/esim/provision","POST",{end_user_reference:"stellarnet-founder-free",label:"StellarNet Founder Free Line"});
+    if(p.status!==201)return{status:p.status,error:"founder_provision_failed",provider_response:p.data};
+    item=p.data;provisioned=p.data;
+  }
+  const iccid=item?.iccid;
+  if(!iccid)return{status:502,error:"founder_missing_iccid"};
+  const detail=await citrus("/esim/"+encodeURIComponent(iccid));
+  if(detail.status!==200)return{status:502,error:"founder_detail_failed",provider_response:detail.data};
+  let funded=null,enabled=null;
+  const balance=Number(detail.data?.wallet_balance_usd||0);
+  const fundAmount=Number(process.env.FOUNDER_INITIAL_FUND_USD||0);
+  if(balance<=0&&fundAmount>0){
+    funded=await citrus("/esim/"+encodeURIComponent(iccid)+"/fund","POST",{amount:fundAmount});
+    if(funded.status!==200)return{status:502,error:"founder_funding_failed",provider_response:funded.data,funding:funded};
+  }
+  if(process.env.FOUNDER_AUTO_ENABLE!=="false"){
+    enabled=await citrus("/esim/"+encodeURIComponent(iccid)+"/enable","POST");
+    if(enabled.status!==200)return{status:502,error:"founder_enable_failed",provider_response:enabled.data,enable:enabled};
+  }
+  return{status:200,founderFree:true,provider:"citrus",iccid,provisioned,detail:detail.data,funding:funded,enable:enabled,customerChargeUsd:0,monthlyPlatformUsd:0};
+}
 async function providerProvision(plan,data){const key=process.env.ESIM_PROVIDER_API_KEY||"";const type=process.env.ESIM_PROVIDER_TYPE||"generic";const base=(process.env.ESIM_PROVIDER_BASE_URL||"").replace(/\/$/,"");if(plan==="esim"&&!key)return{status:"provider_required",message:"Authorized eSIM/RSP credentials are required for real profile provisioning."};if(plan==="physical"&&!process.env.CARRIER_FULFILLMENT_API_KEY)return{status:"fulfillment_provider_required",message:"Authorized SIM fulfillment credentials are required for shipment."};if(plan==="esim"){if(type==="citrus"){const p=await citrus("/esim/provision","POST",{end_user_reference:data.reference||"stellarnet-activation",label:data.label||"StellarNet customer"});if(p.status!==201)return{status:p.status,provider:"citrus",provider_response:p.data};const iccid=p.data?.iccid;if(!iccid)return{status:502,provider:"citrus",provider_response:p.data,error:"citrus_missing_iccid"};const initialFund=Number(process.env.CITRUS_INITIAL_FUND_USD||0);let funded=null,enabled=null;if(initialFund>0){funded=await citrus("/esim/"+encodeURIComponent(iccid)+"/fund","POST",{amount:initialFund});if(funded.status!==200)return{status:502,provider:"citrus",provider_response:p.data,funding:funded,error:"citrus_funding_failed"}}if(process.env.CITRUS_AUTO_ENABLE==="true"){enabled=await citrus("/esim/"+encodeURIComponent(iccid)+"/enable","POST");if(enabled.status!==200)return{status:502,provider:"citrus",provider_response:p.data,funding:funded,enable:enabled,error:"citrus_enable_failed"}}return{status:200,provider:"citrus",provider_response:p.data,funding:funded,enable:enabled,pricing:PRICING}}const r=await fetch(base+"/esims",{method:"POST",headers:{"content-type":"application/json","authorization":"Bearer "+key},body:JSON.stringify({planId:process.env.ESIM_PLAN_ID||"standard-esim",quantity:1,eid:data.eid||undefined,reference:data.reference})});return{status:r.status,provider_response:await r.json().catch(()=>({}))}}return{status:"paid_pending_fulfillment"}}
 
 async function citrusFetch(path,options={}){const key=process.env.ESIM_PROVIDER_API_KEY;if(!key)throw Error("citrus_api_key_not_configured");const base=(process.env.ESIM_PROVIDER_BASE_URL||"https://citrusmobile.com/api/v2/reseller").replace(/\/$/,"");const r=await fetch(base+path,{...options,headers:{"Authorization":"Bearer "+key,"Content-Type":"application/json",...(options.headers||{})}});const t=await r.text();let data;try{data=JSON.parse(t)}catch{data={raw:t}}if(!r.ok)throw Error("citrus_http_"+r.status);return data}
@@ -29,5 +60,17 @@ if(req.method==="GET"&&u.pathname==="/api/citrus-rates")try{const r=await citrus
 if(req.method==="GET"&&u.pathname==="/api/readiness"){const a=authority();return json(res,200,{ok:true,bankr:Boolean(process.env.BANKR_API_KEY),merchant:Boolean(process.env.TOKEN_MERCHANT_ADDRESS),esim_provider:Boolean(process.env.ESIM_PROVIDER_API_KEY&&process.env.ESIM_PROVIDER_BASE_URL),physical_fulfillment:Boolean(process.env.CARRIER_FULFILLMENT_API_KEY&&process.env.CARRIER_FULFILLMENT_BASE_URL),carrier_authorized:a.carrierAuthorized,setup_usd:PRICING.setupUsd,activation_usd:PRICING.setupUsd,monthly_usd:PRICING.monthlyPlatformUsd,esim:createEsimReadiness({carrierAuthorized:a.carrierAuthorized,rspConfigured:Boolean(process.env.ESIM_PROVIDER_API_KEY&&process.env.ESIM_PROVIDER_BASE_URL),device:{esim_capable:true}}),production_gates:a,note:"Payment completion starts activation; RF transmission remains denied until every real carrier, spectrum, interconnect, equipment, regulatory, RSP and GSMA gate passes."})}
 if(req.method==="POST"&&u.pathname==="/api/device-check"){const d=await body(req);return json(res,200,{ok:true,device:detectDevice(d)});}
 if(req.method==="GET"&&u.pathname==="/api/activation-status"){const id=u.searchParams.get("id");const job=activationJobs.get(id);return job?json(res,200,{ok:true,...job}):json(res,404,{ok:false,error:"activation_not_found"});}
+if(req.method==="POST"&&u.pathname==="/api/founder-activate"){
+ const d=await body(req);
+ if(!founderMatch(d.phone))return json(res,403,{ok:false,error:"founder_not_authorized"});
+ if(!d.eid)return json(res,400,{ok:false,error:"eid_required_for_device_install"});
+ const id="founder-"+Date.now()+"-"+Math.random().toString(36).slice(2,8);
+ try{
+   const device=detectDevice(d);
+   const p=await founderProvision({...d,reference:"stellarnet-founder-free",label:"StellarNet Founder Free Line"});
+   activationJobs.set(id,{id,status:p.status===200?"founder_ready":"founder_error",plan:"esim",amount_usd:0,monthly_usd:0,device,founderFree:true,provisioning:p,transmission_permitted:false,createdAt:new Date().toISOString()});
+   return json(res,p.status===200?200:502,{ok:p.status===200,id,founderFree:true,amount_usd:0,monthly_usd:0,provisioning:p,next:p.status===200?"Install the eSIM using the returned install method; cellular service still depends on the authorized underlying network.":"Founder activation failed."});
+ }catch(e){return json(res,502,{ok:false,error:"founder_activation_failed"})}
+}
 if(req.method==="POST"&&u.pathname==="/api/activate"){const d=await body(req);const plan=d.plan==="physical"?"physical":"esim";if(!process.env.TOKEN_MERCHANT_ADDRESS)return json(res,503,{ok:false,error:"merchant_address_not_configured"});const id="act-"+Date.now()+"-"+Math.random().toString(36).slice(2,8);try{const b=await bankr("For StellarNet Telecom, execute exactly one $12 Base Mainnet setup payment to merchant "+process.env.TOKEN_MERCHANT_ADDRESS+". Do not use unlimited approvals. This is a telecom service activation for "+plan+". Return transaction hash, confirmation status, and job details.");const txHash=b.txHash||b.transactionHash||b.hash||b.transaction?.hash||null;const confirmed=Boolean(b.confirmed===true||b.status==="confirmed"||b.transaction?.confirmed===true);const a=authority();const rspConfigured=Boolean(process.env.ESIM_PROVIDER_API_KEY&&process.env.ESIM_PROVIDER_BASE_URL);const device=detectDevice(d);const gate=transmissionGate(d);activationJobs.set(id,{id,status:confirmed?"payment_confirmed":"payment_pending",plan,amount_usd:PRICING.setupUsd,monthly_usd:PRICING.monthlyPlatformUsd,txHash,device,authority:a,rsp_configured:rspConfigured,transmission_permitted:false,createdAt:new Date().toISOString()});if(confirmed){const p=await providerProvision(plan,{...d,reference:b.jobId||id});const finalRf=gate.allowed&&(plan==="physical"||rspConfigured)&& (plan==="physical"||device.esim_capable);activationJobs.set(id,{...activationJobs.get(id),status:p.status===200||p.status==="paid_pending_fulfillment"?"provisioning_started":"provisioning_pending",provisioning:p,transmission_permitted:finalRf,transmission_gate:gate});}return json(res,202,{ok:true,id,status:activationJobs.get(id).status,plan:activationJobs.get(id).plan,amount_usd:PRICING.setupUsd,monthly_usd:PRICING.monthlyPlatformUsd,txHash:activationJobs.get(id).txHash,provisioning:activationJobs.get(id).provisioning||null,transmission_permitted:false,next:confirmed?"Payment is confirmed; provisioning begins automatically. RF transmission remains denied unless every real authorization and certification gate passes.":"Waiting for payment confirmation before provisioning."})}catch(e){activationJobs.set(id,{id,status:"payment_error",error:e.message});const safe=["request_too_large","invalid_json","bankr_api_key_not_configured","bankr_request_failed"].includes(e.message)?e.message:"activation_failed";return json(res,503,{ok:false,id,error:safe})}}
 json(res,404,{ok:false,error:"not_found"})});server.listen(PORT,"0.0.0.0",()=>console.log("StellarNet 8G+ Quantum Telcom on "+PORT));
